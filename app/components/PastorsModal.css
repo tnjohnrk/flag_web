@@ -1,0 +1,44 @@
+#box {
+  position: absolute;
+  top: 30%;
+  left: 30%;
+  transform: 'translate(-50%, -50%)';
+  width: 750px;
+  height:450px;
+  background: linear-gradient(45deg, #d7a08aae, #fff30599);
+  /* height: 100; */
+  background-color: aliceblue;
+  border-radius: 3%;
+  /* boxShadow: 24; */
+}
+
+#title, #role{
+    font-size: 25px;
+    padding: 10pt 38pt;
+    font-weight: 800;
+}
+
+#description{
+    margin-top: 12pt;
+    font-size: 15px;
+    padding-left: 7%;
+    padding-right: 6%;
+}
+
+@media (max-width: 768px) {
+  #box {
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height:50%;
+    /* boxShadow: 24; */
+  }
+
+  #title, #role{
+    font-size: 15px;
+}
+
+#description{
+    font-size: 10px;
+}
+}

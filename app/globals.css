@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth !important;
+  font-family: 'Trebuchet MS';
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.div {
+  background:
+    linear-gradient(to bottom, rgba(234, 234, 43, 0.142), rgba(200, 120, 15, 0.729)),
+    url('../public/Images/family-pic.png') fixed;
+  background-size: cover;
+  min-height: 100vh;
+  position: relative;
+}
+
+@media(max-width:768px) {
+  .div {
+    /* margin-top: 72px; */
+    background:
+      linear-gradient(to bottom, rgba(234, 234, 43, 0.142), rgba(200, 120, 15, 0.729));
+    background-size: cover;
+    background-position: center center;
+    min-height: unset;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.home-page-text {
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(45deg, #d7d78a, #ff8205);
+  border-radius: 15px;
+  padding: 20px;
+
+  width: 65vw;
+  position: absolute;
+  bottom: -10%;
+  left: 17.5%;
+  /* transform: translate(-50%, -50%); */
+  /* I wonder why this is not working */
+  margin: 0 auto;
+
+  h1 {
+    text-align: center;
+  }
+
+  p {
+    padding: 10px;
+  }
+}
+
+.mobile-only-family-image {
+  display: none;
+  width: 100%;
+  height: auto;
+  position: relative;
+  top: 64px;
+}
+
+@media(max-width:768px) {
+  .home-page-text {
+    position: relative;
+    width: 100%;
+    transform: none;
+    left: unset;
+    bottom: -80px;
+    /* top: -20px; */
+  }
+
+  .mobile-only-family-image {
+    display: block;
+  }
+}
+
+/** fadeInLeft */
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translatex(-500px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translatex(0);
+  }
+}
+
+.in-left {
+  animation-name: fadeInLeft;
+  animation-fill-mode: both;
+  animation-duration: 1s;
+  animation-delay: 1s;
+}
