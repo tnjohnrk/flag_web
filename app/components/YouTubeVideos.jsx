@@ -10,11 +10,11 @@ import "./YouTubeVideos.css";
 
 export default function VideosCarousel({ videos, stats }) {
     return (
-        <div id="sermons" className="Youtubecontainer">
-            <div className="youtubecontent">
+        <div id="sermons" data-reveal className="Youtubecontainer bg-background">
+            <div className="youtubecontent bg-background">
                 <div className="videos-header">
-                    <h2>LATEST SERMONS</h2>
-                    <div className="underline" />
+                    <h2 className="text-text-primary dark:text-white">LATEST SERMONS</h2>
+                    <div className="underline bg-flag-blue" />
                 </div>
 
                 {videos.length > 0 ? (
@@ -59,11 +59,11 @@ export default function VideosCarousel({ videos, stats }) {
                                                     )}
                                                 </span>
                                             </div>
-                                            <div className="video_title" title={video.snippet.title}>
+                                            <div className="video_title text-text-primary dark:text-text-primary" title={video.snippet.title} style={{ color: 'inherit' }}>
                                                 {video.snippet.title}
                                             </div>
                                             {s && (
-                                                <div className="video_stats">
+                                                <div className="video_stats text-text-secondary dark:text-text-secondary" style={{ color: 'inherit' }}>
                                                     {Number(s.viewCount).toLocaleString()} Views •{" "}
                                                     {Number(s.likeCount).toLocaleString()} Likes •{" "}
                                                     {Number(s.commentCount).toLocaleString()} Comments

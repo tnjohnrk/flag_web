@@ -1,23 +1,181 @@
-//Landing Page
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic' });
+
+const bibleVerses = [
+  {
+    verse: "The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.",
+    reference: "Numbers 6:24–25",
+  },
+  {
+    verse: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",
+    reference: "Joshua 1:9",
+  },
+  {
+    verse: "The Lord is my shepherd; I shall not want. He makes me lie down in green pastures.",
+    reference: "Psalm 23:1–2",
+  },
+  {
+    verse: "For I know the plans I have for you, plans to prosper you and not to harm you, plans to give you hope and a future.",
+    reference: "Jeremiah 29:11",
+  },
+  {
+    verse: "Peace I leave with you; my peace I give you. Do not let your hearts be troubled and do not be afraid.",
+    reference: "John 14:27",
+  },
+  {
+    verse: "Those who hope in the Lord will renew their strength. They will soar on wings like eagles.",
+    reference: "Isaiah 40:31",
+  },
+  {
+    verse: "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.",
+    reference: "Philippians 4:7",
+  },
+];
+
 export default function Home() {
+  const containerRef = useRef(null);
+  const [verseIndex, setVerseIndex] = useState(0);
+  const [fadeState, setFadeState] = useState(true);
+
+  // GSAP animation for main Hero heading
+  useEffect(() => {
+    const animateText = () => {
+      const words = containerRef.current?.querySelectorAll('.word');
+      if (!words || words.length === 0) return;
+      gsap.fromTo(
+        words,
+        { y: '120%', opacity: 0, rotationZ: 5 },
+        { 
+          y: '0%', 
+          opacity: 1, 
+          rotationZ: 0,
+          duration: 1.2, 
+          stagger: 0.08, 
+          ease: 'power4.out',
+          delay: 0.2
+        }
+      );
+    };
+
+    if (document.body.classList.contains('preloader-finished')) {
+      animateText();
+    } else {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class' && document.body.classList.contains('preloader-finished')) {
+            animateText();
+            observer.disconnect();
+          }
+        });
+      });
+      observer.observe(document.body, { attributes: true });
+      return () => observer.disconnect();
+    }
+  }, []);
+
+  // Automatic Bible Verse Rotation (Every 6 Seconds with Smooth Fade Transition)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeState(false);
+      setTimeout(() => {
+        setVerseIndex((prev) => (prev + 1) % bibleVerses.length);
+        setFadeState(true);
+      }, 450);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Premium Scroll-Based Hero Shrink Transition Engine
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const heroEl = document.querySelector('.div');
+    if (!heroEl) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const maxScroll = 420; // Scroll distance threshold
+          const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+
+          const isMobile = window.innerWidth < 768;
+          // Scale from 1 -> 0.92 on desktop, 1 -> 0.96 on mobile
+          const scale = isMobile ? 1 - progress * 0.04 : 1 - progress * 0.08;
+          // Border radius from 0px -> 36px on desktop, 0px -> 22px on mobile
+          const radius = isMobile ? progress * 22 : progress * 36;
+          // Shadow opacity & blur
+          const shadowOpacity = (progress * 0.45).toFixed(2);
+          const shadowY = Math.round(progress * 25);
+          const shadowBlur = Math.round(progress * 55);
+
+          heroEl.style.transform = `scale(${scale})`;
+          heroEl.style.borderRadius = `${radius}px`;
+          heroEl.style.boxShadow = progress > 0.02 
+            ? `0 ${shadowY}px ${shadowBlur}px rgba(0, 0, 0, ${shadowOpacity})` 
+            : 'none';
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const currentVerse = bibleVerses[verseIndex];
+
+  const text1 = "Welcome to".split(' ');
+  const text2 = "Full Life Centre".split(' ');
+  const text3 = "Assembly of God Church".split(' ');
+
+  const renderWords = (words, extraClass = '') => {
+    return words.map((word, i) => (
+      <span key={i} className="inline-block overflow-hidden mr-[0.25em] pb-2 -mb-2 align-bottom">
+        <span className={`word inline-block origin-bottom-left opacity-0 ${extraClass}`}>{word}</span>
+      </span>
+    ));
+  };
+
   return (
-    <div
-      className="home-page-text bg-gray-50 shadow-2xl rounded-3xl p-9 border-gray-700 in-left"
-    >
-      <h1 className="text-3xl text-gray-200 font-bold mb-5">
-        Welcome to Full Life Centre Assembly of God Church (FLAG)!
+    <div className="absolute left-6 md:left-16 lg:left-20 bottom-6 sm:bottom-8 md:bottom-12 lg:bottom-14 max-w-2xl lg:max-w-3xl z-10 p-4 pointer-events-none">
+      {/* Existing Main Hero Heading (Scaled down and lowered) */}
+      <h1 ref={containerRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.15] tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]">
+        <div className="mb-1 sm:mb-1.5">{renderWords(text1)}</div>
+        <div className={`${playfair.className} font-normal text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] mb-1 sm:mb-1.5 pr-4`}>
+          {renderWords(text2)}
+        </div>
+        <div>{renderWords(text3)}</div>
       </h1>
-      <p className="text-lg text-gray-100">
-        Welcome to Full Life Centre (FLAG) We’re so glad you’re here! Whether
-        you're exploring faith, seeking a spiritual home, or just
-        visiting—welcome to a place where faith, family, and purpose come alive.
-        At FLAG, we’re passionate about sharing the Full Gospel in Thiruverkadu
-        and beyond. Our mission is to help people grow in Christ, build strong
-        families, and live out their God-given purpose. Join us as we pursue
-        God’s heart, grow together in faith, and experience the
-        life-transforming power of Jesus. Welcome to the Full Life Family.
-        There's a place for you here.
-      </p>
+
+      {/* Dynamic Bible Blessing Verse Section (Compact & Crisp) */}
+      <div className="mt-3 sm:mt-4 md:mt-5 max-w-lg pointer-events-auto">
+        <div
+          className={`transition-all duration-500 ease-out transform ${
+            fadeState ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          }`}
+        >
+          <p className={`${playfair.className} text-xs sm:text-sm md:text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] font-normal italic`}>
+            “{currentVerse.verse}”
+          </p>
+          <p className="mt-1 text-[11px] sm:text-xs md:text-sm font-sans-clean font-bold tracking-widest text-[#D9A31A] uppercase drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
+            — {currentVerse.reference}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

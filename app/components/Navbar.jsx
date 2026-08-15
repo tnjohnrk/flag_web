@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../public/Images/flag-logo.png";
@@ -6,106 +7,202 @@ import "./Navbar.css";
 import { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
-  const [isClick, setisClick] = useState(false);
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
+  const [isClick, setIsClick] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+  const [activeSection, setActiveSection] = useState("home");
+  const [isNavReady, setIsNavReady] = useState(false);
 
   const toggleNavBar = () => {
-    setisClick(!isClick);
+    setIsClick(!isClick);
   };
 
+  // Preloader Nav Handoff Coordinator
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
+    if (document.body.classList.contains("preloader-nav-ready")) {
+      setIsNavReady(true);
+      return;
+    }
 
-      if (currentScrollPos < prevScrollPos) {
-        setVisible(true); // scrolling up
-      } else {
-        setVisible(false); // scrolling down
-      }
-
-      setPrevScrollPos(currentScrollPos);
+    const handleNavReady = () => {
+      setIsNavReady(true);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [prevScrollPos]);
+    window.addEventListener("preloader-nav-ready", handleNavReady);
+
+    const observer = new MutationObserver(() => {
+      if (document.body.classList.contains("preloader-nav-ready")) {
+        setIsNavReady(true);
+      }
+    });
+
+    observer.observe(document.body, { attributes: true });
+
+    return () => {
+      window.removeEventListener("preloader-nav-ready", handleNavReady);
+      observer.disconnect();
+    };
+  }, []);
+
+  // IntersectionObserver to detect when user leaves or enters the Hero section
+  useEffect(() => {
+    const heroTarget =
+      document.querySelector(".hero-video-wrapper") ||
+      document.querySelector(".div") ||
+      document.getElementById("home");
+
+    if (!heroTarget) {
+      const handleScrollFallback = () => {
+        setIsHeroVisible(window.scrollY < 400);
+      };
+      window.addEventListener("scroll", handleScrollFallback);
+      return () => window.removeEventListener("scroll", handleScrollFallback);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHeroVisible(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(heroTarget);
+    return () => observer.disconnect();
+  }, []);
+
+  // Track active section for gold accent indicator
+  useEffect(() => {
+    const sections = [
+      { id: "home", selector: ".hero-video-wrapper" },
+      { id: "about-us", selector: "#about-us" },
+      { id: "sermons", selector: "#sermons" },
+      { id: "know-god", selector: "#know-god" },
+      { id: "donate-us", selector: "#donate-us" },
+      { id: "footer", selector: "#footer" },
+    ];
+
+    const handleActiveObserver = () => {
+      const scrollPos = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el =
+          document.querySelector(sections[i].selector) ||
+          document.getElementById(sections[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(sections[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleActiveObserver);
+    return () => window.removeEventListener("scroll", handleActiveObserver);
+  }, []);
+
+  const navItems = [
+    { name: "HOME", href: "#home", id: "home" },
+    { name: "ABOUT US", href: "#about-us", id: "about-us" },
+    { name: "SERMONS", href: "#sermons", id: "sermons" },
+    { name: "KNOW GOD", href: "#know-god", id: "know-god" },
+    { name: "DONATE US", href: "#donate-us", id: "donate-us" },
+    { name: "CONTACT US", href: "#footer", id: "footer" },
+  ];
 
   return (
     <nav
       id="home-navbar"
-      className={`navbar-item bg-black fixed w-full z-50 transition-transform duration-300 ${
-        visible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className="navbar-item fixed top-0 left-0 w-full z-50 pointer-events-auto transition-all duration-300"
     >
-      <div className="max-w-9xl px-4 sm:px-6 lg-px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <div className="flex shrink-0">
-              <Link href="#home" className="logo">
-                <Image alt="logo" src={logo} />
-              </Link>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Logo on Left (Independent Element - Target for Preloader Fly-In) */}
+          <div className="flex items-center shrink-0">
+            <Link
+              href="#home"
+              className={`logo navbar-logo transition-all duration-500 ${
+                isNavReady ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+              }`}
+            >
+              <Image alt="logo" src={logo} priority />
+            </Link>
           </div>
-          <div className="hidden md:block">
-            <div className="flex items-center ml-4 space-x-4">
-              <Link href="#home" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                HOME
-              </Link>
-              <Link href="#about-us" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                ABOUT US
-              </Link>
-              <Link href="#sermons" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                SERMONS
-              </Link>
-              <Link href="#know-god" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                KNOW GOD
-              </Link>
-              <Link href="#donate-us" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                DONATE US
-              </Link>
-              <Link href="#footer" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                CONTACT US
-              </Link>
-            </div>
+
+          {/* Centered Navigation Items - Individual Floating Elements with NO shared navbar container */}
+          <div
+            className={`hidden md:flex flex-1 justify-center items-center gap-2 lg:gap-3 transition-all duration-700 ease-out ${
+              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
+          >
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`nav-indiv-item relative font-sans-clean font-bold text-xs lg:text-sm tracking-wider px-3.5 py-2 transition-all duration-400 ease-in-out transform select-none ${
+                    isHeroVisible
+                      ? `bg-transparent ${isActive ? "text-[#D9A31A]" : "text-white"} hover:text-[#D9A31A] hover:bg-white/10 hover:scale-105 rounded-lg border-none shadow-none`
+                      : `bg-black/90 ${isActive ? "text-[#D9A31A]" : "text-white"} hover:text-[#D9A31A] hover:bg-black hover:scale-105 rounded-xl shadow-md border border-white/10`
+                  }`}
+                >
+                  {item.name}
+                  {isActive && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[#D9A31A] rounded-full transition-all duration-300" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
-          <div className="md:hidden flex items-center">
+
+          {/* Right Theme Toggle (Independent Element) */}
+          <div
+            className={`hidden md:flex items-center transition-all duration-700 delay-100 ease-out ${
+              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
+          >
+            <ThemeToggle />
+          </div>
+
+          {/* Mobile Navigation Toggle */}
+          <div
+            className={`md:hidden flex items-center space-x-3 transition-all duration-700 ease-out ${
+              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
+          >
+            <ThemeToggle />
             <button
-              className="inline-flex items-center justify-center p-2 rounded-md text-white
-              hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent focus:outline-none"
               onClick={toggleNavBar}
+              aria-label="Toggle mobile menu"
             >
               {isClick ? <CloseIcon /> : <MenuOpenIcon />}
             </button>
           </div>
         </div>
 
+        {/* Mobile Dropdown */}
         <div
-          className={`md:hidden transition-all duration-700 ease-in-out transform overflow-hidden ${
-            isClick ? "translate-y-0 opacity-100 max-h-[500px]" : "-translate-y-4 opacity-0 max-h-0"
+          className={`md:hidden transition-all duration-500 ease-in-out transform overflow-hidden bg-black/90 backdrop-blur-md rounded-2xl shadow-xl mt-2 ${
+            isClick ? "translate-y-0 opacity-100 max-h-[500px]" : "-translate-y-4 opacity-0 max-h-0 pointer-events-none"
           }`}
         >
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link href="#home" className="link block text-white hover:text-black hover:bg-white rounded-lg p-2">
-              HOME
-            </Link>
-            <Link href="#about-us" className="link block text-white hover:text-black hover:bg-white rounded-lg p-2">
-              ABOUT US
-            </Link>
-             <Link href="#sermons" className="link text-white hover:text-black hover:bg-white rounded-lg p-2">
-                SERMONS
+          <div className="px-3 pt-3 pb-4 space-y-2 text-center">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsClick(false)}
+                className="block text-white hover:bg-white/15 hover:text-[#D9A31A] font-bold text-sm tracking-wider rounded-xl p-2.5 transition-all duration-300"
+              >
+                {item.name}
               </Link>
-            <Link href="#know-god" className="link block text-white hover:text-black hover:bg-white rounded-lg p-2">
-              KNOW GOD
-            </Link>
-            <Link href="#donate-us" className="link block text-white hover:text-black hover:bg-white rounded-lg p-2">
-              DONATE US
-            </Link>
-            <Link href="#footer" className="link block text-white hover:text-black hover:bg-white rounded-lg p-2">
-              CONTACT US
-            </Link>
+            ))}
           </div>
         </div>
       </div>

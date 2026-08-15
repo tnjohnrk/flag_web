@@ -12,6 +12,8 @@ import DonateUs from "./donateus/page";
 import Footer from "./components/Footer";
 import KnowGod from "./knowgod/page";
 import ScrollButton from "./components/ScrollButton";
+import { ThemeProvider } from "./components/ThemeProvider";
+import Preloader from "./components/Preloader";
 
 export const metadata = {
   title: "Full Life AG Church",
@@ -24,23 +26,52 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta
           name="viewport"
           content="width=device-width; initial-scale=1; shrink-to-fit=no"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('flag-theme') === 'dark' || (!localStorage.getItem('flag-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
       </head>
       <body id="home">
+        <ThemeProvider>
+        <Preloader />
         <Navbar />
         <div className="div">
-          <Image
-            src="/Images/familyPic.jpg"
-            alt="Descriptive alt text"
-            width={1920}
-            height={1080}
-            className="mobile-only-family-image"
-          />
+          <div className="hero-video-wrapper">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto,so_0/hero_session_video.jpg"
+              className="hero-video-bg"
+            >
+              <source
+                src="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto/hero_session_video.mp4"
+                type="video/mp4"
+              />
+              <source
+                src="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto/hero_session_video.webm"
+                type="video/webm"
+              />
+            </video>
+            <div className="hero-video-overlay" />
+          </div>
           {children}
         </div>
         <AboutUs />
@@ -49,6 +80,7 @@ export default function RootLayout({ children }) {
         <DonateUs />
         <Footer />
         <ScrollButton />
+        </ThemeProvider>
       </body>
     </html>
   );
