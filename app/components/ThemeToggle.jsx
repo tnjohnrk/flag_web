@@ -1,20 +1,19 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
-import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme();
 
-  // Prevent hydration mismatch by only rendering after mount
+  // Prevent hydration mismatch during SSR
   if (!mounted) {
     return (
       <button
-        className="relative flex items-center justify-center w-12 h-6 rounded-full bg-gray-200 dark:bg-gray-700 cursor-not-allowed opacity-50"
+        className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-300 dark:bg-gray-800 cursor-not-allowed opacity-50"
         aria-label="Loading theme toggle"
         disabled
       >
-        <span className="w-4 h-4 rounded-full bg-white" />
+        <span className="w-4 h-4 rounded-full bg-gray-400" />
       </button>
     );
   }
@@ -24,61 +23,69 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className={`relative flex items-center w-12 h-6 p-1 rounded-full transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-flag-yellow ${
-        isDark ? "bg-gray-700" : "bg-gray-300"
+      className={`relative group flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#D9A31A] select-none cursor-pointer active:scale-95 ${
+        isDark
+          ? "bg-[#0B1120] border-2 border-[#D9A31A] shadow-[0_0_14px_rgba(217,163,26,0.35)] hover:shadow-[0_0_20px_rgba(217,163,26,0.6)]"
+          : "bg-[#FFFFFF] border-2 border-[#D9A31A] shadow-[0_2px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_0_18px_rgba(217,163,26,0.45)]"
       }`}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {/* Sun Icon */}
+      {/* Glow Aura Ring on Hover */}
       <span
-        className={`absolute left-1 flex items-center justify-center w-4 h-4 transition-all duration-500 ${
-          isDark ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"
-        }`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-full h-full text-flag-orange"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 21v-2.25m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-          />
-        </svg>
-      </span>
-
-      {/* Moon Icon */}
-      <span
-        className={`absolute right-1 flex items-center justify-center w-4 h-4 transition-all duration-500 ${
-          isDark ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"
-        }`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-full h-full text-flag-yellow"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-          />
-        </svg>
-      </span>
-
-      {/* Thumb Indicator */}
-      <span
-        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-500 ${
-          isDark ? "translate-x-6" : "translate-x-0"
+        className={`absolute inset-0 rounded-full transition-opacity duration-500 pointer-events-none ${
+          isDark
+            ? "bg-[#D9A31A]/10 opacity-0 group-hover:opacity-100"
+            : "bg-[#D9A31A]/15 opacity-0 group-hover:opacity-100"
         }`}
       />
+
+      {/* Dark Mode Icon: Stick-man Carrying the Cross */}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        className={`absolute w-5 h-5 transition-all duration-500 ease-[cubic-bezier(0.34,1.25,0.64,1)] ${
+          isDark
+            ? "opacity-100 scale-100 rotate-0 text-[#EAD068]"
+            : "opacity-0 scale-50 -rotate-45 text-[#10194F] pointer-events-none"
+        }`}
+      >
+        {/* Diagonal Cross (Single Cross) */}
+        <g transform="rotate(-35 12 12)">
+          <rect x="11.1" y="2.5" width="2.2" height="19" rx="0.5" fill="currentColor" />
+          <rect x="5.5" y="7.5" width="13" height="2.2" rx="0.5" fill="currentColor" />
+        </g>
+
+        {/* Stick Figure Leaning Forward Carrying Cross */}
+        <circle cx="14.5" cy="8.2" r="1.7" fill="currentColor" />
+        <path d="M 13.8 9.6 L 9.8 14.5 L 6 17 L 9 14.2 Z" fill="currentColor" />
+        <path d="M 9.8 14.5 L 12.2 18 L 14 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <path d="M 9.8 14.5 L 6.8 17.5 L 4.8 19.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" fill="none" />
+        <path d="M 13.5 10.5 L 15.2 9.5 L 16 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
+
+      {/* Light Mode Icon: Stick-man Kneeling at Upright Cross */}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        className={`absolute w-5 h-5 transition-all duration-500 ease-[cubic-bezier(0.34,1.25,0.64,1)] ${
+          isDark
+            ? "opacity-0 scale-50 rotate-45 text-[#EAD068] pointer-events-none"
+            : "opacity-100 scale-100 rotate-0 text-[#10194F]"
+        }`}
+      >
+        {/* Single Upright Cross on Right Side */}
+        <rect x="16.2" y="4" width="2.2" height="16.5" rx="0.5" fill="currentColor" />
+        <rect x="11.8" y="8" width="11" height="2.2" rx="0.5" fill="currentColor" />
+
+        {/* Kneeling Figure on Left Side */}
+        <circle cx="7.8" cy="9.2" r="1.7" fill="currentColor" />
+        <path d="M 7.6 10.8 C 8 13 7.8 14.8 6.6 17" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" fill="none" />
+        <path d="M 8 12.4 L 10 11.8 L 10.8 13.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <path d="M 6.6 17 L 4.3 18.7 L 4.6 20.3 L 10.8 20.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
     </button>
   );
 }
+
+
