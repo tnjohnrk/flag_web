@@ -41,18 +41,17 @@ export default function Home() {
   const [verseIndex, setVerseIndex] = useState(0);
   const [fadeState, setFadeState] = useState(true);
 
-  // GSAP animation for main Hero heading
+  // GSAP animation for main Hero heading (Upright text reveal, no rotation)
   useEffect(() => {
     const animateText = () => {
       const words = containerRef.current?.querySelectorAll('.word');
       if (!words || words.length === 0) return;
       gsap.fromTo(
         words,
-        { y: '120%', opacity: 0, rotationZ: 5 },
+        { y: '120%', opacity: 0 },
         { 
           y: '0%', 
           opacity: 1, 
-          rotationZ: 0,
           duration: 1.2, 
           stagger: 0.08, 
           ease: 'power4.out',
@@ -88,52 +87,6 @@ export default function Home() {
     }, 6000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  // Premium Scroll-Based Hero Shrink Transition Engine
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const heroEl = document.querySelector('.div');
-    if (!heroEl) return;
-
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const maxScroll = 420; // Scroll distance threshold
-          const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
-
-          const isMobile = window.innerWidth < 768;
-          // Scale from 1 -> 0.92 on desktop, 1 -> 0.96 on mobile
-          const scale = isMobile ? 1 - progress * 0.04 : 1 - progress * 0.08;
-          // Border radius from 0px -> 36px on desktop, 0px -> 22px on mobile
-          const radius = isMobile ? progress * 22 : progress * 36;
-          // Shadow opacity & blur
-          const shadowOpacity = (progress * 0.45).toFixed(2);
-          const shadowY = Math.round(progress * 25);
-          const shadowBlur = Math.round(progress * 55);
-
-          heroEl.style.transform = `scale(${scale})`;
-          heroEl.style.borderRadius = `${radius}px`;
-          heroEl.style.boxShadow = progress > 0.02 
-            ? `0 ${shadowY}px ${shadowBlur}px rgba(0, 0, 0, ${shadowOpacity})` 
-            : 'none';
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const currentVerse = bibleVerses[verseIndex];

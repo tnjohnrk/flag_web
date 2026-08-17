@@ -72,12 +72,12 @@ footer,
 
 .div {
   position: relative;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background-color: var(--background);
-  transform-origin: center top;
-  will-change: transform, border-radius, box-shadow;
-  transition: transform 0.1s linear, border-radius 0.1s linear, box-shadow 0.1s linear;
+  transform-origin: center center;
+  will-change: width, height, transform, border-radius, box-shadow;
 }
 
 .hero-video-wrapper {
@@ -101,13 +101,6 @@ footer,
   inset: 0;
   background: linear-gradient(to bottom, rgba(13, 16, 59, 0.45), rgba(9, 11, 20, 0.65));
   pointer-events: none;
-}
-
-@media(max-width:768px) {
-  .div {
-    width: 100%;
-    min-height: 100vh;
-  }
 }
 
 .home-page-text {

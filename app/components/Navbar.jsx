@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import ThemeToggle from "./ThemeToggle";
+import SpecularNavItem from "./SpecularNavItem";
 
 export default function Navbar() {
   const [isClick, setIsClick] = useState(false);
@@ -142,20 +143,13 @@ export default function Navbar() {
               const isActive = activeSection === item.id;
               
               return (
-                <Link
+                <SpecularNavItem
                   key={item.name}
                   href={item.href}
-                  className={`nav-indiv-item relative font-sans-clean font-bold text-xs lg:text-sm tracking-wider px-3.5 py-2 transition-all duration-400 ease-in-out transform select-none ${
-                    isHeroVisible
-                      ? `bg-transparent ${isActive ? "text-[#D9A31A]" : "text-white"} hover:text-[#D9A31A] hover:bg-white/10 hover:scale-105 rounded-lg border-none shadow-none`
-                      : `bg-black/90 ${isActive ? "text-[#D9A31A]" : "text-white"} hover:text-[#D9A31A] hover:bg-black hover:scale-105 rounded-xl shadow-md border border-white/10`
-                  }`}
-                >
-                  {item.name}
-                  {isActive && (
-                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[#D9A31A] rounded-full transition-all duration-300" />
-                  )}
-                </Link>
+                  name={item.name}
+                  isActive={isActive}
+                  isHeroVisible={isHeroVisible}
+                />
               );
             })}
           </div>
