@@ -14,7 +14,7 @@ export default function PastorsModal({ name, role, description, imageIndex }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   let [pastorName, pastorRole, pastorDescription] = [name, role, description];
-  let imagePath = "/Images/pastor-" + imageIndex + ".png";
+  let imagePath = "/images/pastor-" + imageIndex + ".avif";
 
   return (
     <>

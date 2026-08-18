@@ -8,7 +8,7 @@ import pastorsDetails from "../conf/pastors";
 import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
 
-import familyPic from "../assets/Images/familyPic.jpg";
+import familyPic from "../assets/Images/familyPic.avif";
 
 const AboutUs = () => {
   const [activePastorIndex, setActivePastorIndex] = useState(0);
@@ -106,7 +106,7 @@ const AboutUs = () => {
               <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center">
                 <div className="relative w-full aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] max-w-[420px] overflow-hidden rounded-[28px] border border-white/20 dark:border-white/10 shadow-2xl group select-none">
                   <Image
-                    src="/Images/pastor-1.png"
+                    src="/images/pastor-1.avif"
                     alt="Rev. N. Johnson — Senior Pastor"
                     fill
                     sizes="(max-width: 1024px) 100vw, 500px"
@@ -340,7 +340,7 @@ const AboutUs = () => {
                     }}
                   >
                     <Image
-                      src={`/Images/pastor-${idx + 1}.png`}
+                      src={`/images/pastor-${idx + 1}.avif`}
                       alt={pastor.name}
                       fill
                       sizes="(max-width: 768px) 80vw, 370px"

@@ -46,7 +46,7 @@ export default function VideosCarousel({ videos, stats }) {
                                                 />
                                                
                                                 <img
-                                                    src="/Images/Playbutton.png"
+                                                    src="/images/Playbutton.avif"
                                                     alt="YouTube Play"
                                                     className="youtube-center-logo"
                                                     onClick={() => window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`, '_blank')}

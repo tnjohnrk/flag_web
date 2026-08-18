@@ -6,7 +6,7 @@
     /*min-height: 105vh;*/
     height: auto;
     /* Adjusts dynamically */
-    background-image: url('/Images/copyimage10_enhanced.jpg');
+    background-image: url('/images/copyimage10_enhanced.avif');
     background-size: cover;
     background-position: center;
     background-repeat: repeat-y;
@@ -479,7 +479,6 @@
     padding-right: 8px;
 }
 
-.leftdtl {}
 
 /*--------------------------------------*/
 
@@ -492,7 +491,7 @@
 .subKGheader {
     background:
         linear-gradient(to bottom, rgba(234, 234, 43, 0.142), rgba(200, 120, 15, 0.729)),
-        url('/Images/Somthingthatneeded.png') fixed;
+        url('/images/Somthingthatneeded.avif') fixed;
     background-size: cover;
     text-align: center;
     height: 180px;

@@ -128,7 +128,7 @@ export default function Navbar() {
                 isNavReady ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
               }`}
             >
-              <Image alt="logo" src="/Images/flag-logo.png" width={70} height={70} priority />
+              <Image alt="logo" src="/images/flag-logo.avif" width={70} height={70} priority />
             </Link>
           </div>
 

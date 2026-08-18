@@ -126,7 +126,7 @@ export default function Preloader() {
         style={stage === 'flyin' || stage === 'done' ? transformStyle : undefined}
       >
         <Image
-          src="/Images/flag-logo.png"
+          src="/images/flag-logo.avif"
           alt="FLAG Church Official Logo"
           width={180}
           height={180}
