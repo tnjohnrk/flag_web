@@ -1,75 +1,187 @@
-.navbar-item {
-    /* Background handled by Tailwind bg-surface */
+/* Floating Glass Navigation Header - Standalone Elements */
+
+.glass-nav-header {
+  position: fixed;
+  top: 1.25rem;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  pointer-events: none;
+  padding: 0 1.5rem;
 }
 
-.link {
-    font-size: 17px;
-    font-weight: bold;
-    font-family: 'Trebuchet MS';
-    position: relative;
+.glass-nav-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.link::after {
-    content: '';
-    position: absolute;
-    width: calc(100% - 24px); /* Account for px-3 (12px on each side) */
-    height: 3px;
-    bottom: 4px;
-    left: 12px;
-    background: linear-gradient(90deg, #FACC15, #F97316, #EF4444);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
-    opacity: 0;
-    border-radius: 3px;
+/* Standalone Circular Glass Badges (Logo & Theme Toggle) */
+.glass-badge-btn {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: rgba(18, 18, 22, 0.5);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.3s ease,
+              border-color 0.3s ease;
+  overflow: hidden;
+  padding: 4px;
+  shrink: 0;
 }
 
-.link:hover::after {
-    opacity: 1;
-    transform: scaleX(1);
+.glass-badge-btn:hover {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-.logo {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    padding: 10px;
-    transition: all 0.3s ease-in-out;
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.glass-badge-btn.is-scrolled {
+  background: rgba(10, 10, 14, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.45);
 }
 
-.logo:hover {    
-    animation: shake 0.5s;
-    animation-iteration-count: infinite;
+/* Centered Floating Glass Nav Pill Bar */
+.glass-central-pill {
+  pointer-events: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  background: rgba(18, 18, 22, 0.5);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hamburger {
 
+.glass-central-pill.is-scrolled {
+  background: rgba(10, 10, 14, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Nav Link Item */
+.glass-nav-link {
+  position: relative;
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 0.4375rem 1rem;
+  border-radius: 9999px;
+  transition: color 220ms ease, background-color 220ms ease, transform 180ms ease;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.glass-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Active Highlight Capsule (No Yellow Dot) */
+.glass-nav-link.is-active {
+  color: #ffffff;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile Glass Toggle Button */
+.glass-mobile-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  color: #ffffff;
+  background: rgba(18, 18, 22, 0.5);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.glass-mobile-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.05);
+}
+
+/* Mobile Dropdown Panel */
+.glass-mobile-dropdown {
+  pointer-events: auto;
+  margin-top: 0.75rem;
+  background: rgba(12, 12, 16, 0.92);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  padding: 0.75rem;
+  width: calc(100vw - 2rem);
+  max-width: 24rem;
+}
+
+.glass-mobile-link {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.75rem 1rem;
+  border-radius: 0.875rem;
+  text-align: center;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.glass-mobile-link:hover,
+.glass-mobile-link.is-active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 1024px) {
+  .glass-central-pill {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .glass-nav-header {
+    top: 0.875rem;
+    padding: 0 0.875rem;
   }
 
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* Specular 1px Edge Border Mask Utility */
-.specular-edge-border {
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
+  .glass-badge-btn,
+  .glass-mobile-btn {
+    width: 40px;
+    height: 40px;
+  }
 }

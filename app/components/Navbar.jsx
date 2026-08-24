@@ -3,17 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import "./Navbar.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import ThemeToggle from "./ThemeToggle";
-import SpecularNavItem from "./SpecularNavItem";
+import gsap from "gsap";
 
 export default function Navbar() {
   const [isClick, setIsClick] = useState(false);
-  const [isHeroVisible, setIsHeroVisible] = useState(true);
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navContainerRef = useRef(null);
 
   const toggleNavBar = () => {
     setIsClick(!isClick);
@@ -46,36 +47,18 @@ export default function Navbar() {
     };
   }, []);
 
-  // IntersectionObserver to detect when user leaves or enters the Hero section
+  // GSAP Entrance Animation when Nav is Ready
   useEffect(() => {
-    const heroTarget =
-      document.querySelector(".hero-video-wrapper") ||
-      document.querySelector(".div") ||
-      document.getElementById("home");
-
-    if (!heroTarget) {
-      const handleScrollFallback = () => {
-        setIsHeroVisible(window.scrollY < 400);
-      };
-      window.addEventListener("scroll", handleScrollFallback);
-      return () => window.removeEventListener("scroll", handleScrollFallback);
+    if (isNavReady && navContainerRef.current && typeof window !== "undefined" && gsap) {
+      gsap.fromTo(
+        navContainerRef.current,
+        { opacity: 0, y: -20, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" }
+      );
     }
+  }, [isNavReady]);
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsHeroVisible(entry.isIntersecting);
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
-
-    observer.observe(heroTarget);
-    return () => observer.disconnect();
-  }, []);
-
-  // Track active section for gold accent indicator
+  // Track active section and scroll state
   useEffect(() => {
     const sections = [
       { id: "home", selector: ".hero-video-wrapper" },
@@ -86,8 +69,10 @@ export default function Navbar() {
       { id: "footer", selector: "#footer" },
     ];
 
-    const handleActiveObserver = () => {
-      const scrollPos = window.scrollY + 200;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+
+      const scrollPos = window.scrollY + 220;
       for (let i = sections.length - 1; i >= 0; i--) {
         const el =
           document.querySelector(sections[i].selector) ||
@@ -99,8 +84,8 @@ export default function Navbar() {
       }
     };
 
-    window.addEventListener("scroll", handleActiveObserver);
-    return () => window.removeEventListener("scroll", handleActiveObserver);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
@@ -113,92 +98,82 @@ export default function Navbar() {
   ];
 
   return (
-    <nav
-      id="home-navbar"
-      className="navbar-item fixed top-0 left-0 w-full z-50 pointer-events-auto transition-all duration-300"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Logo on Left (Independent Element - Target for Preloader Fly-In) */}
-          <div className="flex items-center shrink-0">
-            <Link
-              href="#home"
-              className={`logo navbar-logo transition-all duration-500 ${
-                isNavReady ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
-              }`}
-            >
-              <Image alt="logo" src="/images/flag-logo.avif" width={70} height={70} priority />
-            </Link>
-          </div>
-
-          {/* Centered Navigation Items - Individual Floating Elements with NO shared navbar container */}
-          <div
-            className={`hidden md:flex flex-1 justify-center items-center gap-2 lg:gap-3 transition-all duration-700 ease-out ${
-              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-            }`}
-          >
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              
-              return (
-                <SpecularNavItem
-                  key={item.name}
-                  href={item.href}
-                  name={item.name}
-                  isActive={isActive}
-                  isHeroVisible={isHeroVisible}
-                />
-              );
-            })}
-          </div>
-
-          {/* Right Theme Toggle (Independent Element) */}
-          <div
-            className={`hidden md:flex items-center transition-all duration-700 delay-100 ease-out ${
-              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-            }`}
-          >
-            <ThemeToggle />
-          </div>
-
-          {/* Mobile Navigation Toggle */}
-          <div
-            className={`md:hidden flex items-center space-x-3 transition-all duration-700 ease-out ${
-              isNavReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-            }`}
-          >
-            <ThemeToggle />
-            <button
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent focus:outline-none"
-              onClick={toggleNavBar}
-              aria-label="Toggle mobile menu"
-            >
-              {isClick ? <CloseIcon /> : <MenuOpenIcon />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Dropdown */}
-        <div
-          className={`md:hidden transition-all duration-500 ease-in-out transform overflow-hidden bg-black/90 backdrop-blur-md rounded-2xl shadow-xl mt-2 ${
-            isClick ? "translate-y-0 opacity-100 max-h-[500px]" : "-translate-y-4 opacity-0 max-h-0 pointer-events-none"
-          }`}
+    <header id="home-navbar" className="glass-nav-header">
+      <div
+        ref={navContainerRef}
+        className={`glass-nav-container transition-all duration-700 ease-out ${
+          isNavReady ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* 1. Standalone Left Logo Badge */}
+        <Link
+          href="#home"
+          className={`logo navbar-logo glass-badge-btn ${isScrolled ? "is-scrolled" : ""}`}
+          aria-label="FLAG Church Home"
         >
-          <div className="px-3 pt-3 pb-4 space-y-2 text-center">
-            {navItems.map((item) => (
+          <Image
+            alt="FLAG Logo"
+            src="/images/flag-logo.avif"
+            width={34}
+            height={34}
+            priority
+            className="w-full h-full object-cover rounded-full"
+          />
+        </Link>
+
+        {/* 2. Centered Floating Glass Navigation Pill (Visible strictly on Desktop lg: 1024px+) */}
+        <nav className={`hidden lg:flex glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`glass-nav-link ${isActive ? "is-active" : ""}`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* 3. Single Standalone Right Theme Toggle Badge & Mobile Menu Controls */}
+        <div className="flex items-center space-x-2 pointer-events-auto">
+          <ThemeToggle />
+          <button
+            className={`lg:hidden glass-mobile-btn ${isScrolled ? "is-scrolled" : ""}`}
+            onClick={toggleNavBar}
+            aria-label="Toggle mobile menu"
+          >
+            {isClick ? <CloseIcon style={{ fontSize: 20 }} /> : <MenuOpenIcon style={{ fontSize: 20 }} />}
+          </button>
+        </div>
+      </div>
+
+
+
+      {/* Mobile Dropdown Panel */}
+      <div
+        className={`lg:hidden max-w-sm mx-auto transition-all duration-300 ease-out overflow-hidden glass-mobile-dropdown ${
+          isClick ? "translate-y-0 opacity-100 max-h-[500px]" : "-translate-y-4 opacity-0 max-h-0 pointer-events-none"
+        }`}
+      >
+        <div className="space-y-1">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsClick(false)}
-                className="block text-white hover:bg-white/15 hover:text-[#D9A31A] font-bold text-sm tracking-wider rounded-xl p-2.5 transition-all duration-300"
+                className={`glass-mobile-link ${isActive ? "is-active" : ""}`}
               >
                 {item.name}
               </Link>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
