@@ -19,22 +19,35 @@ export default function KnowGod() {
 
     const rawMobile = formData.get("mobile") || "";
     const formattedMobile = rawMobile.startsWith("+") ? rawMobile : `+91 ${rawMobile}`;
-    formData.set("mobile", formattedMobile);
+
+    const payload = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      mobile: formattedMobile,
+      email: formData.get("email"),
+      city: formData.get("city"),
+      religiousBackground: formData.get("religiousBackground"),
+      watchingOnline: formData.get("watchingOnline"),
+      communicationConsent: formData.get("communicationConsent") === "on",
+    };
 
     try {
-      const response = await fetch("https://formspree.io/f/mzepazdb", {
+      const response = await fetch("/api/knowgod", {
         method: "POST",
-        body: formData,
         headers: {
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(payload),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         setFormStatus("success");
+        form.reset();
       } else {
         setFormStatus("error");
-        setErrorMessage("We couldn't submit your response. Please try again.");
+        setErrorMessage(data.error || "We couldn't submit your response. Please try again.");
       }
     } catch (err) {
       setFormStatus("error");
