@@ -40,14 +40,19 @@ export default function KnowGod() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.error("Failed to parse response JSON", jsonErr);
+      }
 
       if (response.ok && data.success) {
         setFormStatus("success");
         form.reset();
       } else {
         setFormStatus("error");
-        setErrorMessage(data.error || "We couldn't submit your response. Please try again.");
+        setErrorMessage(data.error || `Submission failed (${response.status}: ${response.statusText || 'Server Error'}). Please try again.`);
       }
     } catch (err) {
       setFormStatus("error");

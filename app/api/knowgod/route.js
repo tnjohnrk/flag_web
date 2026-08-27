@@ -1,22 +1,46 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request) {
   try {
-    const apiKey = process.env.Resend_Api_Key || process.env.RESEND_API_KEY;
-    const fromAddress = process.env.from_address || process.env.FROM_ADDRESS;
-    const toAddress = process.env.to_address || process.env.TO_ADDRESS;
+    const apiKey =
+      process.env.Resend_Api_Key ||
+      process.env.RESEND_API_KEY ||
+      process.env.resend_api_key ||
+      process.env.Resend_API_Key;
+
+    const fromAddress =
+      process.env.from_address ||
+      process.env.FROM_ADDRESS ||
+      process.env.From_Address ||
+      process.env.fromAddress;
+
+    const toAddress =
+      process.env.to_address ||
+      process.env.TO_ADDRESS ||
+      process.env.To_Address ||
+      process.env.toAddress;
 
     if (!apiKey) {
+      console.error("Missing Resend API Key in environment variables.");
       return NextResponse.json(
-        { success: false, error: "Resend API key is missing in environment variables." },
+        {
+          success: false,
+          error: "Resend API key is missing. Please check your Vercel Environment Variables (Resend_Api_Key or RESEND_API_KEY).",
+        },
         { status: 500 }
       );
     }
 
     if (!fromAddress || !toAddress) {
+      console.error("Missing from_address or to_address in environment variables.");
       return NextResponse.json(
-        { success: false, error: "Email from_address or to_address is missing in environment variables." },
+        {
+          success: false,
+          error: `Missing email configuration: ${!fromAddress ? 'from_address' : ''} ${!toAddress ? 'to_address' : ''}. Please check Vercel Environment Variables.`,
+        },
         { status: 500 }
       );
     }
@@ -116,18 +140,19 @@ export async function POST(request) {
     });
 
     if (error) {
-      console.error("Resend API Error:", error);
+      console.error("Resend API Error details:", error);
+      const errMsg = error.message || (typeof error === "string" ? error : JSON.stringify(error));
       return NextResponse.json(
-        { success: false, error: error.message || "Failed to send email via Resend." },
+        { success: false, error: `Resend API Error: ${errMsg}` },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true, data }, { status: 200 });
   } catch (err) {
-    console.error("Server Route Error:", err);
+    console.error("Server Route Catch Error:", err);
     return NextResponse.json(
-      { success: false, error: "An unexpected server error occurred." },
+      { success: false, error: err?.message || "An unexpected server error occurred." },
       { status: 500 }
     );
   }
