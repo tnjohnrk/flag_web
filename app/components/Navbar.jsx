@@ -4,21 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import "./Navbar.css";
 import { useState, useEffect, useRef } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import ThemeToggle from "./ThemeToggle";
 import gsap from "gsap";
 
 export default function Navbar() {
-  const [isClick, setIsClick] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navContainerRef = useRef(null);
-
-  const toggleNavBar = () => {
-    setIsClick(!isClick);
-  };
 
   // Preloader Nav Handoff Coordinator
   useEffect(() => {
@@ -114,8 +107,8 @@ export default function Navbar() {
           <Image
             alt="FLAG Logo"
             src="/images/flag-logo.avif"
-            width={34}
-            height={34}
+            width={52}
+            height={52}
             priority
             className="w-full h-full object-cover rounded-full"
           />
@@ -137,41 +130,9 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* 3. Single Standalone Right Theme Toggle Badge & Mobile Menu Controls */}
+        {/* 3. Single Standalone Right Theme Toggle Badge */}
         <div className="flex items-center space-x-2 pointer-events-auto">
           <ThemeToggle />
-          <button
-            className={`lg:hidden glass-mobile-btn ${isScrolled ? "is-scrolled" : ""}`}
-            onClick={toggleNavBar}
-            aria-label="Toggle mobile menu"
-          >
-            {isClick ? <CloseIcon style={{ fontSize: 20 }} /> : <MenuOpenIcon style={{ fontSize: 20 }} />}
-          </button>
-        </div>
-      </div>
-
-
-
-      {/* Mobile Dropdown Panel */}
-      <div
-        className={`lg:hidden max-w-sm mx-auto transition-all duration-300 ease-out overflow-hidden glass-mobile-dropdown ${
-          isClick ? "translate-y-0 opacity-100 max-h-[500px]" : "-translate-y-4 opacity-0 max-h-0 pointer-events-none"
-        }`}
-      >
-        <div className="space-y-1">
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setIsClick(false)}
-                className={`glass-mobile-link ${isActive ? "is-active" : ""}`}
-              >
-                {item.name}
-              </Link>
-            );
-          })}
         </div>
       </div>
     </header>

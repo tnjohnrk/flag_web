@@ -19,14 +19,14 @@
   justify-content: space-between;
 }
 
-/* Standalone Circular Glass Badges (Logo & Theme Toggle) */
+/* Standalone Circular Glass Badges (Logo) */
 .glass-badge-btn {
   pointer-events: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   border-radius: 9999px;
   background: rgba(18, 18, 22, 0.5);
   backdrop-filter: blur(20px) saturate(150%);
@@ -179,9 +179,8 @@
     padding: 0 0.875rem;
   }
 
-  .glass-badge-btn,
-  .glass-mobile-btn {
-    width: 40px;
-    height: 40px;
+  .glass-badge-btn {
+    width: 48px;
+    height: 48px;
   }
 }
