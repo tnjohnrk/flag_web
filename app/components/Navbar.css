@@ -172,7 +172,7 @@
 }
 
 @media (max-width: 1024px) {
-  .glass-central-pill {
+  .glass-central-pill:not(.is-desktop) {
     display: none !important;
   }
 }
