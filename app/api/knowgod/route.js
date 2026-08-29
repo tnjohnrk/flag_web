@@ -51,13 +51,14 @@ export async function POST(request) {
       lastName,
       mobile,
       email,
-      city,
-      religiousBackground,
-      watchingOnline,
+      address,
+      mapLink,
+      houseVisit,
+      canContact,
       communicationConsent,
     } = body;
 
-    if (!firstName || !lastName || !mobile || !email || !city || !religiousBackground || !watchingOnline) {
+    if (!firstName || !lastName || !mobile || !email || !address || !houseVisit || !canContact) {
       return NextResponse.json(
         { success: false, error: "Please fill out all required fields." },
         { status: 400 }
@@ -106,17 +107,23 @@ export async function POST(request) {
                 <div class="label">Mobile Number</div>
                 <div class="value">${mobile}</div>
               </div>
+               <div class="field-group">
+                <div class="label">Address of Residency</div>
+                <div class="value">${address}</div>
+              </div>
+              ${mapLink ? `
               <div class="field-group">
-                <div class="label">City</div>
-                <div class="value">${city}</div>
+                <div class="label">Marked Location (Google Maps)</div>
+                <div class="value"><a href="${mapLink}" style="color: #2563eb; text-decoration: underline;">View Marked Position on Map</a></div>
+              </div>
+              ` : ""}
+              <div class="field-group">
+                <div class="label">Can we visit your house?</div>
+                <div class="value">${houseVisit}</div>
               </div>
               <div class="field-group">
-                <div class="label">Religious Background</div>
-                <div class="value">${religiousBackground}</div>
-              </div>
-              <div class="field-group">
-                <div class="label">Watching Online Duration</div>
-                <div class="value">${watchingOnline}</div>
+                <div class="label">Can we contact you?</div>
+                <div class="value">${canContact}</div>
               </div>
               <div class="field-group">
                 <div class="label">Communication Consent</div>

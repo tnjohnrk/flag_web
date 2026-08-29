@@ -9,6 +9,145 @@ export default function KnowGod() {
   const [formStatus, setFormStatus] = useState("idle"); // "idle" | "submitting" | "success" | "error"
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [showMap, setShowMap] = useState(false);
+  const [addressText, setAddressText] = useState("");
+  const [mapLink, setMapLink] = useState("");
+  const [mapSearchQuery, setMapSearchQuery] = useState("");
+  const [isSearchingMap, setIsSearchingMap] = useState(false);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
+
+  // Load Leaflet resources dynamically when map is opened
+  useEffect(() => {
+    if (!showMap) return;
+
+    let mapInstance = null;
+
+    const initMap = () => {
+      if (typeof window === "undefined" || !window.L) return;
+
+      const L = window.L;
+      const defaultLat = 13.0783;
+      const defaultLng = 80.1185;
+
+      const initialLat = markerRef.current ? markerRef.current.getLatLng().lat : defaultLat;
+      const initialLng = markerRef.current ? markerRef.current.getLatLng().lng : defaultLng;
+
+      mapInstance = L.map("leaflet-map").setView([initialLat, initialLng], 13);
+      mapRef.current = mapInstance;
+
+      L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+        attribution: '&copy; <a href="https://maps.google.com">Google Maps</a>'
+      }).addTo(mapInstance);
+
+      const marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(mapInstance);
+      markerRef.current = marker;
+
+      const updateMarkerLocation = async (lat, lng) => {
+        setMapLink(`https://www.google.com/maps?q=${lat},${lng}`);
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.display_name) {
+              setAddressText(data.display_name);
+            }
+          }
+        } catch (err) {
+          console.error("Reverse geocoding failed:", err);
+          setAddressText((prev) => prev || `Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`);
+        }
+      };
+
+      marker.on("dragend", () => {
+        const position = marker.getLatLng();
+        updateMarkerLocation(position.lat, position.lng);
+      });
+
+      mapInstance.on("click", (e) => {
+        marker.setLatLng(e.latlng);
+        updateMarkerLocation(e.latlng.lat, e.latlng.lng);
+      });
+
+      // Automatically search for current location on load
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const pos = [latitude, longitude];
+            mapInstance.setView(pos, 16);
+            marker.setLatLng(pos);
+            updateMarkerLocation(latitude, longitude);
+          },
+          (error) => {
+            console.warn("Geolocation failed or was denied:", error);
+            updateMarkerLocation(defaultLat, defaultLng);
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      } else {
+        updateMarkerLocation(defaultLat, defaultLng);
+      }
+    };
+
+    if (!document.getElementById("leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "leaflet-css";
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+
+    if (!window.L) {
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.async = true;
+      script.onload = initMap;
+      document.body.appendChild(script);
+    } else {
+      setTimeout(initMap, 100);
+    }
+
+    return () => {
+      if (mapInstance) {
+        mapInstance.remove();
+      }
+    };
+  }, [showMap]);
+
+  const handleMapSearch = async (e) => {
+    e.preventDefault();
+    if (!mapSearchQuery.trim()) return;
+
+    setIsSearchingMap(true);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(mapSearchQuery)}&limit=1`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const { lat, lon, display_name } = data[0];
+          const latitude = parseFloat(lat);
+          const longitude = parseFloat(lon);
+
+          setAddressText(display_name);
+          setMapLink(`https://www.google.com/maps?q=${latitude},${longitude}`);
+
+          if (mapRef.current && markerRef.current) {
+            const pos = [latitude, longitude];
+            mapRef.current.setView(pos, 16);
+            markerRef.current.setLatLng(pos);
+          }
+        } else {
+          alert("Location not found. Please try another search.");
+        }
+      }
+    } catch (err) {
+      console.error("Map search failed:", err);
+    } finally {
+      setIsSearchingMap(false);
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus("submitting");
@@ -25,9 +164,10 @@ export default function KnowGod() {
       lastName: formData.get("lastName"),
       mobile: formattedMobile,
       email: formData.get("email"),
-      city: formData.get("city"),
-      religiousBackground: formData.get("religiousBackground"),
-      watchingOnline: formData.get("watchingOnline"),
+      address: addressText,
+      mapLink: formData.get("mapLink"),
+      houseVisit: formData.get("houseVisit"),
+      canContact: formData.get("canContact"),
       communicationConsent: formData.get("communicationConsent") === "on",
     };
 
@@ -50,6 +190,9 @@ export default function KnowGod() {
       if (response.ok && data.success) {
         setFormStatus("success");
         form.reset();
+        setAddressText("");
+        setMapLink("");
+        setShowMap(false);
       } else {
         setFormStatus("error");
         setErrorMessage(data.error || `Submission failed (${response.status}: ${response.statusText || 'Server Error'}). Please try again.`);
@@ -481,18 +624,111 @@ export default function KnowGod() {
             </div>
 
             <div>
-              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">Which city do you reside in? <span className="text-red-500">*</span></label>
-              <input type="text" name="city" className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm" required />
+              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">
+                Address of your residency <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                name="address"
+                value={addressText}
+                onChange={(e) => setAddressText(e.target.value)}
+                className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm h-20"
+                placeholder="Type your address manually or select on the map below..."
+                required
+              />
+              
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMap(!showMap)}
+                  className="px-4 py-2 bg-flag-blue/10 dark:bg-flag-yellow/10 border border-flag-blue/20 dark:border-flag-yellow/20 hover:bg-flag-blue/20 dark:hover:bg-flag-yellow/20 text-flag-blue dark:text-[#D9A31A] rounded-xl text-xs font-bold transition-all duration-300 inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>🗺️</span>
+                  <span>{showMap ? "Hide Map" : "Select on Map"}</span>
+                </button>
+              </div>
+
+              {/* Collapsible Leaflet Map Area */}
+              {showMap && (
+                <div className="mt-3 rounded-2xl overflow-hidden border border-border shadow-inner relative animate-fadeIn space-y-2 bg-background p-3">
+                  {/* Search Bar */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Search address/location on map..."
+                      value={mapSearchQuery}
+                      onChange={(e) => setMapSearchQuery(e.target.value)}
+                      className="flex-1 border border-border bg-surface text-text-primary rounded-xl px-3 py-1.5 text-xs focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleMapSearch}
+                      disabled={isSearchingMap}
+                      className="px-3 py-1.5 bg-flag-navy dark:bg-[#D9A31A] text-white dark:text-gray-900 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-opacity"
+                    >
+                      {isSearchingMap ? "Searching..." : "Search"}
+                    </button>
+                  </div>
+
+                  {/* Leaflet Map Frame */}
+                  <div id="leaflet-map" className="w-full h-64 rounded-xl z-0" />
+                  
+                  {/* Map Footer Info and Done Button */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-black/5 dark:bg-white/5 p-3 rounded-xl border border-border">
+                    <div className="text-text-secondary text-[10px] sm:text-xs max-w-[70%]">
+                      The map will auto-detect your location with high-accuracy GPS. Search above or drag the pin.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMap(false)}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span>✓ Done</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {mapLink && (
+                <div className="mt-2 text-xs text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
+                  <span>✓ Location marked:</span>
+                  <a href={mapLink} target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700 dark:hover:text-green-300">
+                    View marked position
+                  </a>
+                </div>
+              )}
+              <input type="hidden" name="mapLink" value={mapLink} />
             </div>
 
             <div>
-              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">What is your religious background? <span className="text-red-500">*</span></label>
-              <input type="text" name="religiousBackground" className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm" required />
+              <label className="block font-sans-clean text-xs font-bold mb-2 text-text-primary">
+                Can we visit your house? <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center space-x-6">
+                <label className="flex items-center space-x-2 text-sm font-sans-clean text-text-secondary cursor-pointer">
+                  <input type="radio" name="houseVisit" value="Yes" required defaultChecked className="w-4 h-4 text-flag-navy border-border" />
+                  <span>Yes</span>
+                </label>
+                <label className="flex items-center space-x-2 text-sm font-sans-clean text-text-secondary cursor-pointer">
+                  <input type="radio" name="houseVisit" value="No" className="w-4 h-4 text-flag-navy border-border" />
+                  <span>No</span>
+                </label>
+              </div>
             </div>
 
             <div>
-              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">How long have you been watching us online? <span className="text-red-500">*</span></label>
-              <input type="text" name="watchingOnline" className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm" required />
+              <label className="block font-sans-clean text-xs font-bold mb-2 text-text-primary">
+                Can we contact you? <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center space-x-6">
+                <label className="flex items-center space-x-2 text-sm font-sans-clean text-text-secondary cursor-pointer">
+                  <input type="radio" name="canContact" value="Yes" required defaultChecked className="w-4 h-4 text-flag-navy border-border" />
+                  <span>Yes</span>
+                </label>
+                <label className="flex items-center space-x-2 text-sm font-sans-clean text-text-secondary cursor-pointer">
+                  <input type="radio" name="canContact" value="No" className="w-4 h-4 text-flag-navy border-border" />
+                  <span>No</span>
+                </label>
+              </div>
             </div>
 
             <div className="flex items-start space-x-3 text-text-primary pt-2">
