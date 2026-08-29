@@ -1,16 +1,28 @@
-
 .swiper-slide {
-    width: auto !important;
-    display:flex;
-    justify-content:center;
-    position:relative;
+    display: flex;
+    justify-content: center;
+    position: relative;
 }
 
 .Youtubecontainer {
-    display:flex;
-    flex-direction:column;  
-    width:100%;
+    display: flex;
+    flex-direction: column;  
+    width: 100%;
+    margin-top: 10px; 
 }
+
+@media (min-width: 600px) {
+    .Youtubecontainer {
+        margin-top: 20px; 
+    }
+}
+
+@media (min-width: 1024px) {
+    .Youtubecontainer {
+        margin-top: 30px; 
+    }
+}
+
 .youtubecontent {
     max-width: 2000px;
     width: 97%;
@@ -19,153 +31,206 @@
     justify-content: space-between;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
     align-self: stretch;
-    padding: 40px 20px;
+    padding: 15px 20px;
     position: relative;
-
     overflow: hidden;
     padding-left: 9px;
 }
 
-.video_title {
-    margin-right: 60px;
-    padding: 16px 0 14px;
-    text-align: left;
-    color: rgb(17, 17, 17);
-    display: inline-block;
-    overflow: hidden;
-    max-width: 100%;
-    white-space: nowrap;
-    line-height: 18px;
-    font-weight: 900;
-    font-size: 14px;
-    padding-left: 2px;
-    padding-right: 29px;
-    max-width: 50ch;
-    text-overflow: ellipsis;
-    font-family: 'Inter', system-ui, BlinkMacSystemFont, "Segoe UI", Roboto;
-        font-weight: 700;
-}
-
-@media (max-width: 768px) {
-  .swiper-button-next {
-    right: 88% !important;
-  }
-  .video-wrapper {
-    position: relative;
-    display: inline-block;
-    right:8%;
-    width: 90%;
-    height: 257.9px;
-    overflow: hidden;
-    border-radius: 8px;
- }
-}
-
-@media (min-width: 768px) and (max-width: 1020px) {
-  .swiper-button-next {
-    right: 77% !important;
-  }
-}
-@media (min-width: 1024px){
-  .swiper-button-next {
-    right: 53% !important;
-  }
-  .video-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    height: 257.9px;
-    overflow: hidden;
-    border-radius: 8px;
-}
-}
-
-.swiper-button-next {
-    position: absolute;
-    right: 54%;
-    top: 47%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-}
-
-    .swiper-button-next::after {
-        font-size: 12px;
-        color: #000;
-        text-shadow: 1px 0 #000, -1px 0 #000; 
-    }
-.swiper-button-prev {
-    right: 64%; 
-    top: 47%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-}
-
-    .swiper-button-prev::after {
-        font-size: 12px;
-        color: #000;
-        text-shadow: 1px 0 #000, -1px 0 #000; 
-    }
-.video_stats {
-    font-size: 12px;
-    line-height: 18px;
-    margin-bottom: 10px;
-    margin-top: -3px;
-    margin-right: 263px;
-    color: #666666;
-    font-family: 'Roboto', BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-weight: 400; 
-}
-
-
-
-.video_title {
-    margin-right: 60px;
-  /*  padding: 16px 0 14px;*/
-    text-align: left;
-    color: rgb(17, 17, 17);
-    display: block;
-    overflow: hidden;
-    max-width: 100%;
-    white-space: nowrap;
-    line-height: 18px;
-    font-weight: 900;
-    font-size: 14px;
-    padding-left: 2px;
-    padding-right: 29px;
-    max-width: 50ch;
-    text-overflow: ellipsis;
-    font-family: 'Inter', system-ui, BlinkMacSystemFont, "Segoe UI", Roboto;
+.videos-header h2 {
+    font-size: 2rem;
     font-weight: 700;
+    color: #2c3e50;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .videos-header h2 {
+        font-size: 2.5rem;
+    }
+}
+
+.underline {
+    width: 73px;
+    height: 3px;
+    background: #8a0303; 
+    margin: 6px auto 0;
+    border-radius: 2px;
+}
+
+/* Video Wrapper (Reduced card size) */
+.video-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: 180px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+    .video-wrapper {
+        height: 150px;
+        max-width: 280px;
+    }
 }
 
 .video-thumbnail {
-    transform: translateY(-43.5px);
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: translateY(-12%);
     cursor: pointer;
-    transition: box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.video-thumbnail:hover {
+    transform: translateY(-12%) scale(1.05);
+}
+
+.youtube-center-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 45px;
+    height: 45px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.youtube-center-logo:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
 .video-duration {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
 }
+
+.video_title {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 10px 0 4px 2px;
+    text-align: left;
+    color: inherit;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 16px;
+    font-weight: 700;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    font-family: 'Inter', system-ui, BlinkMacSystemFont, "Segoe UI", Roboto;
+}
+
+@media (max-width: 640px) {
+    .video_title {
+        max-width: 280px;
+        font-size: 12px;
+    }
+}
+
+.video_stats {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    padding-left: 2px;
+    text-align: left;
+    font-size: 11px;
+    line-height: 14px;
+    color: #666666;
+    font-family: 'Roboto', BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400; 
+}
+
+@media (max-width: 640px) {
+    .video_stats {
+        max-width: 280px;
+        font-size: 10px;
+    }
+}
+
+/* Swiper Navigation Buttons */
+.swiper-button-next {
+    position: absolute;
+    right: 15px;
+    top: 47%;
+    transform: translateY(-50%);
+    background: transparent;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    z-index: 10;
+}
+
+.swiper-button-next::after {
+    font-size: 32px;
+    color: var(--flag-blue);
+    font-weight: bold;
+    text-shadow: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.swiper-button-next:hover::after {
+    transform: scale(1.15) translateX(3px);
+    color: var(--flag-yellow);
+}
+
+.swiper-button-prev {
+    position: absolute;
+    left: 15px;
+    right: auto;
+    top: 47%;
+    transform: translateY(-50%);
+    background: transparent;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    z-index: 10;
+}
+
+.swiper-button-prev::after {
+    font-size: 32px;
+    color: var(--flag-blue);
+    font-weight: bold;
+    text-shadow: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.swiper-button-prev:hover::after {
+    transform: scale(1.15) translateX(-3px);
+    color: var(--flag-yellow);
+}
+
+/* Dark Mode support for Swiper Navigation */
+.dark .swiper-button-next::after,
+.dark .swiper-button-prev::after {
+    color: var(--text-primary);
+}
+
+.dark .swiper-button-next:hover::after,
+.dark .swiper-button-prev:hover::after {
+    color: var(--accent);
+}
+
 .badge {
     position: absolute;
     top: 8px;
@@ -174,45 +239,3 @@
     height: auto;
     border-radius: 4px; 
 }
-.Youtubecontainer {
-    margin-top: 15px; 
-}
-
-@media (min-width: 600px) {
-    .Youtubecontainer {
-        margin-top: 60px; 
-    }
-}
-
-@media (min-width: 1024px) {
-    .Youtubecontainer {
-        margin-top: 80px; 
-    }
-}
-.videos-header h2 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #2c3e50;
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-    margin: 0;
-    white-space: nowrap;
-}
-
-
-.underline {
-    width: 73px;
-    height: 3px;
-    background: #8a0303; 
-    margin: 8px auto 0;
-    border-radius: 2px;
-}
-.youtube-center-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 55px;
-    height: 55px;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-}
-

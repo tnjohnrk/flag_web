@@ -1,16 +1,27 @@
 import VideosPageClient from '../components/YouTubeVideos';
 
 const apiKey = 'AIzaSyAug-_XwvZngyHblrWTCB5JA6P9Otrz-Ug';
-const channelId = 'UCIkeyxZEY3QrjtKm7KJHmZA';
-const maxResults = 7;
+const playlistId = 'UUIkeyxZEY3QrjtKm7KJHmZA'; // Channel Uploads Playlist (costs 1 quota unit instead of 100 search units)
+const maxResults = 10;
 
 export default async function VideosPage() {
+    const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${apiKey}&playlistId=${playlistId}&part=snippet&maxResults=${maxResults}`;
 
-    const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&maxResults=${maxResults}&type=video`;
-
-    const res = await fetch(apiUrl, { next: { revalidate: 86400 } });
+    const res = await fetch(apiUrl, { next: { revalidate: 60 } });
     const data = await res.json();
-    const videos = data.items || [];
+    const rawItems = data.items || [];
+
+    // Format the items to match Swiper structure
+    const videos = rawItems.map(item => ({
+        id: {
+            videoId: item.snippet?.resourceId?.videoId
+        },
+        snippet: item.snippet
+    })).filter(v => v.id.videoId);
+
+    if (videos.length === 0) {
+        return <VideosPageClient videos={[]} stats={{}} />;
+    }
 
     // Fetch stats
     const ids = videos.map(v => v.id.videoId).join(',');
@@ -22,13 +33,14 @@ export default async function VideosPage() {
 
     // Create a lookup map
     const statsMap = {};
-    statsJson.items.forEach(item => {
-        statsMap[item.id] = {
-            ...item.statistics,
-            duration: item.contentDetails.duration
-        };
-    });
+    if (statsJson.items) {
+        statsJson.items.forEach(item => {
+            statsMap[item.id] = {
+                ...item.statistics,
+                duration: item.contentDetails?.duration
+            };
+        });
+    }
 
-    // Pass both videos + stats
     return <VideosPageClient videos={videos} stats={statsMap} />;
 }

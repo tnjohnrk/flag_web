@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import "./Footer.css";
 import { FaFacebook } from "@react-icons/all-files/fa/FaFacebook";
 import { FaInstagram } from "@react-icons/all-files/fa/FaInstagram";
@@ -169,9 +170,18 @@ export default function Footer() {
             </div>
 
             {/* Copyright Statement */}
-            <div className="pt-4 text-center border-t border-white/10">
+            <div className="pt-4 text-center border-t border-white/10 space-y-1.5">
               <p className="font-sans-clean text-[11px] text-[#F7F7F4]/60">
-                Copyright © {currentYear} Full Life Centre AG Church. All rights reserved.
+                Copyright © {currentYear} Full Life Centre AG Church. All Rights Reserved.
+              </p>
+              <p className="font-sans-clean text-[11px] text-[#F7F7F4]/60 flex items-center justify-center gap-3">
+                <Link href="/terms" className="hover:text-[#D9A31A] transition-colors duration-200">
+                  Terms & Conditions
+                </Link>
+                <span className="opacity-40">|</span>
+                <Link href="/privacy" className="hover:text-[#D9A31A] transition-colors duration-200">
+                  Privacy Policy
+                </Link>
               </p>
             </div>
 

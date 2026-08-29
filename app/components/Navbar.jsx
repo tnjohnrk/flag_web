@@ -6,8 +6,10 @@ import "./Navbar.css";
 import { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
 import gsap from "gsap";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,41 +55,85 @@ export default function Navbar() {
 
   // Track active section and scroll state
   useEffect(() => {
-    const sections = [
-      { id: "home", selector: ".hero-video-wrapper" },
-      { id: "about-us", selector: "#about-us" },
-      { id: "sermons", selector: "#sermons" },
-      { id: "know-god", selector: "#know-god" },
-      { id: "donate-us", selector: "#donate-us" },
-      { id: "footer", selector: "#footer" },
-    ];
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
 
-      const scrollPos = window.scrollY + 220;
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el =
-          document.querySelector(sections[i].selector) ||
-          document.getElementById(sections[i].id);
-        if (el && el.offsetTop <= scrollPos) {
-          setActiveSection(sections[i].id);
-          break;
+      if (pathname === "/") {
+        const sections = [
+          { id: "home", selector: ".hero-video-wrapper" },
+          { id: "sermons", selector: "#sermons" },
+          { id: "donate-us", selector: "#donate-us" },
+          { id: "footer", selector: "#footer" },
+        ];
+
+        const scrollPos = window.scrollY + 220;
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const el =
+            document.querySelector(sections[i].selector) ||
+            document.getElementById(sections[i].id);
+          if (el && el.offsetTop <= scrollPos) {
+            setActiveSection(sections[i].id);
+            break;
+          }
         }
       }
     };
 
+    if (pathname === "/aboutus") {
+      setActiveSection("about-us");
+    } else if (pathname === "/knowgod") {
+      setActiveSection("know-god");
+    } else if (pathname !== "/") {
+      setActiveSection("");
+    }
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
+
+  // Global Scroll-Reveal Intersection Observer Engine
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Accessibility: Reduced Motion Preference
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll("[data-reveal], [data-reveal-stagger]").forEach((el) => {
+        el.classList.add("is-revealed");
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.12,
+        rootMargin: "0px 0px -10% 0px",
+      }
+    );
+
+    const targets = document.querySelectorAll("[data-reveal], [data-reveal-stagger]");
+    targets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
+  }, [pathname]);
 
   const navItems = [
-    { name: "HOME", href: "#home", id: "home" },
-    { name: "ABOUT US", href: "#about-us", id: "about-us" },
-    { name: "SERMONS", href: "#sermons", id: "sermons" },
-    { name: "KNOW GOD", href: "#know-god", id: "know-god" },
-    { name: "DONATE US", href: "#donate-us", id: "donate-us" },
-    { name: "CONTACT US", href: "#footer", id: "footer" },
+    { name: "HOME", href: "/", id: "home" },
+    { name: "SERMONS", href: "/#sermons", id: "sermons" },
+    { name: "DONATE US", href: "/#donate-us", id: "donate-us" },
+    { name: "CONNECT WITH US", href: "/#footer", id: "footer" },
+    { name: "ABOUT US", href: "/aboutus", id: "about-us" },
+    { name: "KNOW GOD", href: "/knowgod", id: "know-god" },
   ];
 
   return (
@@ -100,7 +146,7 @@ export default function Navbar() {
       >
         {/* 1. Standalone Left Logo Badge */}
         <Link
-          href="#home"
+          href="/"
           className={`logo navbar-logo glass-badge-btn ${isScrolled ? "is-scrolled" : ""}`}
           aria-label="FLAG Church Home"
         >

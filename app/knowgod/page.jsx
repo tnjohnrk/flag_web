@@ -94,7 +94,7 @@ export default function KnowGod() {
   }, []);
 
   return (
-    <div id="know-god" className="w-full bg-background text-text-primary transition-colors duration-500 overflow-hidden py-12 md:py-20">
+    <div id="know-god" className="w-full bg-background text-text-primary transition-colors duration-500 overflow-hidden pt-36 pb-12 md:pt-44 md:pb-20 animate-page-entry">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-32">
 
         {/* ===================================================================
@@ -451,7 +451,7 @@ export default function KnowGod() {
           </div>
 
           {/* Connect With Us Form */}
-          <form onSubmit={handleFormSubmit} data-reveal className="max-w-2xl mx-auto p-6 sm:p-8 bg-surface dark:bg-surface-elevated shadow-xl rounded-3xl border border-border space-y-4">
+          <form id="contact-form" onSubmit={handleFormSubmit} data-reveal className="max-w-2xl mx-auto p-6 sm:p-8 bg-surface dark:bg-surface-elevated shadow-xl rounded-3xl border border-border space-y-4">
             <h3 className="font-editorial text-3xl font-bold text-center mb-6 text-[#D9A31A]">
               Connect With Us
             </h3>

@@ -80,7 +80,7 @@ export default function HeroSection({ children }) {
   }, []);
 
   return (
-    <section ref={trackRef} className="hero-scroll-track relative w-full h-[160vh] md:h-[165vh]">
+    <section ref={trackRef} className="hero-scroll-track relative w-full h-[115vh] md:h-[120vh]">
       <div className="hero-sticky-stage sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden z-10 bg-background transition-colors duration-750">
         <div
           ref={heroRef}

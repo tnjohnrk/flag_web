@@ -71,7 +71,7 @@ const AboutUs = () => {
   }, []);
 
   return (
-      <div id="about-us" className="mt-36 space-y-16 lg:space-y-24 overflow-hidden">
+      <div id="about-us" className="mt-36 space-y-16 lg:space-y-24 overflow-hidden animate-page-entry">
         {/* Main Title Header */}
         <div data-reveal className="text-center mb-10 px-4 pt-4">
           <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#D9A31A] mb-2 block">

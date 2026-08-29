@@ -2,33 +2,52 @@
 
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode, Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import "./YouTubeVideos.css";
 
-export default function VideosCarousel({ videos, stats }) {
+export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS", id = "sermons" }) {
     return (
-        <div id="sermons" data-reveal className="Youtubecontainer bg-background">
+        <div id={id} data-reveal className="Youtubecontainer bg-background">
             <div className="youtubecontent bg-background">
                 <div className="videos-header">
-                    <h2 className="text-text-primary dark:text-white">LATEST SERMONS</h2>
+                    <h2 className="text-text-primary dark:text-white">{title}</h2>
                     <div className="underline bg-flag-blue" />
                 </div>
 
                 {videos.length > 0 ? (
                     <>
                         <Swiper
-                            freeMode={true}
                             spaceBetween={24}
-                            slidesPerView={4}
                             loop={false}
                             watchOverflow={true}
                             navigation={true}
                             pagination={{ clickable: true }}
-                            modules={[FreeMode, Navigation, Pagination]}
-                            style={{ paddingBottom: '30px', position: 'relative' }}
+                            autoplay={videos.length > 1 ? { delay: 3000, disableOnInteraction: false } : false}
+                            observer={true}
+                            observeParents={true}
+                            breakpoints={{
+                                320: {
+                                    slidesPerView: 1,
+                                    spaceBetween: 16
+                                },
+                                640: {
+                                    slidesPerView: 2,
+                                    spaceBetween: 20
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 24
+                                },
+                                1440: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 24
+                                }
+                            }}
+                            modules={[Navigation, Pagination, Autoplay]}
+                            style={{ width: '100%', paddingBottom: '10px', position: 'relative' }}
                         >
                             {videos.map((video) => {
                                 const s = stats[video.id.videoId];

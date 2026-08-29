@@ -6,16 +6,10 @@ import Image from "next/image";
 
 //components
 import Navbar from "./components/Navbar";
-import AboutUs from "./aboutus/page";
-import YoutubeVideos from "./youtube/page";
-import DonateUs from "./donateus/page";
 import Footer from "./components/Footer";
-import KnowGod from "./knowgod/page";
 import ScrollButton from "./components/ScrollButton";
 import { ThemeProvider } from "./components/ThemeProvider";
 import Preloader from "./components/Preloader";
-
-import HeroSection from "./components/HeroSection";
 
 export const metadata = {
   title: "Full Life AG Church",
@@ -52,13 +46,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
         <Preloader />
         <Navbar />
-        <HeroSection>
-          {children}
-        </HeroSection>
-        <AboutUs />
-        <YoutubeVideos/>
-        <KnowGod />
-        <DonateUs />
+        {children}
         <Footer />
         <ScrollButton />
         </ThemeProvider>
