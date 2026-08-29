@@ -171,7 +171,7 @@
   background-color: rgba(255, 255, 255, 0.18);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .glass-central-pill {
     display: none !important;
   }
