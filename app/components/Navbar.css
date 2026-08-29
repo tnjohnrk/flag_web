@@ -116,6 +116,9 @@
 /* Mobile Glass Toggle Button */
 .glass-mobile-btn {
   pointer-events: auto;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
   border-radius: 9999px;
@@ -134,6 +137,7 @@
 /* Mobile Dropdown Panel */
 .glass-mobile-dropdown {
   pointer-events: auto;
+  display: none !important;
   position: absolute;
   top: 100%;
   right: 1.5rem;
@@ -168,9 +172,15 @@
   background-color: rgba(255, 255, 255, 0.18);
 }
 
-@media (max-width: 1024px) {
-  .glass-central-pill:not(.is-desktop) {
+@media (max-width: 1079px) {
+  .glass-central-pill {
     display: none !important;
+  }
+  .glass-mobile-btn {
+    display: inline-flex !important;
+  }
+  .glass-mobile-dropdown {
+    display: block !important;
   }
 }
 

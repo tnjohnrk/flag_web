@@ -14,15 +14,7 @@ export default function Navbar() {
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const navContainerRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const mobileRegex = /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry|IEMobile|Opera Mini/i;
-      setIsMobileDevice(mobileRegex.test(navigator.userAgent));
-    }
-  }, []);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -174,7 +166,7 @@ export default function Navbar() {
         </Link>
 
         {/* 2. Centered Floating Glass Navigation Pill */}
-        <nav className={`${isMobileDevice ? "hidden lg:flex" : "flex"} glass-central-pill ${isMobileDevice ? "" : "is-desktop"} ${isScrolled ? "is-scrolled" : ""}`}>
+        <nav className={`glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
             return (
@@ -193,10 +185,10 @@ export default function Navbar() {
         <div className="flex items-center space-x-2 pointer-events-auto">
           <ThemeToggle />
           
-          {/* Mobile Toggle Button (Visible strictly on mobile/tablet devices) */}
+          {/* Mobile Toggle Button (Visible strictly on mobile/tablet widths) */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`${isMobileDevice ? "flex lg:hidden" : "hidden"} glass-mobile-btn items-center justify-center cursor-pointer`}
+            className="glass-mobile-btn cursor-pointer"
             aria-label="Toggle Menu"
             aria-expanded={isMenuOpen}
           >
@@ -214,8 +206,8 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Dropdown Panel */}
-      {isMenuOpen && isMobileDevice && (
-        <div className="lg:hidden glass-mobile-dropdown animate-page-entry">
+      {isMenuOpen && (
+        <div className="glass-mobile-dropdown animate-page-entry">
           <div className="flex flex-col space-y-1">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
