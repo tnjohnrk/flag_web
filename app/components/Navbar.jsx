@@ -165,8 +165,8 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* 2. Centered Floating Glass Navigation Pill (Visible strictly on Desktop lg: 1024px+) */}
-        <nav className={`hidden lg:flex glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
+        {/* 2. Centered Floating Glass Navigation Pill (Visible strictly on Tablet/Desktop md: 768px+) */}
+        <nav className={`hidden md:flex glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
             return (
@@ -185,10 +185,10 @@ export default function Navbar() {
         <div className="flex items-center space-x-2 pointer-events-auto">
           <ThemeToggle />
           
-          {/* Mobile Toggle Button (Visible strictly on mobile/tablet) */}
+          {/* Mobile Toggle Button (Visible strictly on mobile <768px) */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden glass-mobile-btn flex items-center justify-center cursor-pointer"
+            className="md:hidden glass-mobile-btn flex items-center justify-center cursor-pointer"
             aria-label="Toggle Menu"
             aria-expanded={isMenuOpen}
           >
@@ -207,7 +207,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Panel */}
       {isMenuOpen && (
-        <div className="lg:hidden glass-mobile-dropdown animate-page-entry">
+        <div className="md:hidden glass-mobile-dropdown animate-page-entry">
           <div className="flex flex-col space-y-1">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
