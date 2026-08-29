@@ -116,9 +116,6 @@
 /* Mobile Glass Toggle Button */
 .glass-mobile-btn {
   pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 44px;
   height: 44px;
   border-radius: 9999px;
