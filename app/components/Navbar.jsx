@@ -13,7 +13,12 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navContainerRef = useRef(null);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   // Preloader Nav Handoff Coordinator
   useEffect(() => {
@@ -176,11 +181,50 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* 3. Single Standalone Right Theme Toggle Badge */}
+        {/* 3. Single Standalone Right Theme Toggle Badge + Mobile Menu Button */}
         <div className="flex items-center space-x-2 pointer-events-auto">
           <ThemeToggle />
+          
+          {/* Mobile Toggle Button (Visible strictly on mobile/tablet) */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden glass-mobile-btn flex items-center justify-center cursor-pointer"
+            aria-label="Toggle Menu"
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Dropdown Panel */}
+      {isMenuOpen && (
+        <div className="lg:hidden glass-mobile-dropdown animate-page-entry">
+          <div className="flex flex-col space-y-1">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`glass-mobile-link ${isActive ? "is-active" : ""}`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

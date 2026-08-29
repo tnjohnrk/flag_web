@@ -137,6 +137,10 @@
 /* Mobile Dropdown Panel */
 .glass-mobile-dropdown {
   pointer-events: auto;
+  position: absolute;
+  top: 100%;
+  right: 1.5rem;
+  z-index: 100;
   margin-top: 0.75rem;
   background: rgba(12, 12, 16, 0.92);
   backdrop-filter: blur(24px) saturate(160%);
@@ -145,8 +149,8 @@
   border-radius: 1.5rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   padding: 0.75rem;
-  width: calc(100vw - 2rem);
-  max-width: 24rem;
+  width: calc(100vw - 3rem);
+  max-width: 20rem;
 }
 
 .glass-mobile-link {
