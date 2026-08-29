@@ -69,25 +69,8 @@ export default function KnowGod() {
         updateMarkerLocation(e.latlng.lat, e.latlng.lng);
       });
 
-      // Automatically search for current location on load
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const pos = [latitude, longitude];
-            mapInstance.setView(pos, 16);
-            marker.setLatLng(pos);
-            updateMarkerLocation(latitude, longitude);
-          },
-          (error) => {
-            console.warn("Geolocation failed or was denied:", error);
-            updateMarkerLocation(defaultLat, defaultLng);
-          },
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
-      } else {
-        updateMarkerLocation(defaultLat, defaultLng);
-      }
+      // Load default location (Chennai) first
+      updateMarkerLocation(defaultLat, defaultLng);
     };
 
     if (!document.getElementById("leaflet-css")) {
@@ -146,6 +129,45 @@ export default function KnowGod() {
     } finally {
       setIsSearchingMap(false);
     }
+  };
+
+  const handleTriggerGPS = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setMapLink(`https://www.google.com/maps?q=${latitude},${longitude}`);
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.display_name) {
+              setAddressText(data.display_name);
+            }
+          } else {
+            setAddressText(`Latitude: ${latitude.toFixed(5)}, Longitude: ${longitude.toFixed(5)}`);
+          }
+        } catch (err) {
+          setAddressText(`Latitude: ${latitude.toFixed(5)}, Longitude: ${longitude.toFixed(5)}`);
+        }
+
+        if (mapRef.current && markerRef.current) {
+          const pos = [latitude, longitude];
+          mapRef.current.setView(pos, 16);
+          markerRef.current.setLatLng(pos);
+        }
+      },
+      (error) => {
+        console.error("GPS Location error:", error);
+        alert(`Could not retrieve GPS location: ${error.message}`);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handleFormSubmit = async (e) => {
@@ -674,16 +696,25 @@ export default function KnowGod() {
                   
                   {/* Map Footer Info and Done Button */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-black/5 dark:bg-white/5 p-3 rounded-xl border border-border">
-                    <div className="text-text-secondary text-[10px] sm:text-xs max-w-[70%]">
+                    <div className="text-text-secondary text-[10px] sm:text-xs max-w-[50%]">
                       The map will auto-detect your location with high-accuracy GPS. Search above or drag the pin.
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowMap(false)}
-                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
-                    >
-                      <span>✓ Done</span>
-                    </button>
+                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={handleTriggerGPS}
+                        className="px-3 py-2 bg-flag-blue/10 dark:bg-flag-yellow/10 border border-flag-blue/20 dark:border-flag-yellow/20 hover:bg-flag-blue/20 dark:hover:bg-flag-yellow/20 text-flag-blue dark:text-[#D9A31A] rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <span>📍 Current Location</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowMap(false)}
+                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <span>✓ Done</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
