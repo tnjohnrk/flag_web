@@ -94,7 +94,7 @@ export default function KnowGod() {
   }, []);
 
   return (
-    <div id="know-god" className="w-full bg-background text-text-primary transition-colors duration-500 overflow-hidden pt-24 pb-12 md:pt-28 md:pb-20 animate-page-entry">
+    <div id="know-god" className="w-full bg-background text-text-primary transition-colors duration-500 overflow-hidden pt-24 pb-12 md:pt-36 md:pb-20 animate-page-entry">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-32">
 
         {/* ===================================================================
