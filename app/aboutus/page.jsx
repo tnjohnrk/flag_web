@@ -126,7 +126,7 @@ const AboutUs = () => {
               <div className="lg:col-span-7 order-2 lg:order-1 space-y-6">
                 {/* Lead Featured Paragraph */}
                 <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
-                  <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-medium leading-[1.75] max-w-[680px]">
+                  <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-bold leading-[1.75] max-w-[680px]">
                     {seniorPastorDetails[0]}
                   </p>
                 </div>
@@ -135,31 +135,37 @@ const AboutUs = () => {
                 <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px] pt-1">
                   {seniorPastorDetails[1]}
                 </p>
+
+                {/* Divine Encounter & Call to Ministry (Moved up to fill empty space) */}
+                <div className="pt-4 space-y-4">
+                  <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
+                    DIVINE ENCOUNTER & CALL TO MINISTRY
+                  </span>
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
+                    {seniorPastorDetails[2]}
+                  </p>
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
+                    {seniorPastorDetails[3]}
+                  </p>
+                </div>
               </div>
 
             </div>
 
             {/* Bottom Continuation Story Paragraphs */}
-            <div data-reveal-stagger className="pt-8 border-t border-black/10 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-              <div className="space-y-4">
-                <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                  DIVINE ENCOUNTER & CALL TO MINISTRY
-                </span>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
-                  {seniorPastorDetails[2]}
-                </p>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
-                  {seniorPastorDetails[3]}
-                </p>
-              </div>
-
-              <div className="space-y-4">
+            <div data-reveal-stagger className="pt-8 border-t border-black/10 dark:border-white/10">
+              <div className="space-y-4 max-w-4xl">
                 <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
                   FAMILY & TODAY’S IMPACT
                 </span>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
+                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75]">
                   {seniorPastorDetails[4]}
                 </p>
+                {seniorPastorDetails[5] && (
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] mt-3">
+                    {seniorPastorDetails[5]}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -176,9 +182,12 @@ const AboutUs = () => {
                   OUR STORY
                 </span>
               </div>
-              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
-                History
+              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight mb-2">
+                Our Church History
               </h2>
+              <p className="font-sans-clean text-sm sm:text-base text-text-secondary italic">
+                From Two People to a Growing Family
+              </p>
             </div>
 
             {/* Main Composition */}
@@ -208,7 +217,7 @@ const AboutUs = () => {
               <div className="lg:col-span-7 order-2 lg:order-1 space-y-6">
                 {/* Lead Featured Paragraph */}
                 <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
-                  <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-medium leading-[1.75] max-w-[680px]">
+                  <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-bold leading-[1.75] max-w-[680px]">
                     {ourChurchDetails[0]}
                   </p>
                 </div>
@@ -239,6 +248,11 @@ const AboutUs = () => {
                 <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
                   {ourChurchDetails[3]}
                 </p>
+                {ourChurchDetails[4] && (
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px] mt-2 font-semibold text-[#D9A31A]">
+                    {ourChurchDetails[4]}
+                  </p>
+                )}
               </div>
             </div>
           </div>

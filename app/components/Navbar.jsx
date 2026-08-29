@@ -169,11 +169,12 @@ export default function Navbar() {
         <nav className={`glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
+            const isKnowGod = item.id === "know-god";
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`glass-nav-link ${isActive ? "is-active" : ""}`}
+                className={`glass-nav-link ${isActive ? "is-active" : ""} ${isKnowGod ? "know-god-shine" : ""}`}
               >
                 {item.name}
               </Link>
@@ -211,12 +212,13 @@ export default function Navbar() {
           <div className="flex flex-col space-y-1">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
+              const isKnowGod = item.id === "know-god";
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`glass-mobile-link ${isActive ? "is-active" : ""}`}
+                  className={`glass-mobile-link ${isActive ? "is-active" : ""} ${isKnowGod ? "know-god-shine-mobile" : ""}`}
                 >
                   {item.name}
                 </Link>

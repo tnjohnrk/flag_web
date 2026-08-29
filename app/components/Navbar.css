@@ -195,3 +195,80 @@
     height: 48px;
   }
 }
+
+/* Gold Know God Navbar Link Shimmer Effect */
+.glass-nav-link.know-god-shine {
+  color: #121216 !important; /* Dark text for contrast against gold */
+  background: linear-gradient(135deg, #D9A31A 0%, #F5C75D 50%, #D9A31A 100%) !important;
+  font-weight: 700 !important;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(217, 163, 26, 0.4);
+  border: 1px solid rgba(217, 163, 26, 0.5);
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Shine Sweep Keyframes & Effect */
+.glass-nav-link.know-god-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: rotate(30deg);
+  animation: shine-sweep 3s infinite ease-in-out;
+  pointer-events: none;
+  filter: blur(4px);
+}
+
+.glass-nav-link.know-god-shine:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(217, 163, 26, 0.7);
+  background: linear-gradient(135deg, #F5C75D 0%, #FFF3B3 50%, #F5C75D 100%) !important;
+}
+
+/* Mobile Gold Know God Link */
+.glass-mobile-link.know-god-shine-mobile {
+  color: #121216 !important;
+  background: linear-gradient(135deg, #D9A31A 0%, #F5C75D 50%, #D9A31A 100%) !important;
+  font-weight: 700 !important;
+  border-radius: 12px;
+  padding: 0.75rem 1rem !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(217, 163, 26, 0.3);
+  margin-top: 0.5rem;
+  display: block;
+  text-align: center;
+}
+
+.glass-mobile-link.know-god-shine-mobile::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: rotate(30deg);
+  animation: shine-sweep 3s infinite ease-in-out;
+  pointer-events: none;
+  filter: blur(3px);
+}
+
+@keyframes shine-sweep {
+  0% {
+    left: -60%;
+  }
+  15%, 100% {
+    left: 140%;
+  }
+}
