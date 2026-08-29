@@ -196,7 +196,7 @@ export default function Navbar() {
           {/* Mobile Toggle Button (Visible strictly on mobile/tablet devices) */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`${isMobileDevice ? "lg:hidden" : "hidden"} glass-mobile-btn flex items-center justify-center cursor-pointer`}
+            className={`${isMobileDevice ? "flex lg:hidden" : "hidden"} glass-mobile-btn items-center justify-center cursor-pointer`}
             aria-label="Toggle Menu"
             aria-expanded={isMenuOpen}
           >
