@@ -5,20 +5,18 @@ import Image from "next/image";
 import "./Navbar.css";
 import { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "./ThemeProvider";
+import PillNav from "./PillNav";
 import gsap from "gsap";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { theme } = useTheme();
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navContainerRef = useRef(null);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
 
   // Preloader Nav Handoff Coordinator
   useEffect(() => {
@@ -102,7 +100,6 @@ export default function Navbar() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Accessibility: Reduced Motion Preference
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.querySelectorAll("[data-reveal], [data-reveal-stagger]").forEach((el) => {
         el.classList.add("is-revealed");
@@ -133,13 +130,56 @@ export default function Navbar() {
   }, [pathname]);
 
   const navItems = [
-    { name: "HOME", href: "/", id: "home" },
-    { name: "SERMONS", href: "/#sermons", id: "sermons" },
-    { name: "DONATE US", href: "/#donate-us", id: "donate-us" },
-    { name: "CONNECT WITH US", href: "/#footer", id: "footer" },
-    { name: "ABOUT US", href: "/aboutus", id: "about-us" },
-    { name: "KNOW GOD", href: "/knowgod", id: "know-god" },
+    { label: "Home", href: "/" },
+    { label: "Sermons", href: "/#sermons" },
+    { label: "Donate", href: "/#donate-us" },
+    { label: "Connect", href: "/#footer" },
+    { label: "About Us", href: "/aboutus" },
+    { label: "Know God", href: "/knowgod", className: "know-god-shine-pill" },
   ];
+
+  const getActiveHref = () => {
+    if (pathname === "/aboutus") return "/aboutus";
+    if (pathname === "/knowgod") return "/knowgod";
+    if (pathname === "/") {
+      if (activeSection === "sermons") return "/#sermons";
+      if (activeSection === "donate-us") return "/#donate-us";
+      if (activeSection === "footer") return "/#footer";
+      return "/";
+    }
+    return pathname;
+  };
+
+  const handleItemClick = (item, index, event) => {
+    if (item.href === "/" && pathname === "/") {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.history.pushState(null, "", "/");
+      setActiveSection("home");
+      return;
+    }
+    if (item.href?.startsWith("/#") && pathname === "/") {
+      const targetId = item.href.replace("/#", "");
+      const el = document.getElementById(targetId) || document.querySelector(`.${targetId}`);
+      if (el) {
+        event.preventDefault();
+        el.scrollIntoView({ behavior: "smooth" });
+        window.history.pushState(null, "", item.href.replace("/", ""));
+        setActiveSection(targetId);
+      }
+    }
+  };
+
+  const logoElement = (
+    <Image
+      alt="FLAG Logo"
+      src="/images/flag-logo.avif"
+      width={48}
+      height={48}
+      priority
+      className="w-full h-full object-cover rounded-full"
+    />
+  );
 
   return (
     <header id="home-navbar" className="glass-nav-header">
@@ -149,84 +189,38 @@ export default function Navbar() {
           isNavReady ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* 1. Standalone Left Logo Badge */}
-        <Link
-          href="/"
-          className={`logo navbar-logo glass-badge-btn ${isScrolled ? "is-scrolled" : ""}`}
-          aria-label="FLAG Church Home"
-        >
-          <Image
-            alt="FLAG Logo"
-            src="/images/flag-logo.avif"
-            width={52}
-            height={52}
-            priority
-            className="w-full h-full object-cover rounded-full"
-          />
-        </Link>
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto gap-2 sm:gap-3">
+          {/* Desktop Left Spacer to balance ThemeToggle for center alignment */}
+          <div className="hidden lg:block w-9 sm:w-10 flex-none pointer-events-none" aria-hidden="true" />
 
-        {/* 2. Centered Floating Glass Navigation Pill */}
-        <nav className={`glass-central-pill ${isScrolled ? "is-scrolled" : ""}`}>
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
-            const isKnowGod = item.id === "know-god";
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`glass-nav-link ${isActive ? "is-active" : ""} ${isKnowGod ? "know-god-shine" : ""}`}
-              >
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
+          {/* Centered React Bits <PillNav /> Navigation */}
+          <div className="flex-1 min-w-0 flex items-center justify-center">
+            <PillNav
+              logo={logoElement}
+              logoAlt="FLAG Church Logo"
+              logoHref="/"
+              items={navItems}
+              activeHref={getActiveHref()}
+              onItemClick={handleItemClick}
+              linkComponent={Link}
+              theme={theme === "light" ? "light" : "dark"}
+              layout="split"
+              itemStyle="pill"
+              hoverEffect="fill"
+              indicator="pill"
+              highlightColor="#D9A31A"
+              highlightTextColor="#121016"
+              size="md"
+              className={isScrolled ? "is-scrolled" : ""}
+            />
+          </div>
 
-        {/* 3. Single Standalone Right Theme Toggle Badge + Mobile Menu Button */}
-        <div className="flex items-center space-x-2 pointer-events-auto">
-          <ThemeToggle />
-          
-          {/* Mobile Toggle Button (Visible strictly on mobile/tablet widths) */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="glass-mobile-btn cursor-pointer"
-            aria-label="Toggle Menu"
-            aria-expanded={isMenuOpen}
-          >
-            {isMenuOpen ? (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Dropdown Panel */}
-      {isMenuOpen && (
-        <div className="glass-mobile-dropdown animate-page-entry">
-          <div className="flex flex-col space-y-1">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              const isKnowGod = item.id === "know-god";
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`glass-mobile-link ${isActive ? "is-active" : ""} ${isKnowGod ? "know-god-shine-mobile" : ""}`}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
+          {/* Standalone Right Theme Toggle Badge */}
+          <div className="flex-none pointer-events-auto">
+            <ThemeToggle />
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

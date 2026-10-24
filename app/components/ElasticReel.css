@@ -1,0 +1,245 @@
+/* Elastic Reel — React Bits Pro Variant */
+
+.elastic-reel {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.elastic-reel__viewport {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .elastic-reel__viewport {
+    height: 520px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .elastic-reel__viewport {
+    height: 560px;
+  }
+}
+
+/* Dock Container holding slices */
+.elastic-reel__dock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--er-gap, 12px);
+  padding: 18px 24px;
+  border-radius: 9999px;
+  background: rgba(18, 18, 22, 0.4);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 95vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.elastic-reel__dock::-webkit-scrollbar {
+  display: none;
+}
+
+/* Slices / Bars */
+.elastic-reel__bar {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: var(--er-radius, 16px);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: border-color 0.25s ease,
+              box-shadow 0.25s ease,
+              filter 0.4s ease,
+              opacity 0.4s ease;
+  will-change: width, height, transform;
+  touch-action: pan-y;
+}
+
+.elastic-reel__bar:hover {
+  border-color: rgba(217, 163, 26, 0.7);
+  box-shadow: 0 16px 36px -4px rgba(217, 163, 26, 0.3), 0 20px 40px -8px rgba(0, 0, 0, 0.6);
+}
+
+.elastic-reel__bar.is-active-bar {
+  border-color: #D9A31A;
+  box-shadow: 0 0 24px rgba(217, 163, 26, 0.5);
+}
+
+.elastic-reel__bar-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elastic-reel__bar-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+.elastic-reel__bar-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+/* Dimmed state when a photo is opened */
+.elastic-reel__dock.has-open-item .elastic-reel__bar {
+  filter: blur(2px) grayscale(20%);
+  opacity: 0.35;
+}
+
+.elastic-reel__dock.has-open-item .elastic-reel__bar:hover,
+.elastic-reel__dock.has-open-item .elastic-reel__bar.is-active-bar {
+  filter: blur(0px) grayscale(0%);
+  opacity: 1;
+}
+
+/* Open Full Photo Hero Stage */
+.elastic-reel__open-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.elastic-reel__open-card {
+  position: relative;
+  width: 90vw;
+  max-width: 440px;
+  height: 85%;
+  max-height: 480px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: rgba(18, 18, 24, 0.9);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8),
+              0 0 30px -5px rgba(217, 163, 26, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation: elasticSwell 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes elasticSwell {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.elastic-reel__open-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.elastic-reel__open-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.85) 90%, rgba(0, 0, 0, 0.95) 100%);
+  pointer-events: none;
+}
+
+/* Floating Close Button */
+.elastic-reel__close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 30;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.elastic-reel__close-btn:hover {
+  transform: scale(1.1);
+  background: rgba(217, 163, 26, 0.9);
+  border-color: #D9A31A;
+}
+
+/* Bottom Open Caption Card */
+.elastic-reel__open-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 22px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Floating Label tooltip while hovering over slices */
+.elastic-reel__hover-tag {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #D9A31A;
+  background: rgba(18, 18, 24, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(217, 163, 26, 0.35);
+  pointer-events: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

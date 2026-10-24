@@ -9,7 +9,7 @@ import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
 import dynamic from "next/dynamic";
 
-const CircularCarousel = dynamic(() => import("../components/CircularCarousel"), {
+const ElasticReel = dynamic(() => import("../components/ElasticReel"), {
   ssr: false,
 });
 
@@ -22,29 +22,30 @@ const AboutUs = () => {
   const pastorsArray = Object.values(pastorsDetails);
   const currentPastor = pastorsArray[activePastorIndex] || pastorsArray[0];
 
-  const carouselItems = useMemo(() => {
+  const reelItems = useMemo(() => {
     return pastorsArray.map((pastor, idx) => ({
       src: `/images/pastor-${idx + 1}.avif`,
       alt: pastor.name,
       title: pastor.name,
       subtitle: pastor.role,
+      description: pastor.description,
     }));
   }, [pastorsArray]);
 
   const handlePrevPastor = () => {
-    if (carouselRef.current?.prev) {
-      carouselRef.current.prev();
-    } else {
-      setActivePastorIndex((prev) => (prev - 1 + pastorsArray.length) % pastorsArray.length);
-    }
+    setActivePastorIndex((prev) => {
+      const newIdx = (prev - 1 + pastorsArray.length) % pastorsArray.length;
+      carouselRef.current?.open?.(newIdx);
+      return newIdx;
+    });
   };
 
   const handleNextPastor = () => {
-    if (carouselRef.current?.next) {
-      carouselRef.current.next();
-    } else {
-      setActivePastorIndex((prev) => (prev + 1) % pastorsArray.length);
-    }
+    setActivePastorIndex((prev) => {
+      const newIdx = (prev + 1) % pastorsArray.length;
+      carouselRef.current?.open?.(newIdx);
+      return newIdx;
+    });
   };
 
   // Scroll-Reveal Intersection Observer Engine
@@ -323,70 +324,32 @@ const AboutUs = () => {
             </div>
           </div>
 
-          {/* Main 3D Circular Wheel: Expansive, covering ~80% of the screen */}
+          {/* Main Elastic Reel Dock: A dock of photo slices that swell open into full images */}
           <div 
             data-reveal
-            className="relative w-full max-w-[85vw] mx-auto h-[460px] sm:h-[500px] lg:h-[540px] flex items-center justify-center select-none my-1 sm:my-2"
+            className="relative w-full max-w-6xl mx-auto flex items-center justify-center select-none my-2 sm:my-4"
           >
-            <CircularCarousel
+            <ElasticReel
               ref={carouselRef}
-              items={carouselItems}
-              preset="panorama"
-              intro="none"
-              cardWidth={280}
-              aspectRatio={0.75}
-              gap={28}
-              speed={12}
-              tilt={0}
-              perspective={1800}
-              autoplay="drift"
+              items={reelItems}
+              barWidth={64}
+              gap={14}
+              radius={20}
+              magnify={2.4}
+              lift={1.12}
+              influence={220}
+              autoplay="sweep"
+              speed={1.2}
               pauseOnHover={true}
-              draggable={true}
-              snap={true}
-              focusOnClick={true}
-              cornerRadius={20}
-              depthFade={0.5}
-              fadeColor="var(--background)"
-              captions={false}
+              captions={true}
+              labels={true}
               onChange={(index) => {
                 setActivePastorIndex(index);
               }}
               onItemClick={(item, index) => {
-                const modalBtn = document.getElementById(`open-pastor-modal-${index}`);
-                if (modalBtn) modalBtn.click();
+                setActivePastorIndex(index);
               }}
             />
-
-            {/* Floating Left / Right Overlay Arrow Buttons */}
-            <div className="absolute left-1 sm:left-4 z-30 flex items-center pointer-events-none">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrevPastor();
-                }}
-                aria-label="Previous image"
-                className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-30 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-xl cursor-pointer"
-              >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="absolute right-1 sm:right-4 z-30 flex items-center pointer-events-none">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNextPastor();
-                }}
-                aria-label="Next image"
-                className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-30 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-xl cursor-pointer"
-              >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
           </div>
 
           {/* Selected Pastor Details: Fitted Directly Below the Center Card */}
