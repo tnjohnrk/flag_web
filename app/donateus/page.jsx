@@ -53,12 +53,12 @@ export default function DonateUs() {
   };
 
   const bankDetails = [
-    { icon: Landmark, label: "Bank Name", value: "Union Bank Of India" },
+    { icon: Landmark, label: "Bank Name", value: "State Bank of India" },
     { icon: Banknote, label: "Branch", value: "Thiruverkadu" },
-    { icon: CreditCard, label: "Account No", value: "520101038444311" },
-    { icon: Tag, label: "Account Name", value: "Full Life Centre Assembly of God" },
+    { icon: CreditCard, label: "Account No", value: "32887890700" },
+    { icon: Tag, label: "Account Name", value: "Full Life Assembly of God" },
     { icon: Folder, label: "Account Type", value: "Savings Account" },
-    { icon: KeyRound, label: "IFSC Code", value: "UBIN0830046" },
+    { icon: KeyRound, label: "IFSC Code", value: "SBIN0015492" },
   ];
 
   return (
