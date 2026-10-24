@@ -7,17 +7,12 @@ import './ElasticReel.css';
 /**
  * Elastic Reel — React Bits Pro
  * A dock of photo slices that swell open into full images
+ * Fully responsive: Automatically scales bars so all photos fit on mobile and desktop
  */
 const ElasticReel = forwardRef(function ElasticReel(
   {
     items = [],
     defaultOpen = -1,
-    barWidth = 56,
-    gap = 12,
-    radius = 18,
-    magnify = 2.4,
-    lift = 1.15,
-    influence = 200,
     align = 'center',
     autoplay = 'sweep',
     speed = 1.2,
@@ -42,16 +37,106 @@ const ElasticReel = forwardRef(function ElasticReel(
   const [hoverIndex, setHoverIndex] = useState(-1);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Responsive layout state
+  const [layoutConfig, setLayoutConfig] = useState({
+    barWidth: 56,
+    baseHeight: 360,
+    gap: 12,
+    radius: 16,
+    magnify: 2.4,
+    lift: 1.12,
+    influence: 200
+  });
+
+  const count = items.length || 1;
+
   // Animated dimensions per bar [width, height]
-  const currentSizes = useRef(items.map(() => ({ w: barWidth, h: 360 })));
-  const targetSizes = useRef(items.map(() => ({ w: barWidth, h: 360 })));
+  const currentSizes = useRef(items.map(() => ({ w: 58, h: 380 })));
+  const targetSizes = useRef(items.map(() => ({ w: 58, h: 380 })));
 
   // Pointer position tracking
   const pointerPos = useRef({ x: -9999, y: 0, active: false });
   const sweepAngle = useRef(0);
   const rafId = useRef(null);
 
-  const baseHeight = 360;
+  // Compute responsive layout configuration based on container width
+  const updateLayout = useCallback((width) => {
+    if (!width || count <= 0) return;
+
+    if (width < 480) {
+      // Small mobile screens (320px - 479px)
+      const gap = 2;
+      const dockPadding = 12;
+      const availableWidth = Math.max(260, width - dockPadding - (count - 1) * gap);
+      const calculatedWidth = Math.max(18, Math.floor(availableWidth / count));
+      setLayoutConfig({
+        barWidth: calculatedWidth,
+        baseHeight: 240,
+        gap,
+        radius: 0,
+        magnify: 3.4,
+        lift: 1.16,
+        influence: 95
+      });
+    } else if (width < 768) {
+      // Large mobile / Phablet (480px - 767px)
+      const gap = 4;
+      const dockPadding = 20;
+      const availableWidth = Math.max(400, width - dockPadding - (count - 1) * gap);
+      const calculatedWidth = Math.max(24, Math.floor(availableWidth / count));
+      setLayoutConfig({
+        barWidth: calculatedWidth,
+        baseHeight: 280,
+        gap,
+        radius: 0,
+        magnify: 2.8,
+        lift: 1.15,
+        influence: 135
+      });
+    } else if (width < 1024) {
+      // Tablets (768px - 1023px)
+      const gap = 6;
+      const dockPadding = 28;
+      const availableWidth = width - dockPadding - (count - 1) * gap;
+      const calculatedWidth = Math.max(34, Math.floor(availableWidth / count));
+      setLayoutConfig({
+        barWidth: calculatedWidth,
+        baseHeight: 330,
+        gap,
+        radius: 0,
+        magnify: 2.4,
+        lift: 1.14,
+        influence: 175
+      });
+    } else {
+      // Desktop (>= 1024px)
+      setLayoutConfig({
+        barWidth: 58,
+        baseHeight: 380,
+        gap: 8,
+        radius: 0,
+        magnify: 2.3,
+        lift: 1.15,
+        influence: 220
+      });
+    }
+  }, [count]);
+
+  // Observe container width
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        updateLayout(entry.contentRect.width);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    updateLayout(containerRef.current.clientWidth);
+
+    return () => observer.disconnect();
+  }, [updateLayout]);
 
   // Imperative handle for parent components
   useImperativeHandle(ref, () => ({
@@ -84,8 +169,7 @@ const ElasticReel = forwardRef(function ElasticReel(
 
   // Calculate target dimensions based on pointer or sweep position
   const updateTargets = useCallback((posX) => {
-    if (!dockRef.current) return;
-    const dockRect = dockRef.current.getBoundingClientRect();
+    const { barWidth, baseHeight, influence, magnify, lift } = layoutConfig;
 
     barsRef.current.forEach((barEl, idx) => {
       if (!barEl) return;
@@ -96,7 +180,6 @@ const ElasticReel = forwardRef(function ElasticReel(
 
       if (dist < influence && posX > -1000) {
         const norm = 1 - dist / influence;
-        // Bell-curve weight
         const factor = Math.cos((1 - norm) * Math.PI * 0.5);
         targetSizes.current[idx] = {
           w: barWidth * (1 + (magnify - 1) * factor),
@@ -109,7 +192,7 @@ const ElasticReel = forwardRef(function ElasticReel(
         };
       }
     });
-  }, [barWidth, baseHeight, influence, magnify, lift]);
+  }, [layoutConfig]);
 
   // Spring animation loop
   useEffect(() => {
@@ -123,7 +206,7 @@ const ElasticReel = forwardRef(function ElasticReel(
       if (autoplay === 'sweep' && (!isHovered || !pauseOnHover) && openIndex === -1 && dockRef.current) {
         sweepAngle.current += dt * speed;
         const dockRect = dockRef.current.getBoundingClientRect();
-        const sweepX = dockRect.left + (dockRect.width / 2) + Math.sin(sweepAngle.current) * (dockRect.width * 0.42);
+        const sweepX = dockRect.left + (dockRect.width / 2) + Math.sin(sweepAngle.current) * (dockRect.width * 0.45);
         updateTargets(sweepX);
       } else if (pointerPos.current.active) {
         updateTargets(pointerPos.current.x);
@@ -132,7 +215,7 @@ const ElasticReel = forwardRef(function ElasticReel(
       }
 
       // Smooth spring interpolation
-      const springK = 18;
+      const springK = 22;
       barsRef.current.forEach((barEl, idx) => {
         if (!barEl) return;
         const curr = currentSizes.current[idx];
@@ -145,6 +228,12 @@ const ElasticReel = forwardRef(function ElasticReel(
 
         barEl.style.width = `${Math.round(curr.w * 10) / 10}px`;
         barEl.style.height = `${Math.round(curr.h * 10) / 10}px`;
+
+        // Dynamic 3D depth layer: the more lifted/swelled the cutout is, the higher its z-index
+        const liftDiff = layoutConfig.baseHeight * (layoutConfig.lift - 1 || 0.1);
+        const liftFactor = Math.max(0, (curr.h - layoutConfig.baseHeight) / liftDiff);
+        const zIdx = Math.round(1 + liftFactor * 25);
+        barEl.style.zIndex = zIdx;
       });
 
       rafId.current = requestAnimationFrame(loop);
@@ -157,26 +246,33 @@ const ElasticReel = forwardRef(function ElasticReel(
     };
   }, [autoplay, isHovered, pauseOnHover, openIndex, speed, updateTargets]);
 
-  // Pointer interactions
-  const handlePointerMove = (e) => {
-    pointerPos.current = { x: e.clientX, y: e.clientY, active: true };
-    setIsHovered(true);
-
-    // Identify which bar is directly under cursor
+  const identifyClosestBar = useCallback((clientX) => {
     let closestIdx = -1;
     let minDist = 9999;
     barsRef.current.forEach((barEl, idx) => {
       if (!barEl) return;
       const rect = barEl.getBoundingClientRect();
-      if (e.clientX >= rect.left && e.clientX <= rect.right) {
+      if (clientX >= rect.left && clientX <= rect.right) {
         closestIdx = idx;
       }
-      const d = Math.abs(e.clientX - (rect.left + rect.width / 2));
+      const d = Math.abs(clientX - (rect.left + rect.width / 2));
       if (d < minDist) {
         minDist = d;
       }
     });
-    setHoverIndex(closestIdx);
+
+    if (closestIdx !== -1) {
+      setHoverIndex(closestIdx);
+      onChange?.(closestIdx);
+    }
+  }, [onChange]);
+
+  // Pointer interactions (Mouse)
+  const handlePointerMove = (e) => {
+    if (e.pointerType === 'touch') return; // Handled by touch events
+    pointerPos.current = { x: e.clientX, y: e.clientY, active: true };
+    setIsHovered(true);
+    identifyClosestBar(e.clientX);
   };
 
   const handlePointerLeave = () => {
@@ -185,9 +281,31 @@ const ElasticReel = forwardRef(function ElasticReel(
     setHoverIndex(-1);
   };
 
+  // Touch interactions (Mobile & Tablet)
+  const handleTouchStart = (e) => {
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      pointerPos.current = { x: touch.clientX, y: touch.clientY, active: true };
+      setIsHovered(true);
+      identifyClosestBar(touch.clientX);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      pointerPos.current = { x: touch.clientX, y: touch.clientY, active: true };
+      identifyClosestBar(touch.clientX);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    pointerPos.current = { x: -9999, y: 0, active: false };
+    setIsHovered(false);
+  };
+
   const handleBarClick = (item, idx) => {
     if (openIndex === idx) {
-      // Toggle close if already open
       setOpenIndex(-1);
       onClose?.();
     } else {
@@ -205,12 +323,15 @@ const ElasticReel = forwardRef(function ElasticReel(
       ref={containerRef}
       className={`elastic-reel ${className}`}
       style={{
-        '--er-gap': `${gap}px`,
-        '--er-radius': `${radius}px`,
+        '--er-gap': `${layoutConfig.gap}px`,
+        '--er-radius': `${layoutConfig.radius}px`,
         ...style
       }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div className="elastic-reel__viewport">
         {/* The Dock of Photo Slices */}
@@ -225,8 +346,8 @@ const ElasticReel = forwardRef(function ElasticReel(
                 ref={(el) => (barsRef.current[idx] = el)}
                 className={`elastic-reel__bar ${isOpenThis ? 'is-active-bar' : ''}`}
                 style={{
-                  width: `${barWidth}px`,
-                  height: `${baseHeight}px`
+                  width: `${layoutConfig.barWidth}px`,
+                  height: `${layoutConfig.baseHeight}px`
                 }}
                 onClick={() => handleBarClick(item, idx)}
                 role="button"
@@ -239,18 +360,14 @@ const ElasticReel = forwardRef(function ElasticReel(
                   }
                 }}
               >
-                {/* Vertical Slice Image */}
-                <Image
+                {/* Cutout Silhouette Image */}
+                <img
                   src={item.src}
                   alt={item.alt || item.title || ''}
-                  fill
-                  sizes="320px"
-                  priority={idx < 4}
                   className="elastic-reel__bar-image"
+                  loading={idx < 5 ? 'eager' : 'lazy'}
+                  draggable={false}
                 />
-
-                <div className="elastic-reel__bar-overlay" />
-                <div className="elastic-reel__bar-rim" />
 
                 {/* Hover label for the slice */}
                 {labels && isTarget && openIndex === -1 && (
@@ -287,7 +404,7 @@ const ElasticReel = forwardRef(function ElasticReel(
 
               {/* Full Crisp Photo */}
               <Image
-                src={activeItem.src}
+                src={activeItem.fullSrc || activeItem.src}
                 alt={activeItem.title || ''}
                 fill
                 priority
@@ -300,17 +417,17 @@ const ElasticReel = forwardRef(function ElasticReel(
               {captions && (
                 <div className="elastic-reel__open-caption">
                   {activeItem.subtitle && (
-                    <span className="inline-block self-start font-sans-clean text-[11px] font-bold tracking-[0.2em] uppercase text-[#D9A31A] bg-[#D9A31A]/20 px-2.5 py-0.5 rounded-full border border-[#D9A31A]/35 backdrop-blur-sm">
+                    <span className="inline-block self-start font-sans-clean text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase text-[#D9A31A] bg-[#D9A31A]/20 px-2.5 py-0.5 rounded-full border border-[#D9A31A]/35 backdrop-blur-sm">
                       {activeItem.subtitle}
                     </span>
                   )}
 
-                  <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-white tracking-wide leading-tight drop-shadow-md">
+                  <h3 className="font-editorial text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-wide leading-tight drop-shadow-md">
                     {activeItem.title}
                   </h3>
 
                   {activeItem.description && (
-                    <p className="font-sans-clean text-xs sm:text-sm text-gray-200 line-clamp-2 leading-relaxed drop-shadow">
+                    <p className="font-sans-clean text-xs sm:text-sm text-gray-200 line-clamp-1 sm:line-clamp-2 leading-relaxed drop-shadow">
                       {activeItem.description}
                     </p>
                   )}

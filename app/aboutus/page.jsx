@@ -24,7 +24,8 @@ const AboutUs = () => {
 
   const reelItems = useMemo(() => {
     return pastorsArray.map((pastor, idx) => ({
-      src: `/images/pastor-${idx + 1}.avif`,
+      src: `/images/pastor-cutout-${idx + 1}.webp`,
+      fullSrc: `/images/pastor-${idx + 1}.avif`,
       alt: pastor.name,
       title: pastor.name,
       subtitle: pastor.role,
@@ -274,7 +275,7 @@ const AboutUs = () => {
         <section 
           data-reveal 
           id="those-who-lead" 
-          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[960px] py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
+          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[960px] pt-16 pb-6 sm:pt-10 sm:pb-8 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
         >
           
           {/* Section Header: Title on Top-Left & Navigation on Right */}
@@ -332,12 +333,6 @@ const AboutUs = () => {
             <ElasticReel
               ref={carouselRef}
               items={reelItems}
-              barWidth={64}
-              gap={14}
-              radius={20}
-              magnify={2.4}
-              lift={1.12}
-              influence={220}
               autoplay="sweep"
               speed={1.2}
               pauseOnHover={true}

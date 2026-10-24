@@ -1,4 +1,4 @@
-/* Elastic Reel — React Bits Pro Variant */
+/* Elastic Reel — Cutout Figures Stage Variant */
 
 .elastic-reel {
   position: relative;
@@ -16,110 +16,153 @@
 .elastic-reel__viewport {
   position: relative;
   width: 100%;
-  height: 480px;
+  min-height: 270px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   overflow: visible;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
   .elastic-reel__viewport {
-    height: 520px;
+    min-height: 310px;
+  }
+}
+
+@media (min-width: 768px) {
+  .elastic-reel__viewport {
+    min-height: 370px;
   }
 }
 
 @media (min-width: 1024px) {
   .elastic-reel__viewport {
-    height: 560px;
+    min-height: 440px;
   }
 }
 
-/* Dock Container holding slices */
+/* Dock Stage holding Cutout Figures */
 .elastic-reel__dock {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* All cutouts stand on a shared baseline floor */
   justify-content: center;
-  gap: var(--er-gap, 12px);
-  padding: 18px 24px;
-  border-radius: 9999px;
-  background: rgba(18, 18, 22, 0.4);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  gap: var(--er-gap, 6px);
+  padding: 24px 12px 14px 12px;
+  background: transparent; /* No box enclosing the figures */
+  border: none;
+  box-shadow: none;
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  max-width: 95vw;
-  overflow-x: auto;
-  scrollbar-width: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  touch-action: none;
 }
 
-.elastic-reel__dock::-webkit-scrollbar {
-  display: none;
+/* Subtle Stage Floor Reflection/Glow underneath the lineup */
+.elastic-reel__dock::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 8%;
+  right: 8%;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.14), transparent 75%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Slices / Bars */
+:root.dark .elastic-reel__dock::after {
+  background: radial-gradient(ellipse at 50% 100%, rgba(217, 163, 26, 0.22), transparent 75%);
+}
+
+@media (max-width: 639px) {
+  .elastic-reel__dock {
+    padding: 12px 6px 10px 6px;
+    gap: var(--er-gap, 2px);
+  }
+  .elastic-reel__dock::after {
+    height: 14px;
+    left: 4%;
+    right: 4%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .elastic-reel__dock {
+    padding: 16px 10px 12px 10px;
+    gap: var(--er-gap, 4px);
+  }
+}
+
+/* Cutout Bar Column */
 .elastic-reel__bar {
   position: relative;
   flex-shrink: 0;
   cursor: pointer;
-  overflow: hidden;
-  border-radius: var(--er-radius, 16px);
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  transition: border-color 0.25s ease,
-              box-shadow 0.25s ease,
-              filter 0.4s ease,
-              opacity 0.4s ease;
-  will-change: width, height, transform;
-  touch-action: pan-y;
+  overflow: visible; /* Cutout figure is NOT clipped by rectangle container */
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transform-origin: bottom center;
+  touch-action: none;
+  will-change: width, height, transform, z-index;
 }
 
-.elastic-reel__bar:hover {
-  border-color: rgba(217, 163, 26, 0.7);
-  box-shadow: 0 16px 36px -4px rgba(217, 163, 26, 0.3), 0 20px 40px -8px rgba(0, 0, 0, 0.6);
-}
-
-.elastic-reel__bar.is-active-bar {
-  border-color: #D9A31A;
-  box-shadow: 0 0 24px rgba(217, 163, 26, 0.5);
-}
-
+/* Cutout Silhouette Image */
 .elastic-reel__bar-image {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   height: 100%;
-  object-fit: cover;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom center;
   pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.22));
+  transition: filter 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s ease;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.elastic-reel__bar-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.55) 100%);
-  pointer-events: none;
+:root.dark .elastic-reel__bar-image {
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.65))
+          drop-shadow(0 1px 4px rgba(255, 255, 255, 0.08));
 }
 
-.elastic-reel__bar-rim {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  pointer-events: none;
+/* Magnified Hover / Swelled States on Cutout Silhouette */
+.elastic-reel__bar:hover .elastic-reel__bar-image,
+.elastic-reel__bar:active .elastic-reel__bar-image,
+.elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.35))
+          drop-shadow(0 0 16px rgba(217, 163, 26, 0.68));
 }
 
-/* Dimmed state when a photo is opened */
-.elastic-reel__dock.has-open-item .elastic-reel__bar {
-  filter: blur(2px) grayscale(20%);
-  opacity: 0.35;
+:root.dark .elastic-reel__bar:hover .elastic-reel__bar-image,
+:root.dark .elastic-reel__bar:active .elastic-reel__bar-image,
+:root.dark .elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 22px rgba(217, 163, 26, 0.82));
 }
 
-.elastic-reel__dock.has-open-item .elastic-reel__bar:hover,
-.elastic-reel__dock.has-open-item .elastic-reel__bar.is-active-bar {
+/* Dimmed state when full photo is opened */
+.elastic-reel__dock.has-open-item .elastic-reel__bar-image {
+  filter: blur(2px) grayscale(35%);
+  opacity: 0.28;
+}
+
+.elastic-reel__dock.has-open-item .elastic-reel__bar:hover .elastic-reel__bar-image,
+.elastic-reel__dock.has-open-item .elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
   filter: blur(0px) grayscale(0%);
   opacity: 1;
 }
@@ -131,32 +174,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 20;
+  z-index: 60;
   pointer-events: auto;
 }
 
 .elastic-reel__open-card {
   position: relative;
   width: 90vw;
-  max-width: 440px;
-  height: 85%;
-  max-height: 480px;
-  border-radius: 28px;
+  max-width: 420px;
+  height: 90%;
+  max-height: 440px;
+  border-radius: 24px;
   overflow: hidden;
-  background: rgba(18, 18, 24, 0.9);
+  background: rgba(18, 18, 24, 0.94);
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8),
               0 0 30px -5px rgba(217, 163, 26, 0.25),
               inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  animation: elasticSwell 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: elasticSwell 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@media (max-width: 639px) {
+  .elastic-reel__open-card {
+    width: 88vw;
+    max-height: 270px;
+    border-radius: 18px;
+  }
 }
 
 @keyframes elasticSwell {
   0% {
     opacity: 0;
-    transform: scale(0.6) translateY(20px);
+    transform: scale(0.65) translateY(16px);
   }
   100% {
     opacity: 1;
@@ -182,13 +233,13 @@
 /* Floating Close Button */
 .elastic-reel__close-btn {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 30;
-  width: 36px;
-  height: 36px;
+  top: 12px;
+  right: 12px;
+  z-index: 70;
+  width: 32px;
+  height: 32px;
   border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -201,7 +252,7 @@
 
 .elastic-reel__close-btn:hover {
   transform: scale(1.1);
-  background: rgba(217, 163, 26, 0.9);
+  background: rgba(217, 163, 26, 0.95);
   border-color: #D9A31A;
 }
 
@@ -211,14 +262,21 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px 22px;
-  z-index: 25;
+  padding: 16px 18px;
+  z-index: 65;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
-/* Floating Label tooltip while hovering over slices */
+@media (max-width: 639px) {
+  .elastic-reel__open-caption {
+    padding: 10px 12px;
+    gap: 2px;
+  }
+}
+
+/* Floating Label tooltip while hovering over cutouts */
 .elastic-reel__hover-tag {
   position: absolute;
   bottom: -32px;
@@ -227,19 +285,21 @@
   white-space: nowrap;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #D9A31A;
-  background: rgba(18, 18, 24, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(18, 18, 24, 0.92);
+  backdrop-filter: blur(14px);
   padding: 4px 10px;
   border-radius: 9999px;
-  border: 1px solid rgba(217, 163, 26, 0.35);
+  border: 1px solid rgba(217, 163, 26, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   pointer-events: none;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeInTag 0.16s ease-out;
+  z-index: 50;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInTag {
   from { opacity: 0; transform: translate(-50%, -4px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
