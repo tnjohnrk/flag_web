@@ -115,23 +115,23 @@ const AboutUs = () => {
             {/* Main Composition */}
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
-              {/* Senior Pastor Portrait Photo */}
-              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center">
-                <div className="relative w-full aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] max-w-[420px] overflow-hidden rounded-[28px] border border-white/20 dark:border-white/10 shadow-2xl group select-none">
+              {/* Senior Pastor Cutout Portrait Photo */}
+              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center justify-center relative">
+                {/* Subtle Ambient Halo Glow behind Senior Pastor */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#D9A31A]/20 via-[#2C3A82]/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+
+                <div className="relative w-full max-w-[360px] sm:max-w-[400px] flex flex-col items-center select-none group">
                   <Image
-                    src="/images/pastor-1.avif"
+                    src="/images/Pr._Johnson_Magazine.png"
                     alt="Rev. N. Johnson — Senior Pastor"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 500px"
+                    width={700}
+                    height={1017}
                     priority
-                    className="object-cover object-top w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="w-full h-auto object-contain filter drop-shadow-[0_18px_30px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <span className="font-editorial text-xs sm:text-sm text-white/90 italic drop-shadow-md block">
-                      Rev. N. Johnson — Senior Pastor, FLAG Church
-                    </span>
-                  </div>
+                  <span className="font-editorial text-xs sm:text-sm text-text-secondary dark:text-gray-300 italic text-center mt-3 block tracking-wide">
+                    Rev. N. Johnson — Senior Pastor, FLAG Church
+                  </span>
                 </div>
               </div>
 
