@@ -1,40 +1,51 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import "./page.css";
 import PastorsModal from "../components/PastorsModal";
 import pastorsDetails from "../conf/pastors";
 import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
+import dynamic from "next/dynamic";
+
+const CircularCarousel = dynamic(() => import("../components/CircularCarousel"), {
+  ssr: false,
+});
 
 import familyPic from "../assets/Images/familyPic.avif";
 
 const AboutUs = () => {
   const [activePastorIndex, setActivePastorIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const carouselRef = useRef(null);
 
   const pastorsArray = Object.values(pastorsDetails);
   const currentPastor = pastorsArray[activePastorIndex] || pastorsArray[0];
 
+  const carouselItems = useMemo(() => {
+    return pastorsArray.map((pastor, idx) => ({
+      src: `/images/pastor-${idx + 1}.avif`,
+      alt: pastor.name,
+      title: pastor.name,
+      subtitle: pastor.role,
+    }));
+  }, [pastorsArray]);
+
   const handlePrevPastor = () => {
-    setActivePastorIndex((prev) => (prev - 1 + pastorsArray.length) % pastorsArray.length);
+    if (carouselRef.current?.prev) {
+      carouselRef.current.prev();
+    } else {
+      setActivePastorIndex((prev) => (prev - 1 + pastorsArray.length) % pastorsArray.length);
+    }
   };
 
   const handleNextPastor = () => {
-    setActivePastorIndex((prev) => (prev + 1) % pastorsArray.length);
-  };
-
-  // Automatic card rotation every 3 seconds for Those Who Lead (pauses when hovered or clicked)
-  useEffect(() => {
-    if (!pastorsArray || pastorsArray.length === 0 || isPaused) return;
-
-    const timer = setInterval(() => {
+    if (carouselRef.current?.next) {
+      carouselRef.current.next();
+    } else {
       setActivePastorIndex((prev) => (prev + 1) % pastorsArray.length);
-    }, 3000);
-
-    return () => clearInterval(timer);
-  }, [pastorsArray.length, isPaused]);
+    }
+  };
 
   // Scroll-Reveal Intersection Observer Engine
   useEffect(() => {
@@ -258,180 +269,154 @@ const AboutUs = () => {
           </div>
         </section>
 
-        {/* 3. PASTORAL TEAM SECTION ("THOSE WHO LEAD") */}
-        <section data-reveal id="those-who-lead" className="relative py-8 md:py-12 px-4 md:px-10 lg:px-14 mx-auto max-w-7xl">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[620px]">
-            
-            {/* Left Column: Title Area */}
-            <div data-reveal className="lg:col-span-4 space-y-3 z-50 mb-8 lg:mb-0 pl-2 lg:pl-0 pt-4">
-              <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#2C3A82] dark:text-blue-400 block">
-                THOSE WHO LEAD
-              </span>
-              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
-                Leadership <br className="hidden lg:inline" /> With Purpose
+        {/* 3. PASTORAL TEAM SECTION ("THOSE WHO LEAD") - SINGLE FRAME VIEW */}
+        <section 
+          data-reveal 
+          id="those-who-lead" 
+          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[960px] py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
+        >
+          
+          {/* Section Header: Title on Top-Left & Navigation on Right */}
+          <div data-reveal className="flex items-center justify-between gap-4 border-b border-black/10 dark:border-white/10 pb-3 flex-shrink-0">
+            <div className="space-y-1 max-w-xl">
+              <div className="flex items-center space-x-2">
+                <span className="w-6 h-[2px] bg-[#D9A31A]" />
+                <span className="font-sans-clean text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#2C3A82] dark:text-blue-400">
+                  THOSE WHO LEAD
+                </span>
+              </div>
+              <h2 className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-tight">
+                Leadership With Purpose
               </h2>
-              <div className="w-12 h-0.5 bg-[#D9A31A]/80 my-3" />
-              <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-xs">
+              <p className="font-sans-clean text-xs sm:text-sm text-text-secondary line-clamp-1 max-w-lg hidden sm:block">
                 A dedicated team of servants called to lead, guide and build God’s kingdom.
               </p>
+            </div>
 
-              {/* Prev & Next Navigator Controls */}
-              <div 
-                className="flex items-center space-x-4 pt-4"
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
+            {/* Prev & Next Navigator Controls on Top-Right */}
+            <div className="flex items-center space-x-3 select-none flex-shrink-0">
+              <button
+                onClick={handlePrevPastor}
+                aria-label="Previous Pastor"
+                className="group flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-70 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer"
               >
-                <button
-                  onClick={handlePrevPastor}
-                  aria-label="Previous Pastor"
-                  className="group flex items-center justify-center w-11 h-11 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-40 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer select-none"
-                >
-                  <svg className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
 
-                <div className="font-editorial text-sm font-bold tracking-widest text-flag-navy dark:text-white select-none">
-                  <span className="text-[#D9A31A]">{String(activePastorIndex + 1).padStart(2, "0")}</span>
-                  <span className="opacity-40 mx-1">/</span>
-                  <span className="opacity-60">{String(pastorsArray.length).padStart(2, "0")}</span>
-                </div>
-
-                <button
-                  onClick={handleNextPastor}
-                  aria-label="Next Pastor"
-                  className="group flex items-center justify-center w-11 h-11 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-40 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer select-none"
-                >
-                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+              <div className="font-editorial text-sm sm:text-base font-bold tracking-widest text-flag-navy dark:text-white">
+                <span className="text-[#D9A31A]">{String(activePastorIndex + 1).padStart(2, "0")}</span>
+                <span className="opacity-40 mx-1">/</span>
+                <span className="opacity-60">{String(pastorsArray.length).padStart(2, "0")}</span>
               </div>
+
+              <button
+                onClick={handleNextPastor}
+                aria-label="Next Pastor"
+                className="group flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-70 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer"
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Main 3D Circular Wheel: Expansive, covering ~80% of the screen */}
+          <div 
+            data-reveal
+            className="relative w-full max-w-[85vw] mx-auto h-[460px] sm:h-[500px] lg:h-[540px] flex items-center justify-center select-none my-1 sm:my-2"
+          >
+            <CircularCarousel
+              ref={carouselRef}
+              items={carouselItems}
+              preset="panorama"
+              intro="none"
+              cardWidth={280}
+              aspectRatio={0.75}
+              gap={28}
+              speed={12}
+              tilt={0}
+              perspective={1800}
+              autoplay="drift"
+              pauseOnHover={true}
+              draggable={true}
+              snap={true}
+              focusOnClick={true}
+              cornerRadius={20}
+              depthFade={0.5}
+              fadeColor="var(--background)"
+              captions={false}
+              onChange={(index) => {
+                setActivePastorIndex(index);
+              }}
+              onItemClick={(item, index) => {
+                const modalBtn = document.getElementById(`open-pastor-modal-${index}`);
+                if (modalBtn) modalBtn.click();
+              }}
+            />
+
+            {/* Floating Left / Right Overlay Arrow Buttons */}
+            <div className="absolute left-1 sm:left-4 z-30 flex items-center pointer-events-none">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevPastor();
+                }}
+                aria-label="Previous image"
+                className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-30 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-xl cursor-pointer"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
             </div>
 
-            {/* Center Column: 3D Overlapping Card Gallery with Overlay Arrow Buttons */}
-            <div 
-              data-reveal
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onTouchStart={() => setIsPaused(true)}
-              onTouchEnd={() => setIsPaused(false)}
-              className="lg:col-span-5 relative w-full h-[450px] sm:h-[560px] lg:h-[610px] flex items-center justify-end perspective-[1200px] lg:pr-4"
-            >
-              {pastorsArray.map((pastor, idx) => {
-                let offset = idx - activePastorIndex;
-                if (offset < 0) offset += pastorsArray.length;
-                
-                const isActive = offset === 0;
-                const isVisible = offset < 5;
-
-                if (!isVisible) return null;
-
-                const translateX = isActive ? 0 : -(offset * 32);
-                const translateY = isActive ? 0 : (offset * 10);
-                const scale = isActive ? 1 : Math.max(1 - (offset * 0.05), 0.75);
-
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => {
-                      if (!isActive) setActivePastorIndex(idx);
-                      else {
-                        const modalBtn = document.getElementById(`open-pastor-modal-${idx}`);
-                        if (modalBtn) modalBtn.click();
-                      }
-                    }}
-                    className={`absolute right-0 w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[370px] h-[440px] sm:h-[540px] lg:h-[590px] cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden rounded-[24px] lg:rounded-[36px] select-none ${
-                      isActive
-                        ? "border-[2px] lg:border-[2.5px] border-[#D9A31A]/90 shadow-[0_20px_45px_rgba(16,25,79,0.22)] dark:border-[#E6C687] dark:shadow-[0_0_35px_rgba(230,198,135,0.25)] z-50"
-                        : "border border-[#10194F]/10 dark:border-white/10 shadow-lg dark:shadow-xl opacity-95"
-                    }`}
-                    style={{
-                      zIndex: 50 - offset,
-                      transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale})`,
-                      opacity: 1,
-                      transformOrigin: 'center right',
-                    }}
-                  >
-                    <Image
-                      src={`/images/pastor-${idx + 1}.avif`}
-                      alt={pastor.name}
-                      fill
-                      sizes="(max-width: 768px) 80vw, 370px"
-                      priority={idx === 0}
-                      loading={idx === 0 ? "eager" : "lazy"}
-                      className="object-cover object-top w-full h-full transition-transform duration-700"
-                    />
-                    
-                    {!isActive && (
-                      <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none transition-opacity duration-500" />
-                    )}
-
-                    <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/80 via-black/35 to-transparent pointer-events-none z-10" />
-                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none z-10" />
-
-                    <div className="absolute bottom-6 left-6 z-20">
-                      <span className={`font-editorial transition-all duration-300 ${
-                        isActive 
-                          ? "text-3xl sm:text-4xl lg:text-5xl font-bold text-[#D9A31A] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" 
-                          : "text-xl sm:text-2xl lg:text-3xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
-                      }`}>
-                        {String(idx + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Floating Prev / Next Arrow Overlay for Card Stack (10% Default Opacity) */}
-              <div className="absolute left-2 z-50 flex items-center">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrevPastor();
-                  }}
-                  aria-label="Previous image"
-                  className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/30 text-white flex items-center justify-center opacity-10 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-lg cursor-pointer"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="absolute right-2 z-50 flex items-center">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNextPastor();
-                  }}
-                  aria-label="Next image"
-                  className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/30 text-white flex items-center justify-center opacity-10 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-lg cursor-pointer"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
+            <div className="absolute right-1 sm:right-4 z-30 flex items-center pointer-events-none">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextPastor();
+                }}
+                aria-label="Next image"
+                className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-30 hover:opacity-100 hover:bg-[#D9A31A] hover:border-[#D9A31A] transition-all duration-300 active:scale-95 shadow-xl cursor-pointer"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
+          </div>
 
-            {/* Right Column: Active Pastor Bio */}
-            <div data-reveal className="lg:col-span-3 flex flex-col justify-center space-y-5 order-3 pt-2">
-              <div className="space-y-2">
-                <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#2C3A82] dark:text-blue-400 block">
-                  {currentPastor.role}
-                </span>
-                <h3 key={`ref-name-${activePastorIndex}`} className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-flag-navy dark:text-white leading-[1.15] tracking-wide smooth-crossfade">
-                  {currentPastor.name}
-                </h3>
-                <div className="w-12 h-0.5 bg-[#D9A31A]/80 my-2" />
-              </div>
+          {/* Selected Pastor Details: Fitted Directly Below the Center Card */}
+          <div data-reveal className="max-w-2xl mx-auto text-center px-4 space-y-2 flex-shrink-0 pt-1 pb-2">
+            <span key={`ref-role-${activePastorIndex}`} className="inline-block font-sans-clean text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] bg-[#D9A31A]/10 dark:bg-[#D9A31A]/20 px-3 py-1 rounded-full border border-[#D9A31A]/30 smooth-crossfade">
+              {currentPastor.role}
+            </span>
 
-              <p key={`ref-desc-${activePastorIndex}`} className="font-sans-clean text-sm text-text-secondary leading-[1.75] line-clamp-6 smooth-crossfade">
-                {currentPastor.description}
-              </p>
+            <h3 key={`ref-name-${activePastorIndex}`} className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-wide smooth-crossfade">
+              {currentPastor.name}
+            </h3>
+
+            <p key={`ref-desc-${activePastorIndex}`} className="font-sans-clean text-xs sm:text-sm text-text-secondary leading-relaxed line-clamp-2 max-w-xl mx-auto smooth-crossfade">
+              {currentPastor.description}
+            </p>
+
+            <div>
+              <button
+                onClick={() => {
+                  const modalBtn = document.getElementById(`open-pastor-modal-${activePastorIndex}`);
+                  if (modalBtn) modalBtn.click();
+                }}
+                className="inline-flex items-center space-x-1.5 text-xs font-sans-clean font-semibold tracking-wider uppercase text-flag-navy dark:text-white hover:text-[#D9A31A] dark:hover:text-[#D9A31A] transition-colors group cursor-pointer"
+              >
+                <span>Read Full Bio</span>
+                <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
             </div>
-
           </div>
 
           {/* Hidden PastorsModal triggers */}

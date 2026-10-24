@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
 import { Check, Loader2, AlertCircle } from 'lucide-react';
+import WhyNeedJesusFrameSequence from '../components/WhyNeedJesusFrameSequence';
 
 export default function KnowGod() {
   const [formStatus, setFormStatus] = useState("idle"); // "idle" | "submitting" | "success" | "error"
@@ -370,20 +371,25 @@ export default function KnowGod() {
         {/* ===================================================================
             CHAPTER 2: THE FALL & WHY DO I NEED JESUS?
             =================================================================== */}
-        <section data-reveal id="why-do-i-need-jesus" className="relative space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="font-sans-clean text-xs font-bold tracking-[0.3em] uppercase text-[#D9A31A] block">
-              THE HUMAN CONDITION
-            </span>
-            <h2 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-white tracking-tight">
-              Why Do I Need Jesus?
-            </h2>
-            <div className="w-16 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />
-            <p className="font-sans-clean text-base sm:text-lg text-text-secondary leading-relaxed max-w-xl mx-auto">
-              Many people live chasing success, collecting achievements, and pursuing happiness. But at the end of it all, what truly matters?
-            </p>
-          </div>
+        <div data-reveal id="why-do-i-need-jesus" className="text-center max-w-3xl mx-auto space-y-4">
+          <span className="font-sans-clean text-xs font-bold tracking-[0.3em] uppercase text-[#D9A31A] block">
+            THE HUMAN CONDITION
+          </span>
+          <h2 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-white tracking-tight">
+            Why Do I Need Jesus?
+          </h2>
+          <div className="w-16 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />
+          <p className="font-sans-clean text-base sm:text-lg text-text-secondary leading-relaxed max-w-xl mx-auto">
+            Many people live chasing success, collecting achievements, and pursuing happiness. But at the end of it all, what truly matters?
+          </p>
+        </div>
+      </div>
 
+      {/* GSAP Motion Triggered AVIF Frame Scroll Animation (Screen Locked Until Frame 240) */}
+      <WhyNeedJesusFrameSequence />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-32">
+        <section id="why-do-i-need-jesus-points" className="relative space-y-16">
           {/* 4 Point Visual Progression Grid */}
           <div data-reveal-stagger className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
