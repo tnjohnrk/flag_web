@@ -9,12 +9,12 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
 
-export default function PastorsModal({ name, role, description, imageIndex }) {
+export default function PastorsModal({ name, role, description, imageIndex, imageSrc }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   let [pastorName, pastorRole, pastorDescription] = [name, role, description];
-  let imagePath = "/images/pastor-" + imageIndex + ".avif";
+  let imagePath = imageSrc || ("/images/pastor-" + imageIndex + ".avif");
 
   return (
     <>

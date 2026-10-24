@@ -16,37 +16,41 @@ const ElasticReel = dynamic(() => import("../components/ElasticReel"), {
 import familyPic from "../assets/Images/familyPic.avif";
 
 const AboutUs = () => {
-  const [activePastorIndex, setActivePastorIndex] = useState(0);
+  const pastorsArray = useMemo(() => Object.values(pastorsDetails), []);
+  const defaultCenterIdx = useMemo(() => {
+    const dadIdx = pastorsArray.findIndex((p) => p.tag === "01");
+    return dadIdx >= 0 ? dadIdx : 0;
+  }, [pastorsArray]);
+
+  const [activePastorIndex, setActivePastorIndex] = useState(defaultCenterIdx);
   const carouselRef = useRef(null);
 
-  const pastorsArray = Object.values(pastorsDetails);
   const currentPastor = pastorsArray[activePastorIndex] || pastorsArray[0];
 
   const reelItems = useMemo(() => {
-    return pastorsArray.map((pastor, idx) => ({
-      src: `/images/pastor-cutout-${idx + 1}.webp`,
-      fullSrc: `/images/pastor-${idx + 1}.avif`,
+    return pastorsArray.map((pastor) => ({
+      src: pastor.image,
+      fullSrc: pastor.image,
       alt: pastor.name,
       title: pastor.name,
       subtitle: pastor.role,
       description: pastor.description,
+      tag: pastor.tag,
+      layerNum: pastor.layerNum,
+      baseZIndex: 100 - pastor.layerNum,
     }));
   }, [pastorsArray]);
 
   const handlePrevPastor = () => {
-    setActivePastorIndex((prev) => {
-      const newIdx = (prev - 1 + pastorsArray.length) % pastorsArray.length;
-      carouselRef.current?.open?.(newIdx);
-      return newIdx;
-    });
+    const newIdx = (activePastorIndex - 1 + pastorsArray.length) % pastorsArray.length;
+    setActivePastorIndex(newIdx);
+    carouselRef.current?.open?.(newIdx);
   };
 
   const handleNextPastor = () => {
-    setActivePastorIndex((prev) => {
-      const newIdx = (prev + 1) % pastorsArray.length;
-      carouselRef.current?.open?.(newIdx);
-      return newIdx;
-    });
+    const newIdx = (activePastorIndex + 1) % pastorsArray.length;
+    setActivePastorIndex(newIdx);
+    carouselRef.current?.open?.(newIdx);
   };
 
   // Scroll-Reveal Intersection Observer Engine
@@ -115,8 +119,8 @@ const AboutUs = () => {
             {/* Main Composition */}
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
-              {/* Senior Pastor Cutout Portrait Photo */}
-              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center justify-center relative">
+              {/* Senior Pastor Cutout Portrait Photo (Left Column) */}
+              <div className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4">
                 {/* Subtle Ambient Halo Glow behind Senior Pastor */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#D9A31A]/20 via-[#2C3A82]/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
@@ -135,8 +139,8 @@ const AboutUs = () => {
                 </div>
               </div>
 
-              {/* Left Editorial Text Column (Strict Paragraph Width & Line-Height) */}
-              <div className="lg:col-span-7 order-2 lg:order-1 space-y-6">
+              {/* Right Editorial Text Column (Strict Paragraph Width & Line-Height) */}
+              <div className="lg:col-span-7 order-2 lg:order-2 space-y-6">
                 {/* Lead Featured Paragraph */}
                 <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
                   <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-bold leading-[1.75] max-w-[680px]">
@@ -195,19 +199,16 @@ const AboutUs = () => {
                   OUR STORY
                 </span>
               </div>
-              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight mb-2">
+              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
                 Our Church History
               </h2>
-              <p className="font-sans-clean text-sm sm:text-base text-text-secondary italic">
-                From Two People to a Growing Family
-              </p>
             </div>
 
-            {/* Main Composition */}
+            {/* Main Composition: All text under one sub-topic alongside featured family photo */}
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
               {/* Featured Family Image */}
-              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center">
+              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
                 <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] overflow-hidden rounded-[28px] border border-white/20 dark:border-white/10 shadow-2xl group select-none">
                   <Image
                     src={familyPic}
@@ -226,47 +227,36 @@ const AboutUs = () => {
                 </div>
               </div>
 
-              {/* Left Editorial Text Column (Strict Paragraph Width & Line-Height) */}
+              {/* Text Column with ONE Sub-topic and all paragraphs flowing continuously */}
               <div className="lg:col-span-7 order-2 lg:order-1 space-y-6">
-                {/* Lead Featured Paragraph */}
-                <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
-                  <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-bold leading-[1.75] max-w-[680px]">
+                {/* Single Sub Topic */}
+                <h3 className="font-sans-clean text-xl sm:text-2xl md:text-3xl font-bold text-[#D9A31A] tracking-tight">
+                  From Two People to thousands
+                </h3>
+
+                {/* Paragraphs in exact sequence without separation */}
+                <div className="space-y-5 text-text-secondary dark:text-gray-300 font-sans-clean text-sm sm:text-base leading-[1.8]">
+                  <p>
                     {ourChurchDetails[0]}
                   </p>
-                </div>
-
-                {/* Continuation Paragraph 1 */}
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px] pt-1">
-                  {ourChurchDetails[1]}
-                </p>
-              </div>
-
-            </div>
-
-            {/* Bottom Story Continuation Paragraphs */}
-            <div data-reveal-stagger className="pt-8 border-t border-black/10 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-              <div className="space-y-3">
-                <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                  FAITHFULNESS IN TRIALS
-                </span>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
-                  {ourChurchDetails[2]}
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                  GOD’S CONTINUED PROVISION
-                </span>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px]">
-                  {ourChurchDetails[3]}
-                </p>
-                {ourChurchDetails[4] && (
-                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[640px] mt-2 font-semibold text-[#D9A31A]">
+                  <p>
+                    {ourChurchDetails[1]}
+                  </p>
+                  <p>
+                    {ourChurchDetails[2]}
+                  </p>
+                  <p>
+                    {ourChurchDetails[3]}
+                  </p>
+                  <p className="pt-1">
                     {ourChurchDetails[4]}
                   </p>
-                )}
+                  <p className="font-sans-clean text-xl sm:text-2xl md:text-3xl font-bold text-[#D9A31A] pt-1">
+                    {ourChurchDetails[5]}
+                  </p>
+                </div>
               </div>
+
             </div>
           </div>
         </section>
@@ -385,7 +375,8 @@ const AboutUs = () => {
                   name={pastor.name} 
                   role={pastor.role} 
                   description={pastor.description} 
-                  imageIndex={idx + 1} 
+                  imageIndex={idx + 1}
+                  imageSrc={pastor.image}
                 />
               </div>
             ))}

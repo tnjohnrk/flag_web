@@ -51,8 +51,16 @@ const ElasticReel = forwardRef(function ElasticReel(
   const count = items.length || 1;
 
   // Animated dimensions per bar [width, height]
-  const currentSizes = useRef(items.map(() => ({ w: 58, h: 380 })));
-  const targetSizes = useRef(items.map(() => ({ w: 58, h: 380 })));
+  const currentSizes = useRef(items.map(() => ({ w: 44, h: 380 })));
+  const targetSizes = useRef(items.map(() => ({ w: 44, h: 380 })));
+
+  // Keep size arrays in sync when items length changes
+  useEffect(() => {
+    if (items.length !== currentSizes.current.length) {
+      currentSizes.current = items.map(() => ({ w: layoutConfig.barWidth, h: layoutConfig.baseHeight }));
+      targetSizes.current = items.map(() => ({ w: layoutConfig.barWidth, h: layoutConfig.baseHeight }));
+    }
+  }, [items, layoutConfig.barWidth, layoutConfig.baseHeight]);
 
   // Pointer position tracking
   const pointerPos = useRef({ x: -9999, y: 0, active: false });
@@ -65,59 +73,63 @@ const ElasticReel = forwardRef(function ElasticReel(
 
     if (width < 480) {
       // Small mobile screens (320px - 479px)
-      const gap = 2;
-      const dockPadding = 12;
+      const gap = 1;
+      const dockPadding = 8;
       const availableWidth = Math.max(260, width - dockPadding - (count - 1) * gap);
-      const calculatedWidth = Math.max(18, Math.floor(availableWidth / count));
+      const calculatedWidth = Math.max(14, Math.floor(availableWidth / count));
       setLayoutConfig({
         barWidth: calculatedWidth,
-        baseHeight: 240,
+        baseHeight: 220,
         gap,
         radius: 0,
-        magnify: 3.4,
-        lift: 1.16,
-        influence: 95
+        magnify: 3.5,
+        lift: 1.18,
+        influence: 85
       });
     } else if (width < 768) {
       // Large mobile / Phablet (480px - 767px)
-      const gap = 4;
-      const dockPadding = 20;
+      const gap = 2;
+      const dockPadding = 16;
       const availableWidth = Math.max(400, width - dockPadding - (count - 1) * gap);
-      const calculatedWidth = Math.max(24, Math.floor(availableWidth / count));
+      const calculatedWidth = Math.max(20, Math.floor(availableWidth / count));
       setLayoutConfig({
         barWidth: calculatedWidth,
-        baseHeight: 280,
+        baseHeight: 270,
         gap,
         radius: 0,
         magnify: 2.8,
-        lift: 1.15,
-        influence: 135
+        lift: 1.16,
+        influence: 120
       });
     } else if (width < 1024) {
       // Tablets (768px - 1023px)
-      const gap = 6;
-      const dockPadding = 28;
+      const gap = 4;
+      const dockPadding = 24;
       const availableWidth = width - dockPadding - (count - 1) * gap;
-      const calculatedWidth = Math.max(34, Math.floor(availableWidth / count));
+      const calculatedWidth = Math.max(28, Math.floor(availableWidth / count));
       setLayoutConfig({
         barWidth: calculatedWidth,
-        baseHeight: 330,
+        baseHeight: 320,
         gap,
         radius: 0,
-        magnify: 2.4,
-        lift: 1.14,
-        influence: 175
+        magnify: 2.5,
+        lift: 1.15,
+        influence: 160
       });
     } else {
       // Desktop (>= 1024px)
+      const gap = 5;
+      const dockPadding = 32;
+      const availableWidth = Math.min(1150, width) - dockPadding - (count - 1) * gap;
+      const calculatedWidth = Math.max(38, Math.min(50, Math.floor(availableWidth / count)));
       setLayoutConfig({
-        barWidth: 58,
+        barWidth: calculatedWidth,
         baseHeight: 380,
-        gap: 8,
+        gap,
         radius: 0,
-        magnify: 2.3,
+        magnify: 2.4,
         lift: 1.15,
-        influence: 220
+        influence: 200
       });
     }
   }, [count]);
@@ -138,6 +150,11 @@ const ElasticReel = forwardRef(function ElasticReel(
     return () => observer.disconnect();
   }, [updateLayout]);
 
+  const openIndexRef = useRef(openIndex);
+  useEffect(() => {
+    openIndexRef.current = openIndex;
+  }, [openIndex]);
+
   // Imperative handle for parent components
   useImperativeHandle(ref, () => ({
     open: (index) => {
@@ -152,18 +169,16 @@ const ElasticReel = forwardRef(function ElasticReel(
       onClose?.();
     },
     next: () => {
-      setOpenIndex((prev) => {
-        const nextIdx = (prev + 1) % items.length;
-        onChange?.(nextIdx);
-        return nextIdx;
-      });
+      const nextIdx = (openIndexRef.current + 1) % (items.length || 1);
+      setOpenIndex(nextIdx);
+      onChange?.(nextIdx);
+      return nextIdx;
     },
     prev: () => {
-      setOpenIndex((prev) => {
-        const prevIdx = (prev - 1 + items.length) % items.length;
-        onChange?.(prevIdx);
-        return prevIdx;
-      });
+      const prevIdx = (openIndexRef.current - 1 + (items.length || 1)) % (items.length || 1);
+      setOpenIndex(prevIdx);
+      onChange?.(prevIdx);
+      return prevIdx;
     }
   }));
 
@@ -229,10 +244,11 @@ const ElasticReel = forwardRef(function ElasticReel(
         barEl.style.width = `${Math.round(curr.w * 10) / 10}px`;
         barEl.style.height = `${Math.round(curr.h * 10) / 10}px`;
 
-        // Dynamic 3D depth layer: the more lifted/swelled the cutout is, the higher its z-index
+        // Dynamic 3D depth layer based on Photoshop tree hierarchy
+        const baseZ = items[idx]?.baseZIndex ?? (100 - (items[idx]?.layerNum ?? idx));
         const liftDiff = layoutConfig.baseHeight * (layoutConfig.lift - 1 || 0.1);
         const liftFactor = Math.max(0, (curr.h - layoutConfig.baseHeight) / liftDiff);
-        const zIdx = Math.round(1 + liftFactor * 25);
+        const zIdx = Math.round(baseZ + liftFactor * 60);
         barEl.style.zIndex = zIdx;
       });
 
