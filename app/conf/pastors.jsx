@@ -1,4 +1,6 @@
-const pastorsDetails = [
+import { getMediaUrl } from "@/lib/media";
+
+const rawPastorsDetails = [
   {
     tag: "-09",
     layerNum: 17,
@@ -162,5 +164,10 @@ const pastorsDetails = [
     image: "/images/pastors/pastor-18_09_Jen.png"
   }
 ];
+
+const pastorsDetails = rawPastorsDetails.map((pastor) => ({
+  ...pastor,
+  image: getMediaUrl(pastor.image),
+}));
 
 export default pastorsDetails;

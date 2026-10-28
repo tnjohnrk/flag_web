@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { getMediaUrl } from '@/lib/media';
 
 export default function JoinUsSunday() {
   const mainServices = [
@@ -35,7 +36,7 @@ export default function JoinUsSunday() {
             {/* Background Image */}
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 z-0"
-              style={{ backgroundImage: `url('/images/church_timing.avif')` }}
+              style={{ backgroundImage: `url(${getMediaUrl('/images/church_timing.avif')})` }}
             />
             {/* Dark Overlay for readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/70 to-black/80 z-10" />
@@ -74,7 +75,7 @@ export default function JoinUsSunday() {
             {/* Background Image */}
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 z-0"
-              style={{ backgroundImage: `url('/images/children_services.avif')` }}
+              style={{ backgroundImage: `url(${getMediaUrl('/images/children_services.avif')})` }}
             />
             {/* Dark Overlay for readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/70 to-black/80 z-10" />

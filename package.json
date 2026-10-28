@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "push:cloudinary": "node scripts/upload-to-cloudinary.mjs",
+    "push:home-about": "node scripts/push-home-and-about.mjs",
+    "push:loop-video": "node scripts/upload-hero-loop-video.mjs",
+    "test:cloudinary": "node scripts/test-cloudinary.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -15,6 +19,7 @@
     "@mui/icons-material": "^7.0.1",
     "@mui/material": "^7.0.1",
     "@react-icons/all-files": "^4.1.0",
+    "cloudinary": "^2.11.0",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",
     "lucide-react": "^0.479.0",
@@ -27,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@types/node": "26.2.0",
     "@types/react": "19.0.10",
     "eslint": "^9",

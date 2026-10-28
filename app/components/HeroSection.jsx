@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { getMediaUrl } from '@/lib/media';
 
 export default function HeroSection({ children }) {
   const trackRef = useRef(null);
@@ -98,15 +99,15 @@ export default function HeroSection({ children }) {
               loop
               playsInline
               preload="metadata"
-              poster="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto,so_0/hero_session_video.jpg"
+              poster="https://res.cloudinary.com/hqsoyezk/video/upload/f_auto,q_auto,so_0/v1793183004/flagweb/hero_loop_video.jpg"
               className="hero-video-bg w-full h-full object-cover object-center"
             >
               <source
-                src="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto/hero_session_video.mp4"
+                src="https://res.cloudinary.com/hqsoyezk/video/upload/f_auto,q_auto/v1793183004/flagweb/hero_loop_video.mp4"
                 type="video/mp4"
               />
               <source
-                src="https://res.cloudinary.com/r8qlzh1b/video/upload/f_auto,q_auto/hero_session_video.webm"
+                src="https://res.cloudinary.com/hqsoyezk/video/upload/f_auto,q_auto/v1793183004/flagweb/hero_loop_video.webm"
                 type="video/webm"
               />
             </video>

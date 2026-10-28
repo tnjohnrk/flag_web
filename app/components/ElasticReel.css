@@ -1,305 +1,130 @@
-/* Elastic Reel — Cutout Figures Stage Variant */
+/* ==========================================================
+   Pastoral Team — Master Group Photo Composition
+   - Uses exact Photoshop layer coordinates (leftPct, widthPct)
+   - 100% Static base lineup
+   - Clean, elegant scale on hover / selected (No golden glow, no indicator)
+   - Rev. N. Johnson & Pastor Jemimah prominent in front-center
+   ========================================================== */
 
-.elastic-reel {
+.pastoral-group-stage {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   user-select: none;
   -webkit-user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-.elastic-reel__viewport {
-  position: relative;
-  width: 100%;
-  min-height: 270px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
   overflow: visible;
-}
-
-@media (min-width: 480px) {
-  .elastic-reel__viewport {
-    min-height: 310px;
-  }
-}
-
-@media (min-width: 768px) {
-  .elastic-reel__viewport {
-    min-height: 370px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .elastic-reel__viewport {
-    min-height: 440px;
-  }
-}
-
-/* Dock Stage holding Cutout Figures */
-.elastic-reel__dock {
-  position: relative;
-  display: flex;
-  align-items: flex-end; /* All cutouts stand on a shared baseline floor */
-  justify-content: center;
-  gap: var(--er-gap, 6px);
-  padding: 24px 12px 14px 12px;
-  background: transparent; /* No box enclosing the figures */
-  border: none;
-  box-shadow: none;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  width: 100%;
-  max-width: 100%;
+  padding: 20px 16px 10px 16px;
   box-sizing: border-box;
-  overflow: visible;
-  touch-action: none;
 }
 
-/* Subtle Stage Floor Reflection/Glow underneath the lineup */
-.elastic-reel__dock::after {
-  content: '';
+/* Floor shadow underneath the lineup (soft 0.2 opacity) */
+.pastoral-group-stage__floor-shadow {
   position: absolute;
   bottom: 0;
-  left: 8%;
-  right: 8%;
-  height: 22px;
+  left: 2%;
+  right: 2%;
+  height: 20px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.14), transparent 75%);
+  background: radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.2), transparent 75%);
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
-:root.dark .elastic-reel__dock::after {
-  background: radial-gradient(ellipse at 50% 100%, rgba(217, 163, 26, 0.22), transparent 75%);
-}
-
-@media (max-width: 639px) {
-  .elastic-reel__dock {
-    padding: 12px 6px 10px 6px;
-    gap: var(--er-gap, 2px);
-  }
-  .elastic-reel__dock::after {
-    height: 14px;
-    left: 4%;
-    right: 4%;
-  }
-}
-
-@media (min-width: 640px) and (max-width: 1023px) {
-  .elastic-reel__dock {
-    padding: 16px 10px 12px 10px;
-    gap: var(--er-gap, 4px);
-  }
-}
-
-/* Cutout Bar Column */
-.elastic-reel__bar {
+/* Master Stage Canvas: Safely scaled up by +10% to be bigger while staying strictly inside padding */
+.pastoral-group-stage__lineup {
   position: relative;
-  flex-shrink: 0;
-  cursor: pointer;
-  overflow: visible; /* Cutout figure is NOT clipped by rectangle container */
-  border-radius: 0;
-  box-shadow: none;
-  border: none;
-  background: transparent;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 10733 / 1229;
+  box-sizing: border-box;
+  overflow: visible;
+  transform: scale(1.10); /* Gentle +10% increase for clarity without edge clipping */
+  transform-origin: bottom center;
+}
+
+/* Individual Pastor Cutout Box */
+.pastoral-group-stage__figure {
+  position: absolute;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  cursor: pointer;
   transform-origin: bottom center;
-  touch-action: none;
-  will-change: width, height, transform, z-index;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 /* Cutout Silhouette Image */
-.elastic-reel__bar-image {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+.pastoral-group-stage__img {
+  width: 100%;
   height: 100%;
-  width: auto;
-  max-width: none;
   object-fit: contain;
   object-position: bottom center;
   pointer-events: none;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.22));
-  transition: filter 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+  transition: filter 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
   -webkit-user-drag: none;
 }
 
-:root.dark .elastic-reel__bar-image {
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.65))
-          drop-shadow(0 1px 4px rgba(255, 255, 255, 0.08));
+:root.dark .pastoral-group-stage__img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
 
-/* Magnified Hover / Swelled States on Cutout Silhouette */
-.elastic-reel__bar:hover .elastic-reel__bar-image,
-.elastic-reel__bar:active .elastic-reel__bar-image,
-.elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
-  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.35))
-          drop-shadow(0 0 16px rgba(217, 163, 26, 0.68));
+/* Hover & Selected Feedback: Clean size increase (Subtle 2px shadow) */
+.pastoral-group-stage__figure:hover,
+.pastoral-group-stage__figure.is-hovered {
+  transform: scale(1.06);
 }
 
-:root.dark .elastic-reel__bar:hover .elastic-reel__bar-image,
-:root.dark .elastic-reel__bar:active .elastic-reel__bar-image,
-:root.dark .elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
-  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.85))
-          drop-shadow(0 0 22px rgba(217, 163, 26, 0.82));
+.pastoral-group-stage__figure.is-selected {
+  transform: scale(1.09);
 }
 
-/* Dimmed state when full photo is opened */
-.elastic-reel__dock.has-open-item .elastic-reel__bar-image {
-  filter: blur(2px) grayscale(35%);
-  opacity: 0.28;
+.pastoral-group-stage__figure:hover .pastoral-group-stage__img {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)) brightness(1.03);
 }
 
-.elastic-reel__dock.has-open-item .elastic-reel__bar:hover .elastic-reel__bar-image,
-.elastic-reel__dock.has-open-item .elastic-reel__bar.is-active-bar .elastic-reel__bar-image {
-  filter: blur(0px) grayscale(0%);
-  opacity: 1;
+.pastoral-group-stage__figure.is-selected .pastoral-group-stage__img {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45)) brightness(1.05);
 }
 
-/* Open Full Photo Hero Stage */
-.elastic-reel__open-stage {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 60;
-  pointer-events: auto;
-}
+/* ==========================================================
+   TABLET & MOBILE RESPONSIVE
+   ========================================================== */
 
-.elastic-reel__open-card {
-  position: relative;
-  width: 90vw;
-  max-width: 420px;
-  height: 90%;
-  max-height: 440px;
-  border-radius: 24px;
-  overflow: hidden;
-  background: rgba(18, 18, 24, 0.94);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8),
-              0 0 30px -5px rgba(217, 163, 26, 0.25),
-              inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  animation: elasticSwell 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@media (max-width: 639px) {
-  .elastic-reel__open-card {
-    width: 88vw;
-    max-height: 270px;
-    border-radius: 18px;
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pastoral-group-stage__lineup {
+    transform: none;
   }
 }
 
-@keyframes elasticSwell {
-  0% {
-    opacity: 0;
-    transform: scale(0.65) translateY(16px);
+@media (max-width: 767px) {
+  .pastoral-group-stage {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 16px;
+    justify-content: flex-start;
   }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+
+  .pastoral-group-stage::-webkit-scrollbar {
+    display: none;
   }
-}
 
-.elastic-reel__open-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-}
-
-.elastic-reel__open-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.85) 90%, rgba(0, 0, 0, 0.95) 100%);
-  pointer-events: none;
-}
-
-/* Floating Close Button */
-.elastic-reel__close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 70;
-  width: 32px;
-  height: 32px;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.elastic-reel__close-btn:hover {
-  transform: scale(1.1);
-  background: rgba(217, 163, 26, 0.95);
-  border-color: #D9A31A;
-}
-
-/* Bottom Open Caption Card */
-.elastic-reel__open-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 18px;
-  z-index: 65;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-@media (max-width: 639px) {
-  .elastic-reel__open-caption {
-    padding: 10px 12px;
-    gap: 2px;
+  .pastoral-group-stage__lineup {
+    min-width: 1050px;
+    height: 200px;
+    aspect-ratio: auto;
+    transform: none;
+    padding: 0 16px;
   }
-}
-
-/* Floating Label tooltip while hovering over cutouts */
-.elastic-reel__hover-tag {
-  position: absolute;
-  bottom: -32px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #D9A31A;
-  background: rgba(18, 18, 24, 0.92);
-  backdrop-filter: blur(14px);
-  padding: 4px 10px;
-  border-radius: 9999px;
-  border: 1px solid rgba(217, 163, 26, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
-  animation: fadeInTag 0.16s ease-out;
-  z-index: 50;
-}
-
-@keyframes fadeInTag {
-  from { opacity: 0; transform: translate(-50%, -4px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
 }

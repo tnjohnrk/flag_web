@@ -7,6 +7,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import "./YouTubeVideos.css";
+import { getMediaUrl } from "@/lib/media";
 
 export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS", id = "sermons" }) {
     return (
@@ -65,7 +66,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                                                 />
                                                
                                                 <img
-                                                    src="/images/Playbutton.avif"
+                                                    src={getMediaUrl("/images/Playbutton.avif")}
                                                     alt="YouTube Play"
                                                     className="youtube-center-logo"
                                                     onClick={() => window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`, '_blank')}

@@ -2,18 +2,13 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
+import { getMediaUrl } from "@/lib/media";
 import "./page.css";
 import PastorsModal from "../components/PastorsModal";
 import pastorsDetails from "../conf/pastors";
 import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
-import dynamic from "next/dynamic";
-
-const ElasticReel = dynamic(() => import("../components/ElasticReel"), {
-  ssr: false,
-});
-
-import familyPic from "../assets/Images/familyPic.avif";
+import ElasticReel from "../components/ElasticReel";
 
 const AboutUs = () => {
   const pastorsArray = useMemo(() => Object.values(pastorsDetails), []);
@@ -126,7 +121,7 @@ const AboutUs = () => {
 
                 <div className="relative w-full max-w-[360px] sm:max-w-[400px] flex flex-col items-center select-none group">
                   <Image
-                    src="/images/Pr._Johnson_Magazine.png"
+                    src={getMediaUrl("/images/Pr._Johnson_Magazine.png")}
                     alt="Rev. N. Johnson — Senior Pastor"
                     width={700}
                     height={1017}
@@ -211,7 +206,7 @@ const AboutUs = () => {
               <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
                 <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] overflow-hidden rounded-[28px] border border-white/20 dark:border-white/10 shadow-2xl group select-none">
                   <Image
-                    src={familyPic}
+                    src={getMediaUrl("/images/familyPic.avif")}
                     alt="Rev. N. Johnson & Family"
                     fill
                     sizes="(max-width: 1024px) 100vw, 500px"
@@ -265,7 +260,7 @@ const AboutUs = () => {
         <section 
           data-reveal 
           id="those-who-lead" 
-          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[960px] pt-16 pb-6 sm:pt-10 sm:pb-8 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
+          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[1020px] pt-16 pb-6 sm:pt-10 sm:pb-8 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
         >
           
           {/* Section Header: Title on Top-Left & Navigation on Right */}
@@ -315,19 +310,15 @@ const AboutUs = () => {
             </div>
           </div>
 
-          {/* Main Elastic Reel Dock: A dock of photo slices that swell open into full images */}
+          {/* Main Pastoral Team Group Photo Stage */}
           <div 
             data-reveal
-            className="relative w-full max-w-6xl mx-auto flex items-center justify-center select-none my-2 sm:my-4"
+            className="relative w-full max-w-7xl mx-auto flex items-center justify-center select-none my-2 sm:my-4"
           >
             <ElasticReel
               ref={carouselRef}
               items={reelItems}
-              autoplay="sweep"
-              speed={1.2}
-              pauseOnHover={true}
-              captions={true}
-              labels={true}
+              selectedIndex={activePastorIndex}
               onChange={(index) => {
                 setActivePastorIndex(index);
               }}

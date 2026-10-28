@@ -3,12 +3,13 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getMediaUrl } from "@/lib/media";
 
 const TOTAL_FRAMES = 240;
 
 const getFramePath = (index) => {
   const paddedIndex = String(index).padStart(6, "0");
-  return `/v1_frames/frame_${paddedIndex}.jpg`;
+  return getMediaUrl(`/v1_frames/frame_${paddedIndex}.jpg`);
 };
 
 export default function WhyNeedJesusFrameSequence() {

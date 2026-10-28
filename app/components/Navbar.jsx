@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getMediaUrl } from "@/lib/media";
 import "./Navbar.css";
 import { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
@@ -173,7 +174,7 @@ export default function Navbar() {
   const logoElement = (
     <Image
       alt="FLAG Logo"
-      src="/images/flag-logo.avif"
+      src={getMediaUrl("/images/flag-logo.avif")}
       width={48}
       height={48}
       priority

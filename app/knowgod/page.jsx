@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
+import { getMediaUrl } from '@/lib/media';
 import { Check, Loader2, AlertCircle } from 'lucide-react';
 import WhyNeedJesusFrameSequence from '../components/WhyNeedJesusFrameSequence';
 
@@ -288,7 +289,7 @@ export default function KnowGod() {
             <div className="lg:col-span-6 space-y-6">
               <div className="relative overflow-hidden rounded-[28px] border border-border shadow-2xl group">
                 <Image
-                  src="/images/WhoIsJesus.avif"
+                  src={getMediaUrl("/images/WhoIsJesus.avif")}
                   alt="Who Is Jesus?"
                   width={600}
                   height={450}
@@ -417,7 +418,7 @@ export default function KnowGod() {
               </div>
               <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
                 <Image
-                  src="/images/KnowGodGospelImageA.avif"
+                  src={getMediaUrl("/images/KnowGodGospelImageA.avif")}
                   alt="Sin Separates Us"
                   fill
                   className="object-cover"
@@ -446,7 +447,7 @@ export default function KnowGod() {
               </div>
               <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
                 <Image
-                  src="/images/KnowGodGospellmageB.avif"
+                  src={getMediaUrl("/images/KnowGodGospellmageB.avif")}
                   alt="We Cannot Save Ourselves"
                   fill
                   className="object-cover"
@@ -478,7 +479,7 @@ export default function KnowGod() {
               </div>
               <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
                 <Image
-                  src="/images/KnowGodGospellmageC.avif"
+                  src={getMediaUrl("/images/KnowGodGospellmageC.avif")}
                   alt="Jesus the Bridge"
                   fill
                   className="object-cover"
@@ -507,7 +508,7 @@ export default function KnowGod() {
               </div>
               <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
                 <Image
-                  src="/images/KnowGodGospellmageD.avif"
+                  src={getMediaUrl("/images/KnowGodGospellmageD.avif")}
                   alt="Turn to Jesus"
                   fill
                   className="object-cover"
@@ -835,7 +836,7 @@ export default function KnowGod() {
             <div className="lg:col-span-5 flex justify-center">
               <div className="relative w-full max-w-[380px] aspect-square rounded-3xl overflow-hidden border border-border shadow-2xl group">
                 <Image
-                  src="/images/NextStepimage.avif"
+                  src={getMediaUrl("/images/NextStepimage.avif")}
                   alt="Next Steps with Jesus"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
