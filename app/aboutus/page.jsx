@@ -9,6 +9,7 @@ import pastorsDetails from "../conf/pastors";
 import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
 import ElasticReel from "../components/ElasticReel";
+import PillButton from "../components/PillButton";
 
 const AboutUs = () => {
   const pastorsArray = useMemo(() => Object.values(pastorsDetails), []);
@@ -280,17 +281,19 @@ const AboutUs = () => {
               </p>
             </div>
 
-            {/* Prev & Next Navigator Controls on Top-Right */}
+            {/* Prev & Next Navigator Controls on Top-Right with Pill Animation */}
             <div className="flex items-center space-x-3 select-none flex-shrink-0">
-              <button
+              <PillButton
                 onClick={handlePrevPastor}
                 aria-label="Previous Pastor"
-                className="group flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-70 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer"
+                variant="gold-dark"
+                size="sm"
+                className="!w-10 !h-10 !min-h-0 !p-0 !rounded-full"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-              </button>
+              </PillButton>
 
               <div className="font-editorial text-sm sm:text-base font-bold tracking-widest text-flag-navy dark:text-white">
                 <span className="text-[#D9A31A]">{String(activePastorIndex + 1).padStart(2, "0")}</span>
@@ -298,15 +301,17 @@ const AboutUs = () => {
                 <span className="opacity-60">{String(pastorsArray.length).padStart(2, "0")}</span>
               </div>
 
-              <button
+              <PillButton
                 onClick={handleNextPastor}
                 aria-label="Next Pastor"
-                className="group flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D9A31A]/40 bg-black/10 dark:bg-white/10 text-flag-navy dark:text-white opacity-70 hover:opacity-100 hover:bg-[#D9A31A] hover:text-white hover:border-[#D9A31A] dark:hover:bg-[#D9A31A] dark:hover:border-[#D9A31A] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer"
+                variant="gold-dark"
+                size="sm"
+                className="!w-10 !h-10 !min-h-0 !p-0 !rounded-full"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </PillButton>
             </div>
           </div>
 
@@ -342,19 +347,21 @@ const AboutUs = () => {
               {currentPastor.description}
             </p>
 
-            <div>
-              <button
+            <div className="pt-2">
+              <PillButton
                 onClick={() => {
                   const modalBtn = document.getElementById(`open-pastor-modal-${activePastorIndex}`);
                   if (modalBtn) modalBtn.click();
                 }}
-                className="inline-flex items-center space-x-1.5 text-xs font-sans-clean font-semibold tracking-wider uppercase text-flag-navy dark:text-white hover:text-[#D9A31A] dark:hover:text-[#D9A31A] transition-colors group cursor-pointer"
+                variant="gold"
+                size="sm"
+                className="uppercase tracking-wider text-xs font-bold"
               >
                 <span>Read Full Bio</span>
-                <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-              </button>
+              </PillButton>
             </div>
           </div>
 

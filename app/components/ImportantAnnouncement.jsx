@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import PillButton from './PillButton';
 import { getMediaUrl } from '@/lib/media';
 
 export default function ImportantAnnouncement() {
@@ -90,32 +90,28 @@ export default function ImportantAnnouncement() {
                   {ann.description}
                 </p>
 
-                {/* Action Button */}
-                {ann.isPhone ? (
-                  <a
-                    href={ann.href}
-                    className="mt-auto px-6 py-2.5 bg-flag-yellow hover:bg-[#c29013] text-flag-navy hover:text-flag-deep-navy text-xs font-bold rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md inline-flex items-center gap-2 cursor-pointer"
-                  >
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                {/* Pill Action Button */}
+                <PillButton
+                  href={ann.href}
+                  variant="gold"
+                  size="sm"
+                  className="mt-auto shadow-md"
+                >
+                  {ann.isPhone ? (
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-1C9.716 18 2 10.284 2 2V3z"/>
                     </svg>
-                    <span>{ann.actionText}</span>
-                  </a>
-                ) : (
-                  <Link
-                    href={ann.href}
-                    className="mt-auto px-6 py-2.5 bg-flag-yellow hover:bg-[#c29013] text-flag-navy hover:text-flag-deep-navy text-xs font-bold rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md inline-flex items-center gap-2 cursor-pointer"
-                  >
-                    <svg className="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  ) : (
+                    <svg className="w-3.5 h-3.5 stroke-current fill-none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
                       <line x1="16" y1="13" x2="8" y2="13"/>
                       <line x1="16" y1="17" x2="8" y2="17"/>
                       <polyline points="10 9 9 9 8 9"/>
                     </svg>
-                    <span>{ann.actionText}</span>
-                  </Link>
-                )}
+                  )}
+                  <span>{ann.actionText}</span>
+                </PillButton>
               </div>
             </div>
           ))}

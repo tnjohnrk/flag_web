@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import PillButton from '../components/PillButton';
 
 export default function PrivacyPolicy() {
   const currentYear = new Date().getFullYear();
@@ -111,15 +112,17 @@ export default function PrivacyPolicy() {
 
         {/* Back to Home button */}
         <div className="text-center">
-          <Link
+          <PillButton
             href="/"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-flag-blue hover:bg-[#1f2d6b] text-white font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+            variant="navy"
+            size="lg"
+            className="px-8"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             <span>Back to Home</span>
-          </Link>
+          </PillButton>
         </div>
 
       </div>

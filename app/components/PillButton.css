@@ -1,0 +1,234 @@
+/* React Bits Pill Fill Hover Animation (Clean color fill, steady text) */
+
+.pill-btn {
+  --pb-h: 46px;
+  --pb-pad-x: 24px;
+  --pb-font: 14px;
+  --pb-bg: #D9A31A;
+  --pb-color: #121016;
+  --pb-border: rgba(217, 163, 26, 0.5);
+  --pb-fill: #b8860b;
+  --pb-hover-text: #121016;
+  --pb-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.18);
+  
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--pb-h);
+  padding: 0 var(--pb-pad-x);
+  border: 1px solid var(--pb-border);
+  border-radius: 9999px;
+  background: var(--pb-bg);
+  color: var(--pb-color);
+  font-family: inherit;
+  font-size: var(--pb-font);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: var(--pb-shadow);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              border-color 0.25s ease;
+}
+
+/* Sizing Modifiers */
+.pill-btn--sm {
+  --pb-h: 36px;
+  --pb-pad-x: 16px;
+  --pb-font: 12.5px;
+}
+
+.pill-btn--md {
+  --pb-h: 46px;
+  --pb-pad-x: 24px;
+  --pb-font: 14px;
+}
+
+.pill-btn--lg {
+  --pb-h: 52px;
+  --pb-pad-x: 32px;
+  --pb-font: 15px;
+}
+
+.pill-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.25);
+}
+
+.pill-btn:active {
+  transform: scale(0.97);
+}
+
+/* Circular Expanding Fill Bubble (Smoothly fills with color on hover) */
+.pill-btn__fill {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 0;
+  width: 320%;
+  height: 320%;
+  margin: -160% 0 0 -160%;
+  border-radius: 50%;
+  background: var(--pb-fill);
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.pill-btn:hover .pill-btn__fill,
+.pill-btn:focus-visible .pill-btn__fill {
+  transform: scale(1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Single Static Content Layer (No rolling, no duplicating) */
+.pill-btn__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: 100%;
+  height: 100%;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.pill-btn__content svg {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+.pill-btn:hover .pill-btn__content,
+.pill-btn:focus-visible .pill-btn__content {
+  color: var(--pb-hover-text);
+}
+
+/* Keyboard Focus */
+.pill-btn:focus-visible {
+  outline: 2px solid #D9A31A;
+  outline-offset: 3px;
+}
+
+/* Disabled State */
+.pill-btn--disabled,
+.pill-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===================================================================
+   VARIANTS
+   =================================================================== */
+
+/* 1. Gold (Starts flag gold, fills with deep rich amber gold on hover) */
+.pill-btn--gold {
+  --pb-bg: #D9A31A;
+  --pb-color: #121016;
+  --pb-border: rgba(217, 163, 26, 0.6);
+  --pb-fill: #b5830e;
+  --pb-hover-text: #121016;
+  --pb-shadow: 0 4px 14px -2px rgba(217, 163, 26, 0.45);
+}
+
+/* 2. Gold-Dark (Starts dark with gold border, fills with vibrant gold on hover) */
+.pill-btn--gold-dark {
+  --pb-bg: rgba(18, 16, 22, 0.85);
+  --pb-color: #ffffff;
+  --pb-border: rgba(217, 163, 26, 0.5);
+  --pb-fill: #D9A31A;
+  --pb-hover-text: #121016;
+  --pb-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* 3. WhatsApp (Starts WhatsApp green, fills with dark emerald on hover) */
+.pill-btn--whatsapp {
+  --pb-bg: #25D366;
+  --pb-color: #ffffff;
+  --pb-border: rgba(37, 211, 102, 0.5);
+  --pb-fill: #1da851;
+  --pb-hover-text: #ffffff;
+  --pb-shadow: 0 4px 16px -2px rgba(37, 211, 102, 0.4);
+}
+
+/* 4. Navy (Starts deep navy, fills with vibrant gold on hover) */
+.pill-btn--navy {
+  --pb-bg: #1B2653;
+  --pb-color: #ffffff;
+  --pb-border: rgba(27, 38, 83, 0.6);
+  --pb-fill: #D9A31A;
+  --pb-hover-text: #121016;
+  --pb-shadow: 0 4px 14px -2px rgba(27, 38, 83, 0.35);
+}
+
+/* 5. Glass (Starts translucent glass, fills with gold on hover) */
+.pill-btn--glass {
+  --pb-bg: rgba(255, 255, 255, 0.08);
+  --pb-color: #ffffff;
+  --pb-border: rgba(255, 255, 255, 0.16);
+  --pb-fill: #D9A31A;
+  --pb-hover-text: #121016;
+  --pb-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+html:not(.dark) .pill-btn--glass {
+  --pb-bg: rgba(24, 24, 27, 0.06);
+  --pb-color: #18181b;
+  --pb-border: rgba(24, 24, 27, 0.12);
+  --pb-fill: #D9A31A;
+  --pb-hover-text: #121016;
+}
+
+/* 6. Outline (Minimal outline, fills with gold on hover) */
+.pill-btn--outline {
+  --pb-bg: transparent;
+  --pb-color: currentColor;
+  --pb-border: currentColor;
+  --pb-fill: #D9A31A;
+  --pb-hover-text: #121016;
+  --pb-shadow: none;
+}
+
+/* 7. Danger (Red warning/error) */
+.pill-btn--danger {
+  --pb-bg: #dc2626;
+  --pb-color: #ffffff;
+  --pb-border: rgba(220, 38, 38, 0.5);
+  --pb-fill: #b91c1c;
+  --pb-hover-text: #ffffff;
+  --pb-shadow: 0 4px 14px -2px rgba(220, 38, 38, 0.35);
+}
+
+/* 8. Success (Green success) */
+.pill-btn--success {
+  --pb-bg: #16a34a;
+  --pb-color: #ffffff;
+  --pb-border: rgba(22, 163, 74, 0.5);
+  --pb-fill: #15803d;
+  --pb-hover-text: #ffffff;
+  --pb-shadow: 0 4px 14px -2px rgba(22, 163, 74, 0.35);
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .pill-btn,
+  .pill-btn__fill {
+    transition: none !important;
+  }
+}

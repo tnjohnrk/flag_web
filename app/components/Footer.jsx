@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import "./Footer.css";
+import PillButton from "./PillButton";
 import { FaFacebook } from "@react-icons/all-files/fa/FaFacebook";
 import { FaInstagram } from "@react-icons/all-files/fa/FaInstagram";
 import { FaYoutube } from "@react-icons/all-files/fa/FaYoutube";
@@ -132,15 +133,17 @@ export default function Footer() {
                   Chennai - 600 077.
                 </p>
 
-                <a
+                <PillButton
                   href="https://maps.google.com/?q=Full+Life+Centre+A.G+Church+Thiruverkadu"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D9A31A] text-gray-900 font-sans-clean font-bold text-xs hover:bg-amber-400 transition-all duration-300 shadow-md mt-2"
+                  variant="gold"
+                  size="sm"
+                  className="mt-2 text-xs font-bold"
                 >
                   <Navigation size={14} />
                   <span>Get Directions</span>
-                </a>
+                </PillButton>
               </div>
 
               {/* Prayer Needs & Contact */}

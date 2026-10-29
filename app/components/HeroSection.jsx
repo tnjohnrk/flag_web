@@ -36,19 +36,34 @@ export default function HeroSection({ children }) {
       const isMobile = width < 768;
       const isTablet = width >= 768 && width < 1024;
 
-      // Responsive Shrink Parameters (No rotation, no flipping, upright visual stability)
-      // Desktop: width 100% -> 88%, height 100% -> 84%, radius 0px -> 36px, scale 1 -> 0.92
-      // Tablet: width 100% -> 91%, height 100% -> 87%, radius 0px -> 28px, scale 1 -> 0.94
-      // Mobile: width 100% -> 94%, height 100% -> 90%, radius 0px -> 20px, scale 1 -> 0.96
+      // Responsive Subtle Card Contraction (aligned with target screenshot size)
+      // Desktop: width 100% -> 96.5%, height 100% -> 94.5%, radius 0px -> 22px
+      // Tablet:  width 100% -> 97.0%, height 100% -> 95.5%, radius 0px -> 18px
+      // Mobile:  width 100% -> 97.5%, height 100% -> 96.5%, radius 0px -> 14px
 
-      const targetWidth = isMobile ? (100 - progress * 6) : isTablet ? (100 - progress * 9) : (100 - progress * 12);
-      const targetHeight = isMobile ? (100 - progress * 8) : isTablet ? (100 - progress * 11) : (100 - progress * 16);
-      const targetRadius = isMobile ? (progress * 20) : isTablet ? (progress * 28) : (progress * 36);
-      const targetScale = isMobile ? (1 - progress * 0.04) : isTablet ? (1 - progress * 0.06) : (1 - progress * 0.08);
+      const targetWidth = isMobile
+        ? (100 - progress * 2.5)
+        : isTablet
+        ? (100 - progress * 3.0)
+        : (100 - progress * 3.5);
 
-      const shadowOpacity = (progress * 0.45).toFixed(2);
-      const shadowY = Math.round(progress * 24);
-      const shadowBlur = Math.round(progress * 50);
+      const targetHeight = isMobile
+        ? (100 - progress * 3.5)
+        : isTablet
+        ? (100 - progress * 4.5)
+        : (100 - progress * 5.5);
+
+      const targetRadius = isMobile
+        ? (progress * 14)
+        : isTablet
+        ? (progress * 18)
+        : (progress * 22);
+
+      const targetScale = 1;
+
+      const shadowOpacity = (progress * 0.25).toFixed(2);
+      const shadowY = Math.round(progress * 12);
+      const shadowBlur = Math.round(progress * 30);
 
       hero.style.width = `${targetWidth}%`;
       hero.style.height = `${targetHeight}%`;

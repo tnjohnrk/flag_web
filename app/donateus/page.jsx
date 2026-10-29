@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import copyIcon from '../assets/copy.svg';
 import flagQRCode from '../assets/flagQrcode.svg';
+import PillButton from '../components/PillButton';
 import { Landmark, QrCode, CreditCard, Tag, Banknote, Folder, KeyRound, Check, Heart, ShieldCheck, Sparkles, Globe } from 'lucide-react';
 
 export default function DonateUs() {
@@ -31,16 +32,18 @@ export default function DonateUs() {
     const isCopied = copiedText === textToCopy;
 
     return (
-      <button
+      <PillButton
         onClick={handleCopy}
         type="button"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-background hover:bg-surface-elevated text-text-primary border border-border transition-all duration-200 active:scale-95 shadow-sm"
+        variant={isCopied ? "success" : "glass"}
+        size="sm"
+        className="!text-xs !py-1 !px-3"
         title="Copy to clipboard"
       >
         {isCopied ? (
           <>
-            <Check size={14} className="text-green-500" />
-            <span className="text-green-600 dark:text-green-400">Copied!</span>
+            <Check size={14} className="text-white" />
+            <span>Copied!</span>
           </>
         ) : (
           <>
@@ -48,7 +51,7 @@ export default function DonateUs() {
             <span>{label || "Copy"}</span>
           </>
         )}
-      </button>
+      </PillButton>
     );
   };
 
@@ -152,33 +155,29 @@ export default function DonateUs() {
           <div className="lg:col-span-7 space-y-6">
             <div className="p-6 sm:p-8 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-2xl space-y-6">
               
-              {/* Payment Method Selector Tabs */}
-              <div className="flex items-center justify-center gap-3 p-1.5 bg-background rounded-2xl border border-border">
-                <button
+              {/* Payment Method Selector Tabs with React Bits Pill Animation */}
+              <div className="flex items-center justify-center gap-3 p-1.5 bg-background rounded-full border border-border">
+                <PillButton
                   type="button"
                   onClick={() => handleTabClick('UPI')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-sans-clean font-bold text-sm transition-all duration-300 ${
-                    activeTab === 'UPI'
-                      ? "bg-flag-navy text-white shadow-md dark:bg-[#D9A31A] dark:text-gray-900"
-                      : "text-text-secondary hover:text-text-primary"
-                  }`}
+                  variant={activeTab === 'UPI' ? 'gold' : 'glass'}
+                  size="md"
+                  className="flex-1 font-sans-clean font-bold text-sm"
                 >
-                  <QrCode size={20} />
+                  <QrCode size={18} />
                   <span>UPI / GPay</span>
-                </button>
+                </PillButton>
 
-                <button
+                <PillButton
                   type="button"
                   onClick={() => handleTabClick('NEFT')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-sans-clean font-bold text-sm transition-all duration-300 ${
-                    activeTab === 'NEFT'
-                      ? "bg-flag-navy text-white shadow-md dark:bg-[#D9A31A] dark:text-gray-900"
-                      : "text-text-secondary hover:text-text-primary"
-                  }`}
+                  variant={activeTab === 'NEFT' ? 'gold' : 'glass'}
+                  size="md"
+                  className="flex-1 font-sans-clean font-bold text-sm"
                 >
-                  <Landmark size={20} />
+                  <Landmark size={18} />
                   <span>NEFT / RTGS</span>
-                </button>
+                </PillButton>
               </div>
 
               {/* UPI Tab Content */}

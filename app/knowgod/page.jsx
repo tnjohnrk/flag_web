@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import Image from 'next/image';
 import { getMediaUrl } from '@/lib/media';
 import { Check, Loader2, AlertCircle } from 'lucide-react';
-import WhyNeedJesusFrameSequence from '../components/WhyNeedJesusFrameSequence';
+import PillButton from '../components/PillButton';
 
 export default function KnowGod() {
   const [formStatus, setFormStatus] = useState("idle"); // "idle" | "submitting" | "success" | "error"
@@ -370,189 +370,6 @@ export default function KnowGod() {
 
 
         {/* ===================================================================
-            CHAPTER 2: THE FALL & WHY DO I NEED JESUS?
-            =================================================================== */}
-        <div data-reveal id="why-do-i-need-jesus" className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="font-sans-clean text-xs font-bold tracking-[0.3em] uppercase text-[#D9A31A] block">
-            THE HUMAN CONDITION
-          </span>
-          <h2 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-white tracking-tight">
-            Why Do I Need Jesus?
-          </h2>
-          <div className="w-16 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />
-          <p className="font-sans-clean text-base sm:text-lg text-text-secondary leading-relaxed max-w-xl mx-auto">
-            Many people live chasing success, collecting achievements, and pursuing happiness. But at the end of it all, what truly matters?
-          </p>
-        </div>
-      </div>
-
-      {/* GSAP Motion Triggered AVIF Frame Scroll Animation (Screen Locked Until Frame 240) */}
-      <WhyNeedJesusFrameSequence />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-32">
-        <section id="why-do-i-need-jesus-points" className="relative space-y-16">
-          {/* 4 Point Visual Progression Grid */}
-          <div data-reveal-stagger className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            {/* Point 1 */}
-            <div className="p-6 sm:p-8 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-xl space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="font-editorial text-4xl font-bold text-[#D9A31A]">01</span>
-                <h3 className="font-editorial text-2xl font-bold text-flag-navy dark:text-white">
-                  Sin Separates Us from God
-                </h3>
-                <p className="font-sans-clean text-sm sm:text-base text-text-secondary leading-[1.75]">
-                  No matter how good we try to be, sin has created a gap between us and God.
-                </p>
-                <div className="p-4 bg-background rounded-2xl border-l-4 border-[#D9A31A]">
-                  <p className="font-editorial italic text-sm sm:text-base text-text-primary">
-                    "For all have sinned and fall short of the glory of God."
-                  </p>
-                  <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                    – Romans 3:23
-                  </span>
-                </div>
-                <p className="font-sans-clean text-sm text-text-secondary pt-1">
-                  Left on our own, we are separated from God. But thankfully, God made a way for us to be restored.
-                </p>
-              </div>
-              <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
-                <Image
-                  src={getMediaUrl("/images/KnowGodGospelImageA.avif")}
-                  alt="Sin Separates Us"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Point 2 */}
-            <div className="p-6 sm:p-8 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-xl space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="font-editorial text-4xl font-bold text-[#D9A31A]">02</span>
-                <h3 className="font-editorial text-2xl font-bold text-flag-navy dark:text-white">
-                  We Cannot Save Ourselves
-                </h3>
-                <p className="font-sans-clean text-sm sm:text-base text-text-secondary leading-[1.75]">
-                  We can’t earn our way back to God through good deeds or personal effort. Salvation is a gift—something we can’t achieve but only receive.
-                </p>
-                <div className="p-4 bg-background rounded-2xl border-l-4 border-[#D9A31A]">
-                  <p className="font-editorial italic text-sm sm:text-base text-text-primary">
-                    "For it is by grace you have been saved, through faith—and this is not from yourselves, it is the gift of God."
-                  </p>
-                  <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                    – Ephesians 2:8
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
-                <Image
-                  src={getMediaUrl("/images/KnowGodGospellmageB.avif")}
-                  alt="We Cannot Save Ourselves"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Point 3 — The Bridge */}
-            <div className="p-6 sm:p-8 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-xl space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="font-editorial text-4xl font-bold text-[#D9A31A]">03</span>
-                <h3 className="font-editorial text-2xl font-bold text-flag-navy dark:text-white">
-                  Only Jesus Can Save Us
-                </h3>
-                <p className="font-sans-clean text-sm sm:text-base text-text-secondary leading-[1.75]">
-                  God, who created us, has a purpose for our lives. Jesus is the only way to be reunited with Him.
-                </p>
-                <div className="p-4 bg-background rounded-2xl border-l-4 border-[#D9A31A]">
-                  <p className="font-editorial italic text-sm sm:text-base text-text-primary">
-                    "I am the way and the truth and the life. No one comes to the Father except through me."
-                  </p>
-                  <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                    – John 14:6
-                  </span>
-                </div>
-                <p className="font-sans-clean text-sm text-text-secondary pt-1">
-                  No other path leads to true salvation. Jesus is the bridge that reconnects us to God.
-                </p>
-              </div>
-              <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
-                <Image
-                  src={getMediaUrl("/images/KnowGodGospellmageC.avif")}
-                  alt="Jesus the Bridge"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Point 4 */}
-            <div className="p-6 sm:p-8 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-xl space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="font-editorial text-4xl font-bold text-[#D9A31A]">04</span>
-                <h3 className="font-editorial text-2xl font-bold text-flag-navy dark:text-white">
-                  Turn to Jesus and Believe
-                </h3>
-                <p className="font-sans-clean text-sm sm:text-base text-text-secondary leading-[1.75]">
-                  If you are ready to trust Jesus as your Savior, He is waiting for you with open arms.
-                </p>
-                <div className="p-4 bg-background rounded-2xl border-l-4 border-[#D9A31A]">
-                  <p className="font-editorial italic text-sm sm:text-base text-text-primary">
-                    "Salvation is found in no one else, for there is no other name under heaven given to mankind by which we must be saved."
-                  </p>
-                  <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                    – Acts 4:12
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 relative h-48 rounded-2xl overflow-hidden border border-border">
-                <Image
-                  src={getMediaUrl("/images/KnowGodGospellmageD.avif")}
-                  alt="Turn to Jesus"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-
-          </div>
-
-          {/* Sub-Section: What Must I Do to Be Saved? */}
-          <div data-reveal className="p-8 sm:p-10 bg-surface dark:bg-surface-elevated rounded-3xl border border-border shadow-2xl space-y-6 text-center max-w-3xl mx-auto">
-            <h3 className="font-editorial text-3xl sm:text-4xl font-bold text-flag-navy dark:text-white">
-              What Must I Do to Be Saved?
-            </h3>
-            <p className="font-sans-clean text-base text-text-secondary">
-              The Bible gives a clear answer:
-            </p>
-            <div className="p-6 bg-background rounded-2xl border border-border max-w-2xl mx-auto space-y-2">
-              <p className="font-editorial italic text-lg sm:text-xl text-text-primary">
-                "If you confess with your mouth, 'Jesus is Lord,' and believe in your heart that God raised him from the dead, you will be saved."
-              </p>
-              <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block">
-                – Romans 10:9
-              </span>
-            </div>
-            <p className="font-sans-clean text-sm sm:text-base text-text-secondary max-w-xl mx-auto leading-relaxed">
-              Maybe you think you’ve made too many mistakes or gone too far from God. But nothing is beyond His mercy. Jesus offers forgiveness, a fresh start, and a new life to all who believe in Him.
-            </p>
-            <div className="p-4 bg-background/60 rounded-xl max-w-xl mx-auto">
-              <p className="font-editorial italic text-base text-text-primary">
-                "To all who did receive Him, to those who believed in His name, He gave the right to become children of God."
-              </p>
-              <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                – John 1:12
-              </span>
-            </div>
-            <p className="font-editorial text-2xl font-bold text-[#D9A31A] pt-2">
-              Are you ready to take that step?
-            </p>
-          </div>
-        </section>
-
-
-        {/* ===================================================================
             CHAPTER 3: RECEIVING JESUS & PRAYER OF SALVATION
             =================================================================== */}
         <section data-reveal id="how-do-i-receive-jesus" className="space-y-16">
@@ -666,14 +483,16 @@ export default function KnowGod() {
               />
               
               <div className="mt-2">
-                <button
+                <PillButton
                   type="button"
                   onClick={() => setShowMap(!showMap)}
-                  className="px-4 py-2 bg-flag-blue/10 dark:bg-flag-yellow/10 border border-flag-blue/20 dark:border-flag-yellow/20 hover:bg-flag-blue/20 dark:hover:bg-flag-yellow/20 text-flag-blue dark:text-[#D9A31A] rounded-xl text-xs font-bold transition-all duration-300 inline-flex items-center gap-1.5 cursor-pointer"
+                  variant="gold-dark"
+                  size="sm"
+                  className="text-xs font-bold"
                 >
                   <span>🗺️</span>
                   <span>{showMap ? "Hide Map" : "Select on Map"}</span>
-                </button>
+                </PillButton>
               </div>
 
               {/* Collapsible Leaflet Map Area */}
@@ -688,14 +507,16 @@ export default function KnowGod() {
                       onChange={(e) => setMapSearchQuery(e.target.value)}
                       className="flex-1 border border-border bg-surface text-text-primary rounded-xl px-3 py-1.5 text-xs focus:outline-none"
                     />
-                    <button
+                    <PillButton
                       type="button"
                       onClick={handleMapSearch}
                       disabled={isSearchingMap}
-                      className="px-3 py-1.5 bg-flag-navy dark:bg-[#D9A31A] text-white dark:text-gray-900 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-opacity"
+                      variant="gold"
+                      size="sm"
+                      className="!text-xs font-bold"
                     >
                       {isSearchingMap ? "Searching..." : "Search"}
-                    </button>
+                    </PillButton>
                   </div>
 
                   {/* Leaflet Map Frame */}
@@ -707,20 +528,24 @@ export default function KnowGod() {
                       The map will auto-detect your location with high-accuracy GPS. Search above or drag the pin.
                     </div>
                     <div className="flex items-center gap-2 self-end sm:self-auto">
-                      <button
+                      <PillButton
                         type="button"
                         onClick={handleTriggerGPS}
-                        className="px-3 py-2 bg-flag-blue/10 dark:bg-flag-yellow/10 border border-flag-blue/20 dark:border-flag-yellow/20 hover:bg-flag-blue/20 dark:hover:bg-flag-yellow/20 text-flag-blue dark:text-[#D9A31A] rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                        variant="gold-dark"
+                        size="sm"
+                        className="!text-xs font-bold"
                       >
                         <span>📍 Current Location</span>
-                      </button>
-                      <button
+                      </PillButton>
+                      <PillButton
                         type="button"
                         onClick={() => setShowMap(false)}
-                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                        variant="success"
+                        size="sm"
+                        className="!text-xs font-bold"
                       >
                         <span>✓ Done</span>
-                      </button>
+                      </PillButton>
                     </div>
                   </div>
                 </div>
@@ -796,23 +621,25 @@ export default function KnowGod() {
             )}
 
             <div className="text-center pt-4">
-              <button
+              <PillButton
                 type="submit"
                 disabled={formStatus === "submitting"}
-                className={`w-full sm:w-auto font-sans-clean text-sm font-bold px-8 py-3 rounded-xl transition-all duration-300 shadow-md inline-flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed ${
+                variant={
                   formStatus === "success"
-                    ? "bg-green-600 hover:bg-green-700 text-white dark:bg-green-600 dark:text-white"
+                    ? "success"
                     : formStatus === "error"
-                    ? "bg-red-600 hover:bg-red-700 text-white dark:bg-red-600 dark:text-white"
-                    : "bg-flag-navy hover:bg-flag-deep-navy dark:bg-[#D9A31A] dark:text-gray-900 dark:hover:bg-amber-400 text-white"
-                }`}
+                    ? "danger"
+                    : "gold"
+                }
+                size="lg"
+                className="w-full sm:w-auto font-sans-clean text-sm font-bold px-10 shadow-lg"
               >
-                {formStatus === "submitting" && <Loader2 size={18} className="animate-spin" />}
-                {formStatus === "submitting" && "Submitting..."}
-                {formStatus === "success" && "Submitted Successfully ✓"}
-                {formStatus === "error" && "Try Again"}
-                {formStatus === "idle" && "Submit"}
-              </button>
+                {formStatus === "submitting" && <Loader2 size={18} className="animate-spin mr-2" />}
+                {formStatus === "submitting" && <span>Submitting...</span>}
+                {formStatus === "success" && <span>Submitted Successfully ✓</span>}
+                {formStatus === "error" && <span>Try Again</span>}
+                {formStatus === "idle" && <span>Submit Prayer Request</span>}
+              </PillButton>
             </div>
           </form>
         </section>
