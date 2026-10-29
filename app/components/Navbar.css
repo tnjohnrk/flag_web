@@ -25,8 +25,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   border-radius: 9999px;
   background: rgba(18, 18, 22, 0.5);
   backdrop-filter: blur(20px) saturate(150%);
@@ -37,8 +37,8 @@
               background 0.3s ease,
               border-color 0.3s ease;
   overflow: hidden;
-  padding: 4px;
-  shrink: 0;
+  padding: 3px;
+  flex-shrink: 0;
 }
 
 .glass-badge-btn:hover {
@@ -48,9 +48,26 @@
 }
 
 .glass-badge-btn.is-scrolled {
-  background: rgba(18, 18, 22, 0.5);
+  background: rgba(18, 18, 22, 0.65);
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+html:not(.dark) .glass-badge-btn {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(24, 24, 27, 0.08);
+  box-shadow: 0 10px 32px 0 rgba(24, 24, 27, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+}
+
+html:not(.dark) .glass-badge-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(24, 24, 27, 0.15);
+}
+
+html:not(.dark) .glass-badge-btn.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(24, 24, 27, 0.12);
+  box-shadow: 0 14px 40px 0 rgba(24, 24, 27, 0.18);
 }
 
 /* Centered Floating Glass Nav Pill Bar */
@@ -104,7 +121,7 @@
   background-color: rgba(255, 255, 255, 0.12);
 }
 
-/* Active Highlight Capsule (No Yellow Dot) */
+/* Active Highlight Capsule */
 .glass-nav-link.is-active {
   color: #ffffff;
   font-weight: 600;
@@ -116,7 +133,7 @@
 /* Mobile Glass Toggle Button */
 .glass-mobile-btn {
   pointer-events: auto;
-  display: none !important;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 44px;
@@ -125,6 +142,7 @@
   color: #ffffff;
   background: rgba(18, 18, 22, 0.5);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   transition: background 0.2s ease, transform 0.2s ease;
 }
@@ -134,10 +152,16 @@
   transform: scale(1.05);
 }
 
+html:not(.dark) .glass-mobile-btn {
+  color: #18181b;
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(24, 24, 27, 0.1);
+}
+
 /* Mobile Dropdown Panel */
 .glass-mobile-dropdown {
   pointer-events: auto;
-  display: none !important;
+  display: block;
   position: absolute;
   top: 100%;
   right: 1.5rem;
@@ -152,6 +176,12 @@
   padding: 0.75rem;
   width: calc(100vw - 3rem);
   max-width: 20rem;
+}
+
+html:not(.dark) .glass-mobile-dropdown {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(24, 24, 27, 0.12);
+  box-shadow: 0 20px 40px rgba(24, 24, 27, 0.15);
 }
 
 .glass-mobile-link {
@@ -172,15 +202,28 @@
   background-color: rgba(255, 255, 255, 0.18);
 }
 
-@media (max-width: 1079px) {
-  .glass-central-pill {
-    display: none !important;
-  }
+html:not(.dark) .glass-mobile-link {
+  color: rgba(24, 24, 27, 0.82);
+}
+
+html:not(.dark) .glass-mobile-link:hover,
+html:not(.dark) .glass-mobile-link.is-active {
+  color: #18181b;
+  background-color: rgba(24, 24, 27, 0.08);
+}
+
+@media (max-width: 767px) {
   .glass-mobile-btn {
-    display: inline-flex !important;
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 768px) {
+  .glass-mobile-btn {
+    display: none;
   }
   .glass-mobile-dropdown {
-    display: block !important;
+    display: none;
   }
 }
 
@@ -191,14 +234,14 @@
   }
 
   .glass-badge-btn {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 }
 
 /* Gold Know God Navbar Link Shimmer Effect */
 .glass-nav-link.know-god-shine {
-  color: #121216 !important; /* Dark text for contrast against gold */
+  color: #121216 !important;
   background: linear-gradient(135deg, #D9A31A 0%, #F5C75D 50%, #D9A31A 100%) !important;
   font-weight: 700 !important;
   border-radius: 9999px;

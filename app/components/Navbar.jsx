@@ -7,7 +7,7 @@ import "./Navbar.css";
 import { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "./ThemeProvider";
-import PillNav from "./PillNav";
+import GooeyNav from "./GooeyNav";
 import gsap from "gsap";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +17,32 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navContainerRef = useRef(null);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
+  // Handle escape key and click outside to close mobile menu
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    const handleClickOutside = (e) => {
+      if (navContainerRef.current && !navContainerRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("pointerdown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   // Preloader Nav Handoff Coordinator
   useEffect(() => {
@@ -151,9 +176,11 @@ export default function Navbar() {
     return pathname;
   };
 
+  const activeNavIndex = navItems.findIndex((item) => item.href === getActiveHref());
+
   const handleItemClick = (item, index, event) => {
     if (item.href === "/" && pathname === "/") {
-      event.preventDefault();
+      event?.preventDefault?.();
       window.scrollTo({ top: 0, behavior: "smooth" });
       window.history.pushState(null, "", "/");
       setActiveSection("home");
@@ -163,24 +190,13 @@ export default function Navbar() {
       const targetId = item.href.replace("/#", "");
       const el = document.getElementById(targetId) || document.querySelector(`.${targetId}`);
       if (el) {
-        event.preventDefault();
+        event?.preventDefault?.();
         el.scrollIntoView({ behavior: "smooth" });
         window.history.pushState(null, "", item.href.replace("/", ""));
         setActiveSection(targetId);
       }
     }
   };
-
-  const logoElement = (
-    <Image
-      alt="FLAG Logo"
-      src={getMediaUrl("/images/flag-logo.avif")}
-      width={48}
-      height={48}
-      priority
-      className="w-full h-full object-cover rounded-full"
-    />
-  );
 
   return (
     <header id="home-navbar" className="glass-nav-header">
@@ -190,37 +206,103 @@ export default function Navbar() {
           isNavReady ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex items-center justify-between w-full max-w-7xl mx-auto gap-2 sm:gap-3">
-          {/* Desktop Left Spacer to balance ThemeToggle for center alignment */}
-          <div className="hidden lg:block w-9 sm:w-10 flex-none pointer-events-none" aria-hidden="true" />
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto gap-2 sm:gap-4">
+          {/* 1. Standalone Left Logo Badge */}
+          <Link
+            href="/"
+            className={`logo navbar-logo glass-badge-btn ${isScrolled ? "is-scrolled" : ""}`}
+            aria-label="FLAG Church Home"
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
+          >
+            <Image
+              alt="FLAG Logo"
+              src={getMediaUrl("/images/flag-logo.avif")}
+              width={48}
+              height={48}
+              priority
+              className="w-full h-full object-cover rounded-full"
+            />
+          </Link>
 
-          {/* Centered React Bits <PillNav /> Navigation */}
-          <div className="flex-1 min-w-0 flex items-center justify-center">
-            <PillNav
-              logo={logoElement}
-              logoAlt="FLAG Church Logo"
-              logoHref="/"
+          {/* 2. Centered React Bits <GooeyNav /> Navigation */}
+          <div className="hidden md:flex flex-1 min-w-0 items-center justify-center">
+            <GooeyNav
               items={navItems}
-              activeHref={getActiveHref()}
+              activeIndex={activeNavIndex >= 0 ? activeNavIndex : 0}
               onItemClick={handleItemClick}
               linkComponent={Link}
               theme={theme === "light" ? "light" : "dark"}
-              layout="split"
-              itemStyle="pill"
-              hoverEffect="fill"
-              indicator="pill"
-              highlightColor="#D9A31A"
-              highlightTextColor="#121016"
+              color="#D9A31A"
+              activeTextColor="#121016"
+              colors={["#D9A31A", "#F5C75D", "#E5B138"]}
               size="md"
+              frame={true}
+              particleCount={16}
+              spread={56}
+              animationTime={600}
+              timeVariance={300}
+              gooeyness={0.5}
+              wobble={0.5}
+              hoverEffect={true}
               className={isScrolled ? "is-scrolled" : ""}
             />
           </div>
 
-          {/* Standalone Right Theme Toggle Badge */}
-          <div className="flex-none pointer-events-auto">
+          {/* 3. Right Theme Toggle Badge + Mobile Menu Button */}
+          <div className="flex items-center space-x-2 pointer-events-auto flex-none">
             <ThemeToggle />
+
+            {/* Mobile Toggle Button (Visible strictly on mobile screens < 768px) */}
+            <button
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="glass-mobile-btn md:hidden cursor-pointer"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Panel */}
+        {isMenuOpen && (
+          <div className="glass-mobile-dropdown animate-page-entry md:hidden">
+            <div className="flex flex-col space-y-1">
+              {navItems.map((item, index) => {
+                const isActive = index === activeNavIndex;
+                const isKnowGod = item.href === "/knowgod";
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={(e) => {
+                      handleItemClick(item, index, e);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`glass-mobile-link ${isActive ? "is-active" : ""} ${
+                      isKnowGod ? "know-god-shine-mobile" : ""
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
