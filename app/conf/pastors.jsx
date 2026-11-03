@@ -184,12 +184,16 @@ const mobileImagesByTag = {
   "-03": "/images/paster/royes.png",
   "-02": "/images/paster/manivannan.png",
   "-01": "/images/paster/jerry.png",
+  "01": "/images/paster/johnson_jemimah.png",
+  "02": "/images/paster/jedipheth_jerusha.png",
   "03": "/images/paster/balaji.png",
   "04": "/images/paster/daniel.png",
   "05": "/images/paster/nagaraj.png",
   "06": "/images/paster/joshwa.png",
   "07": "/images/paster/sundar.png",
   "08": "/images/paster/vicky.png",
+  "09": "/images/paster/jency.png",
+  "10": "/images/paster/machtalin.png",
 };
 
 const pastorsDetails = rawPastorsDetails.map((pastor) => ({

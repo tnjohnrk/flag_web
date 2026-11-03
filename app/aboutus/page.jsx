@@ -417,8 +417,8 @@ const AboutUs = () => {
             <AlbumRail
               items={mobileReelItems}
               startIndex={activePastorIndex}
-              coverHeight={210}
-              aspectRatio={0.72}
+              coverHeight={220}
+              aspectRatio={0.735}
               neighborSpacing={0.22}
               compactness={0.58}
               showRuler={true}
