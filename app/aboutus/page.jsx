@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/media";
 import "./page.css";
@@ -34,6 +34,21 @@ const AboutUs = () => {
   const carouselRef = useRef(null);
   const mobileRailRef = useRef(null);
 
+  // Autoplay Ping-Pong / Sweep:
+  // Starts at Center (Pr. Johnson & Pr. Jemimah), moves Right to Sis. Machtalin,
+  // then reverses Left to the beginning, and bounces back Right.
+  const [direction, setDirection] = useState(1); // +1 = moving right, -1 = moving left
+  const [isAutoPaused, setIsAutoPaused] = useState(false);
+  const pauseTimerRef = useRef(null);
+
+  const pauseAutoPlayTemporarily = useCallback(() => {
+    setIsAutoPaused(true);
+    if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+    pauseTimerRef.current = setTimeout(() => {
+      setIsAutoPaused(false);
+    }, 5000); // Resume auto-scrolling 5 seconds after user stops interacting
+  }, []);
+
   const currentPastor = pastorsArray[activePastorIndex] || pastorsArray[0];
 
   const reelItems = useMemo(() => {
@@ -51,6 +66,8 @@ const AboutUs = () => {
   }, [pastorsArray]);
 
   const handlePrevPastor = () => {
+    pauseAutoPlayTemporarily();
+    setDirection(-1);
     const newIdx = (activePastorIndex - 1 + pastorsArray.length) % pastorsArray.length;
     setActivePastorIndex(newIdx);
     carouselRef.current?.open?.(newIdx);
@@ -58,11 +75,50 @@ const AboutUs = () => {
   };
 
   const handleNextPastor = () => {
+    pauseAutoPlayTemporarily();
+    setDirection(1);
     const newIdx = (activePastorIndex + 1) % pastorsArray.length;
     setActivePastorIndex(newIdx);
     carouselRef.current?.open?.(newIdx);
     mobileRailRef.current?.open?.(newIdx);
   };
+
+  // Automatic Ping-Pong / Sweep Scrolling
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (isAutoPaused) return;
+
+    const timer = setInterval(() => {
+      setActivePastorIndex((prevIdx) => {
+        let currentDir = direction;
+        let nextIdx = prevIdx + currentDir;
+
+        // Reached the right-most end card (Sis. Machtalin) -> reverse left
+        if (nextIdx >= pastorsArray.length - 1) {
+          nextIdx = pastorsArray.length - 1;
+          setDirection(-1);
+        }
+        // Reached the left-most end card (Pr. Johnson & Pr. Christina) -> reverse right
+        else if (nextIdx <= 0) {
+          nextIdx = 0;
+          setDirection(1);
+        }
+
+        carouselRef.current?.open?.(nextIdx);
+        mobileRailRef.current?.open?.(nextIdx);
+        return nextIdx;
+      });
+    }, 3200);
+
+    return () => clearInterval(timer);
+  }, [direction, isAutoPaused, pastorsArray.length]);
+
+  useEffect(() => {
+    return () => {
+      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+    };
+  }, []);
 
   // Scroll-Reveal Intersection Observer Engine
   useEffect(() => {
@@ -274,6 +330,9 @@ const AboutUs = () => {
           data-reveal 
           id="those-who-lead" 
           className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[1020px] pt-16 pb-6 sm:pt-10 sm:pb-8 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
+          onMouseEnter={() => setIsAutoPaused(true)}
+          onMouseLeave={() => setIsAutoPaused(false)}
+          onTouchStart={pauseAutoPlayTemporarily}
         >
           
           {/* Section Header: Title on Top-Left & Navigation on Right */}
@@ -340,10 +399,12 @@ const AboutUs = () => {
               onChange={(index) => {
                 setActivePastorIndex(index);
                 mobileRailRef.current?.open?.(index);
+                pauseAutoPlayTemporarily();
               }}
               onItemClick={(item, index) => {
                 setActivePastorIndex(index);
                 mobileRailRef.current?.open?.(index);
+                pauseAutoPlayTemporarily();
               }}
             />
           </div>
@@ -365,10 +426,12 @@ const AboutUs = () => {
               onIndexChange={(index) => {
                 setActivePastorIndex(index);
                 carouselRef.current?.open?.(index);
+                pauseAutoPlayTemporarily();
               }}
               onSelect={(item, index) => {
                 setActivePastorIndex(index);
                 carouselRef.current?.open?.(index);
+                pauseAutoPlayTemporarily();
               }}
             />
           </div>
