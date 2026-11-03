@@ -213,10 +213,12 @@ const AboutUs = () => {
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
               {/* Featured Church History Interactive CardStack */}
-              <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
-                <div className="relative w-full h-[450px] sm:h-[520px] lg:h-[600px] flex items-center justify-center select-none">
+              <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
+                <div className="relative w-full h-[520px] sm:h-[580px] lg:h-[640px] flex items-center justify-center select-none">
                   <CardSwap
                     items={churchHistoryItems}
+                    width={540}
+                    height={390}
                     delay={4000}
                     cardDistance={2}
                     verticalDistance={56}
@@ -233,7 +235,7 @@ const AboutUs = () => {
               </div>
 
               {/* Text Column with ONE Sub-topic and all paragraphs flowing continuously */}
-              <div className="lg:col-span-7 order-2 lg:order-1 space-y-6">
+              <div className="lg:col-span-6 order-2 lg:order-1 space-y-6">
                 {/* Single Sub Topic */}
                 <h3 className="font-sans-clean text-xl sm:text-2xl md:text-3xl font-bold text-[#D9A31A] tracking-tight">
                   From Two People to thousands
