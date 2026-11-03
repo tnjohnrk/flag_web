@@ -261,7 +261,14 @@ html:not(.dark) .glass-mobile-link.is-active {
 /* 2. In GooeyNav: Active selected state inside the active overlay list */
 .gooey-nav__list--active .know-god-shine-pill {
   color: #FFFFFF !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
+  -webkit-text-stroke: 1px #000000 !important;
+  paint-order: stroke fill !important;
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
 
 /* 3. Mobile Pastel Red Know God Link */
@@ -290,6 +297,14 @@ html:not(.dark) .glass-mobile-link.is-active {
   background: #E25C5C !important;
   border-color: #E25C5C !important;
   box-shadow: 0 4px 16px rgba(226, 92, 92, 0.45);
+  font-weight: 800 !important;
+  -webkit-text-stroke: 1px #000000 !important;
+  paint-order: stroke fill !important;
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
 
 @keyframes shine-sweep {
