@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/media";
 import "./page.css";
-import PastorsModal from "../components/PastorsModal";
 import pastorsDetails from "../conf/pastors";
 import ourChurchDetails from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
@@ -341,41 +340,9 @@ const AboutUs = () => {
               {currentPastor.name}
             </h3>
 
-            <p key={`ref-desc-${activePastorIndex}`} className="font-sans-clean text-xs sm:text-sm text-text-secondary leading-relaxed line-clamp-2 max-w-xl mx-auto smooth-crossfade">
+            <p key={`ref-desc-${activePastorIndex}`} className="font-sans-clean text-xs sm:text-sm text-text-secondary leading-relaxed max-w-xl mx-auto smooth-crossfade">
               {currentPastor.description}
             </p>
-
-            <div className="pt-2">
-              <PillButton
-                onClick={() => {
-                  const modalBtn = document.getElementById(`open-pastor-modal-${activePastorIndex}`);
-                  if (modalBtn) modalBtn.click();
-                }}
-                variant="gold"
-                size="sm"
-                className="uppercase tracking-wider text-xs font-bold"
-              >
-                <span>Read Full Bio</span>
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </PillButton>
-            </div>
-          </div>
-
-          {/* Hidden PastorsModal triggers */}
-          <div className="hidden">
-            {pastorsArray.map((pastor, idx) => (
-              <div key={`modal-wrap-${idx}`} id={`open-pastor-modal-${idx}`}>
-                <PastorsModal 
-                  name={pastor.name} 
-                  role={pastor.role} 
-                  description={pastor.description} 
-                  imageIndex={idx + 1}
-                  imageSrc={pastor.image}
-                />
-              </div>
-            ))}
           </div>
         </section>
       </div>
