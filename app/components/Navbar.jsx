@@ -7,7 +7,7 @@ import "./Navbar.css";
 import { useState, useEffect, useRef, useCallback } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "./ThemeProvider";
-import GooeyNav from "./GooeyNav";
+import PillNav from "./PillNav";
 import gsap from "gsap";
 import { usePathname } from "next/navigation";
 
@@ -408,26 +408,25 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* 2. Centered React Bits <GooeyNav /> Navigation */}
+          {/* 2. Centered React Bits <PillNav /> Navigation */}
           <div className="hidden md:flex flex-1 min-w-0 items-center justify-center">
-            <GooeyNav
+            <PillNav
               items={navItems}
-              activeIndex={activeNavIndex >= 0 ? activeNavIndex : 0}
+              activeHref={getActiveHref()}
               onItemClick={handleItemClick}
               linkComponent={Link}
               theme={theme === "light" ? "light" : "dark"}
-              color={isKnowGodActive ? "#E25C5C" : "#D9A31A"}
-              activeTextColor={isKnowGodActive ? "#FFFFFF" : "#121016"}
-              colors={isKnowGodActive ? ["#E25C5C", "#F87171", "#FFAAA6"] : ["#D9A31A", "#F5C75D", "#E5B138"]}
+              layout="split"
+              itemStyle="plain"
+              hoverEffect="glide"
+              indicator="pill"
+              surface="glass"
               size="md"
-              frame={true}
-              particleCount={15}
-              spread={56}
-              animationTime={600}
-              timeVariance={300}
-              gooeyness={0.5}
-              wobble={0.5}
-              hoverEffect={true}
+              highlightColor={isKnowGodActive ? "#E25C5C" : "#D9A31A"}
+              highlightTextColor={isKnowGodActive ? "#FFFFFF" : "#121016"}
+              bounce={0.25}
+              stretch={0.4}
+              collapse="never"
               className={isScrolled ? "is-scrolled" : ""}
             />
           </div>

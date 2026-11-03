@@ -90,8 +90,6 @@
   place-items: center;
   width: var(--pn-mark);
   height: var(--pn-mark);
-  border-radius: 999px;
-  overflow: hidden;
 }
 
 .pill-nav__mark img,
@@ -99,8 +97,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 999px;
+  object-fit: contain;
 }
 
 .pill-nav__bar {
@@ -384,7 +381,7 @@
   top: 0;
   right: 0;
   left: 0;
-  z-index: 10;
+  z-index: 1;
   padding: calc(var(--pn-h) + 10px) 6px 6px;
   border-radius: 24px;
   box-sizing: border-box;
@@ -452,10 +449,9 @@
   pointer-events: none;
 }
 
-/* Optional Custom Know God Accent on the Pill */
+/* Custom styling for Know God link */
 .pill-nav__item.know-god-shine-pill {
-  border: 1px solid rgba(217, 163, 26, 0.45);
-  box-shadow: 0 0 10px rgba(217, 163, 26, 0.25);
+  color: #E25C5C !important;
   font-weight: 600;
 }
 
