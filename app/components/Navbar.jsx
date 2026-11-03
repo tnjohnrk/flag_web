@@ -388,6 +388,9 @@ export default function Navbar() {
             <GooeyNav
               items={navItems}
               activeIndex={activeNavIndex >= 0 ? activeNavIndex : 0}
+              onChange={(index, item) => {
+                handleItemClick(item, index);
+              }}
               onItemClick={handleItemClick}
               linkComponent={Link}
               theme={theme === "light" ? "light" : "dark"}
@@ -396,7 +399,7 @@ export default function Navbar() {
               colors={isKnowGodActive ? ["#E25C5C", "#F87171", "#FFAAA6"] : ["#D9A31A", "#F5C75D", "#E5B138"]}
               size="md"
               frame={true}
-              particleCount={16}
+              particleCount={15}
               spread={56}
               animationTime={600}
               timeVariance={300}
