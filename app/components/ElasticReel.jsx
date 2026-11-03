@@ -42,13 +42,12 @@ const ElasticReel = forwardRef(function ElasticReel(
   },
   ref
 ) {
-  const [activeIndex, setActiveIndex] = useState(selectedIndex);
+  const [internalIndex, setInternalIndex] = useState(selectedIndex ?? 0);
+  const isControlled = selectedIndex !== undefined;
+  const activeIndex = isControlled ? selectedIndex : internalIndex;
+
   const [hoverIndex, setHoverIndex] = useState(-1);
   const figuresRef = useRef([]);
-
-  useEffect(() => {
-    setActiveIndex(selectedIndex);
-  }, [selectedIndex]);
 
   // Smoothly center the active pastor into view on mobile horizontal scroll
   useEffect(() => {
@@ -65,25 +64,26 @@ const ElasticReel = forwardRef(function ElasticReel(
   useImperativeHandle(ref, () => ({
     open: (idx) => {
       if (idx >= 0 && idx < items.length) {
-        setActiveIndex(idx);
+        if (!isControlled) setInternalIndex(idx);
+        onChange?.(idx);
       }
     },
     next: () => {
       const nextIdx = (activeIndex + 1) % (items.length || 1);
-      setActiveIndex(nextIdx);
+      if (!isControlled) setInternalIndex(nextIdx);
       onChange?.(nextIdx);
       return nextIdx;
     },
     prev: () => {
       const prevIdx = (activeIndex - 1 + (items.length || 1)) % (items.length || 1);
-      setActiveIndex(prevIdx);
+      if (!isControlled) setInternalIndex(prevIdx);
       onChange?.(prevIdx);
       return prevIdx;
     }
-  }));
+  }), [activeIndex, isControlled, items.length, onChange]);
 
   const handleSelect = (idx) => {
-    setActiveIndex(idx);
+    if (!isControlled) setInternalIndex(idx);
     onChange?.(idx);
     onItemClick?.(items[idx], idx);
   };

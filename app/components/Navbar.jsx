@@ -108,52 +108,64 @@ export default function Navbar() {
       // If user recently clicked a nav item and page is animating/smooth scrolling, preserve the selected section
       if (isClickScrollingRef.current) return;
 
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const fullHeight = document.documentElement.scrollHeight;
-      const footerEl = document.getElementById("footer");
-      const isAtBottom = scrollY + viewportHeight >= fullHeight - 120;
-      const isFooterInView = isAtBottom || (scrollY > 500 && footerEl && footerEl.getBoundingClientRect().top <= viewportHeight * 0.55);
-
       const cleanPath = pathname?.replace(/\/$/, "") || "/";
+
+      // 1. Pages with dedicated single routes
+      if (cleanPath.startsWith("/aboutus")) {
+        setActiveSection("about-us");
+        return;
+      }
+      if (cleanPath.startsWith("/knowgod")) {
+        setActiveSection("know-god");
+        return;
+      }
+      if (cleanPath.startsWith("/donateus")) {
+        setActiveSection("donate-us");
+        return;
+      }
 
       // 2. Sections on the Home Page
       if (cleanPath === "/") {
+        const scrollY = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const fullHeight = document.documentElement.scrollHeight;
+        const footerEl = document.getElementById("footer");
+        const donateEl = document.getElementById("donate-us");
+        const sermonsEl = document.getElementById("sermons");
+        const timingsEl = document.getElementById("timings");
+
+        // Footer / Connect at bottom of home page
+        const isAtBottom = scrollY + viewportHeight >= fullHeight - 70;
+        const rectFooter = footerEl?.getBoundingClientRect();
+        const isFooterInView = isAtBottom || (rectFooter && rectFooter.top <= viewportHeight * 0.45);
+
         if (isFooterInView) {
           setActiveSection("footer");
           return;
         }
 
-        if (scrollY < 200) {
-          setActiveSection("home");
+        // Donate section
+        const rectDonate = donateEl?.getBoundingClientRect();
+        if (rectDonate && rectDonate.top <= viewportHeight * 0.55 && rectDonate.bottom > 100) {
+          setActiveSection("donate-us");
           return;
         }
 
-        const donateEl = document.getElementById("donate-us");
-        const sermonsEl = document.getElementById("sermons");
+        // Sermons, Songs & Service timings section
+        const rectSermons = sermonsEl?.getBoundingClientRect();
+        const rectTimings = timingsEl?.getBoundingClientRect();
+        const sermonsBottom = rectTimings ? rectTimings.bottom : (rectSermons?.bottom ?? 0);
 
-        const getTop = (el) => {
-          if (!el) return Infinity;
-          return el.getBoundingClientRect().top + scrollY;
-        };
-
-        const focalY = scrollY + 220;
-        const donateTop = getTop(donateEl);
-        const sermonsTop = getTop(sermonsEl);
-
-        if (focalY >= donateTop - 80) {
-          setActiveSection("donate-us");
-        } else if (focalY >= sermonsTop - 80) {
+        if (rectSermons && rectSermons.top <= viewportHeight * 0.55 && sermonsBottom > 100) {
           setActiveSection("sermons");
-        } else {
-          setActiveSection("home");
+          return;
         }
-      } else if (cleanPath.startsWith("/aboutus")) {
-        setActiveSection(isFooterInView ? "footer" : "about-us");
-      } else if (cleanPath.startsWith("/knowgod")) {
-        setActiveSection(isFooterInView ? "footer" : "know-god");
-      } else if (cleanPath.startsWith("/donateus")) {
-        setActiveSection(isFooterInView ? "footer" : "donate-us");
+
+        // Top Hero section
+        if (scrollY < 300 || (rectSermons && rectSermons.top > viewportHeight * 0.55)) {
+          setActiveSection("home");
+          return;
+        }
       } else {
         setActiveSection("");
       }
@@ -275,9 +287,6 @@ export default function Navbar() {
   ];
 
   const getActiveHref = useCallback(() => {
-    // If user scrolled into footer on any page, "Connect" is active
-    if (activeSection === "footer") return "/#footer";
-
     const cleanPath = pathname?.replace(/\/$/, "") || "/";
 
     if (cleanPath.startsWith("/aboutus")) return "/aboutus";
@@ -285,8 +294,9 @@ export default function Navbar() {
     if (cleanPath.startsWith("/donateus")) return "/#donate-us";
 
     if (cleanPath === "/") {
-      if (activeSection === "sermons") return "/#sermons";
+      if (activeSection === "footer") return "/#footer";
       if (activeSection === "donate-us") return "/#donate-us";
+      if (activeSection === "sermons") return "/#sermons";
       return "/";
     }
 

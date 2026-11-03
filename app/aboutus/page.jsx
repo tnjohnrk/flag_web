@@ -63,6 +63,20 @@ const AboutUs = () => {
     }));
   }, [pastorsArray]);
 
+  const mobileReelItems = useMemo(() => {
+    return pastorsArray.map((pastor) => ({
+      src: pastor.mobileImage || pastor.image,
+      fullSrc: pastor.mobileImage || pastor.image,
+      alt: pastor.name,
+      title: pastor.name,
+      subtitle: pastor.role,
+      description: pastor.description,
+      tag: pastor.tag,
+      layerNum: pastor.layerNum,
+      baseZIndex: 100 - pastor.layerNum,
+    }));
+  }, [pastorsArray]);
+
   const handlePrevPastor = useCallback(() => {
     pauseAutoPlayTemporarily();
     directionRef.current = -1;
@@ -401,7 +415,7 @@ const AboutUs = () => {
             className="block md:hidden relative w-full mx-auto select-none my-1"
           >
             <AlbumRail
-              items={reelItems}
+              items={mobileReelItems}
               startIndex={activePastorIndex}
               coverHeight={210}
               aspectRatio={0.72}

@@ -174,9 +174,29 @@ const rawPastorsDetails = [
   }
 ];
 
+const mobileImagesByTag = {
+  "-09": "/images/paster/joshnson and christina.png",
+  "-08": "/images/paster/imman.png",
+  "-07": "/images/paster/praveen.png",
+  "-06": "/images/paster/seranjivi.png",
+  "-05": "/images/paster/thomai.png",
+  "-04": "/images/paster/salamon.png",
+  "-03": "/images/paster/royes.png",
+  "-02": "/images/paster/manivannan.png",
+  "-01": "/images/paster/jerry.png",
+  "03": "/images/paster/balaji.png",
+  "04": "/images/paster/daniel.png",
+  "06": "/images/paster/joshwa.png",
+  "07": "/images/paster/sundar.png",
+  "08": "/images/paster/vicky.png",
+};
+
 const pastorsDetails = rawPastorsDetails.map((pastor) => ({
   ...pastor,
   image: getMediaUrl(pastor.image),
+  mobileImage: mobileImagesByTag[pastor.tag]
+    ? getMediaUrl(mobileImagesByTag[pastor.tag])
+    : getMediaUrl(pastor.image),
 }));
 
 export default pastorsDetails;

@@ -187,6 +187,11 @@ const PillNav = ({
   const [collapsed, setCollapsed] = useState(collapse === 'always');
   const [open, setOpen] = useState(false);
   const [panelShown, setPanelShown] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const controlled = activeHref !== undefined;
   const activeIndex = controlled ? items.findIndex(item => item.href === activeHref) : selected;
@@ -767,8 +772,9 @@ const PillNav = ({
                     item,
                     {
                       className: [ITEM, item.className].filter(Boolean).join(' '),
-                      'aria-current': index === activeIndex ? 'page' : undefined,
+                      'aria-current': (mounted && index === activeIndex) ? 'page' : undefined,
                       'aria-label': item.ariaLabel,
+                      suppressHydrationWarning: true,
                       onClick: event => choose(item, index, event)
                     },
                     <>
@@ -827,7 +833,8 @@ const PillNav = ({
                   item,
                   {
                     className: [ROW, item.className].filter(Boolean).join(' '),
-                    'aria-current': index === activeIndex ? 'page' : undefined,
+                    'aria-current': (mounted && index === activeIndex) ? 'page' : undefined,
+                    suppressHydrationWarning: true,
                     tabIndex: open ? undefined : -1,
                     onClick: event => {
                       choose(item, index, event);
