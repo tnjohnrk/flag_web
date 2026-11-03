@@ -313,7 +313,8 @@ const GooeyNav = ({
         canvas.height = height;
       }
       rects = Array.from(list.children).map(item => {
-        const rect = item.getBoundingClientRect();
+        const targetEl = item.querySelector('.gooey-nav__link') || item;
+        const rect = targetEl.getBoundingClientRect();
         return { x: rect.left - box.left, y: rect.top - box.top, w: rect.width, h: rect.height };
       });
     };
@@ -595,8 +596,14 @@ const GooeyNav = ({
           state.velocity += (omega * omega * (state.mass - state.scale) - 2 * zeta * omega * state.velocity) * h;
           state.scale += state.velocity * h;
         }
-        if (index !== target && state.mass <= 0.002 && state.outgoing <= 0.002 && Math.abs(state.scale) < 0.004) {
+        if (index !== target && (drops.length === 0 || (state.mass <= 0.02 && Math.abs(state.scale) < 0.05))) {
           pills.delete(index);
+        }
+      }
+
+      if (drops.length === 0) {
+        for (const k of [...pills.keys()]) {
+          if (k !== target) pills.delete(k);
         }
       }
 
@@ -614,21 +621,27 @@ const GooeyNav = ({
       render();
 
       const host = pills.get(target);
+      if (drops.length === 0 && host) {
+        host.mass = 1;
+      }
+
       const resting =
         drops.length === 0 &&
         pills.size === 1 &&
         host &&
-        Math.abs(host.mass - host.scale) < 0.0008 &&
-        Math.abs(host.velocity) < 0.004;
+        Math.abs(host.mass - host.scale) < 0.01 &&
+        Math.abs(host.velocity) < 0.02;
       const hoverRect = rects[hover.index];
       const hovering =
         Math.abs(hoverGoal - hover.alpha) > 0.003 ||
         (hoverRect && Math.abs(hoverRect.x + hoverRect.w / 2 - hover.x) + Math.abs(hoverRect.w - hover.w) > 0.1);
       if (!resting || hovering) raf = requestAnimationFrame(frame);
       else {
-        host.mass = 1;
-        host.scale = 1;
-        host.velocity = 0;
+        if (host) {
+          host.mass = 1;
+          host.scale = 1;
+          host.velocity = 0;
+        }
         hover.alpha = hoverGoal;
         render();
       }

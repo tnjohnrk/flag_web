@@ -87,8 +87,16 @@ export default function Navbar() {
     if (isNavReady && navContainerRef.current && typeof window !== "undefined" && gsap) {
       gsap.fromTo(
         navContainerRef.current,
-        { opacity: 0, y: -20, scale: 0.96 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" }
+        { opacity: 0, y: -16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+          onComplete: () => {
+            window.dispatchEvent(new Event("resize"));
+          }
+        }
       );
     }
   }, [isNavReady]);
@@ -100,41 +108,43 @@ export default function Navbar() {
 
       // 1. Check if user scrolled into the footer on ANY page
       const footerEl = document.getElementById("footer");
-      if (footerEl) {
-        const footerRect = footerEl.getBoundingClientRect();
-        if (footerRect.top <= window.innerHeight * 0.55) {
-          setActiveSection("footer");
-          return;
-        }
-      }
+      const isFooterInView = footerEl && (footerEl.getBoundingClientRect().top <= window.innerHeight * 0.65);
 
       const cleanPath = pathname?.replace(/\/$/, "") || "/";
 
       // 2. Sections on the Home Page
       if (cleanPath === "/") {
-        const sections = [
-          { id: "home", selector: ".hero-video-wrapper" },
-          { id: "sermons", selector: "#sermons" },
-          { id: "donate-us", selector: "#donate-us" },
-        ];
-
-        const scrollPos = window.scrollY + 240;
-        for (let i = sections.length - 1; i >= 0; i--) {
-          const el =
-            document.querySelector(sections[i].selector) ||
-            document.getElementById(sections[i].id);
-          if (el && el.offsetTop <= scrollPos) {
-            setActiveSection(sections[i].id);
-            return;
-          }
+        if (window.scrollY < 180) {
+          setActiveSection("home");
+          return;
         }
-        setActiveSection("home");
+
+        if (isFooterInView) {
+          setActiveSection("footer");
+          return;
+        }
+
+        const checkSectionInView = (id, topThreshold = 300, bottomThreshold = 140) => {
+          const el = document.getElementById(id);
+          if (!el) return false;
+          const rect = el.getBoundingClientRect();
+          return rect.top <= topThreshold && rect.bottom >= bottomThreshold;
+        };
+
+        if (checkSectionInView("donate-us")) {
+          setActiveSection("donate-us");
+        } else if (checkSectionInView("sermons")) {
+          setActiveSection("sermons");
+        } else {
+          // In the upper announcement/action buttons zone
+          setActiveSection("home");
+        }
       } else if (cleanPath.startsWith("/aboutus")) {
-        setActiveSection("about-us");
+        setActiveSection(isFooterInView ? "footer" : "about-us");
       } else if (cleanPath.startsWith("/knowgod")) {
-        setActiveSection("know-god");
+        setActiveSection(isFooterInView ? "footer" : "know-god");
       } else if (cleanPath.startsWith("/donateus")) {
-        setActiveSection("donate-us");
+        setActiveSection(isFooterInView ? "footer" : "donate-us");
       } else {
         setActiveSection("");
       }
@@ -343,8 +353,8 @@ export default function Navbar() {
     <header id="home-navbar" className="glass-nav-header">
       <div
         ref={navContainerRef}
-        className={`glass-nav-container transition-all duration-700 ease-out ${
-          isNavReady ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`glass-nav-container ${
+          isNavReady ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto gap-2 sm:gap-4">
