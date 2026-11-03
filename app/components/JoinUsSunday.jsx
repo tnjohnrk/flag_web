@@ -25,7 +25,7 @@ export default function JoinUsSunday() {
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">
+          <h2 className="text-2xl sm:text-3xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">
             Join Us This Sunday
           </h2>
           <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />
@@ -65,14 +65,14 @@ export default function JoinUsSunday() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={`Get Directions to Full Life Centre for ${svc.name}`}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
+                    className="flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm sm:text-base text-white group-hover/item:text-[#D9A31A] transition-colors">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-semibold text-xs sm:text-sm md:text-base text-white group-hover/item:text-[#D9A31A] transition-colors truncate">
                         {svc.name}
                       </span>
                     </div>
-                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors">
+                    <span className="font-sans-clean text-[10px] sm:text-xs md:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors shrink-0">
                       {svc.time}
                     </span>
                   </a>
@@ -110,14 +110,14 @@ export default function JoinUsSunday() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={`Get Directions to Full Life Centre for ${school.name}`}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
+                    className="flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm sm:text-base text-white group-hover/item:text-[#D9A31A] transition-colors">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-semibold text-xs sm:text-sm md:text-base text-white group-hover/item:text-[#D9A31A] transition-colors truncate">
                         {school.name}
                       </span>
                     </div>
-                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors">
+                    <span className="font-sans-clean text-[10px] sm:text-xs md:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors shrink-0">
                       {school.time}
                     </span>
                   </a>

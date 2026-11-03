@@ -119,27 +119,27 @@ export default function HomeHero() {
   };
 
   return (
-    <div className="absolute left-5 sm:left-8 md:left-16 lg:left-20 bottom-20 sm:bottom-16 md:bottom-12 lg:bottom-14 max-w-2xl lg:max-w-3xl z-10 p-2 sm:p-4 pointer-events-none">
-      {/* Main Hero Heading (Increased font size, 3D letter swap on hover, and lifted higher on mobile) */}
-      <h1 ref={containerRef} className="pointer-events-auto text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] select-none">
-        <div className="mb-1 sm:mb-1.5">{renderWords(text1)}</div>
-        <div className={`${playfair.className} font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] mb-1 sm:mb-1.5 pr-2 sm:pr-4`}>
+    <div className="absolute left-3.5 sm:left-8 md:left-16 lg:left-20 right-3.5 sm:right-auto bottom-12 sm:bottom-16 md:bottom-12 lg:bottom-14 max-w-2xl lg:max-w-3xl z-10 p-1 sm:p-4 pointer-events-none">
+      {/* Main Hero Heading (Fully responsive across all screen sizes with 3D letter swap) */}
+      <h1 ref={containerRef} className="pointer-events-auto text-[1.75rem] xs:text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.14] sm:leading-[1.12] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] select-none">
+        <div className="mb-0.5 sm:mb-1.5">{renderWords(text1)}</div>
+        <div className={`${playfair.className} font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] mb-0.5 sm:mb-1.5 pr-2 sm:pr-4`}>
           {renderWords(text2, '', true)}
         </div>
         <div>{renderWords(text3)}</div>
       </h1>
 
-      {/* Dynamic Bible Blessing Verse Section (Increased mobile size & high clarity) */}
-      <div className="mt-4 sm:mt-5 md:mt-5 max-w-lg pointer-events-auto">
+      {/* Dynamic Bible Blessing Verse Section (Fully responsive text scaling) */}
+      <div className="mt-3 sm:mt-5 max-w-lg pointer-events-auto">
         <div
           className={`transition-all duration-500 ease-out transform ${
             fadeState ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
           }`}
         >
-          <p className={`${playfair.className} text-sm sm:text-base md:text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] font-normal italic`}>
+          <p className={`${playfair.className} text-xs sm:text-base md:text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] font-normal italic`}>
             “{currentVerse.verse}”
           </p>
-          <p className="mt-1.5 text-xs sm:text-xs md:text-sm font-sans-clean font-bold tracking-widest text-[#D9A31A] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+          <p className="mt-1 text-[11px] sm:text-xs md:text-sm font-sans-clean font-bold tracking-widest text-[#D9A31A] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
             ({currentVerse.reference})
           </p>
         </div>

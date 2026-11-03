@@ -239,6 +239,18 @@ html:not(.dark) .glass-mobile-link.is-active {
   }
 }
 
+@media (max-width: 480px) {
+  .glass-nav-header {
+    top: 0.625rem;
+    padding: 0 0.5rem;
+  }
+
+  .glass-badge-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* Pastel Red Know God Navbar Item Styling */
 /* 1. In GooeyNav: Unselected state in the main list */
 .gooey-nav__list:not(.gooey-nav__list--active) .know-god-shine-pill {

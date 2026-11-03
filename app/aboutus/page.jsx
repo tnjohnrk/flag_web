@@ -97,28 +97,28 @@ const AboutUs = () => {
   return (
       <div id="about-us" className="pt-24 md:pt-36 space-y-16 lg:space-y-24 overflow-hidden animate-page-entry">
         {/* Main Title Header */}
-        <div data-reveal className="text-center mb-10 px-4 pt-4">
+        <div data-reveal className="text-center mb-8 sm:mb-10 px-4 pt-4">
           <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#D9A31A] mb-2 block">
             WHO WE ARE
           </span>
-          <h1 className="font-editorial text-5xl md:text-6xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
             ABOUT US
           </h1>
           <div className="w-16 h-0.5 bg-[#D9A31A]/70 mx-auto mt-3 rounded-full" />
         </div>
 
         {/* 1. SENIOR PASTOR SECTION */}
-        <section data-reveal id="senior-pastor" className="relative py-10 md:py-16 px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
-          <div className="relative z-10 space-y-10">
+        <section data-reveal id="senior-pastor" className="relative py-8 sm:py-10 md:py-16 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
+          <div className="relative z-10 space-y-8 sm:space-y-10">
             {/* Header Block */}
-            <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-6">
+            <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-5 sm:pb-6">
               <div className="flex items-center space-x-3 mb-2">
                 <span className="w-8 h-[2px] bg-[#D9A31A]" />
                 <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#2C3A82] dark:text-blue-400">
                   SENIOR PASTOR & FOUNDER
                 </span>
               </div>
-              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
+              <h2 className="font-editorial text-3xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
                 Rev. N. Johnson
               </h2>
             </div>
@@ -131,7 +131,7 @@ const AboutUs = () => {
                 {/* Subtle Ambient Halo Glow behind Senior Pastor */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#D9A31A]/20 via-[#2C3A82]/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
-                <div className="relative w-full max-w-[360px] sm:max-w-[400px] flex flex-col items-center select-none group">
+                <div className="relative w-full max-w-[280px] sm:max-w-[360px] lg:max-w-[400px] flex flex-col items-center select-none group">
                   <Image
                     src={getMediaUrl("/images/Pr._Johnson_Magazine.png")}
                     alt="Rev. N. Johnson — Senior Pastor"
@@ -194,17 +194,17 @@ const AboutUs = () => {
         </section>
 
         {/* 2. HISTORY / OUR STORY SECTION */}
-        <section data-reveal id="history" className="relative py-10 md:py-16 px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
-          <div className="relative z-10 space-y-10">
+        <section data-reveal id="history" className="relative py-8 sm:py-10 md:py-16 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
+          <div className="relative z-10 space-y-8 sm:space-y-10">
             {/* Header Block */}
-            <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-6">
+            <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-5 sm:pb-6">
               <div className="flex items-center space-x-3 mb-2">
                 <span className="w-8 h-[2px] bg-[#D9A31A]" />
                 <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#2C3A82] dark:text-blue-400">
                   OUR STORY
                 </span>
               </div>
-              <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
+              <h2 className="font-editorial text-3xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
                 Our Church History
               </h2>
             </div>
@@ -214,7 +214,7 @@ const AboutUs = () => {
               
               {/* Featured Church History Interactive CardStack */}
               <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
-                <div className="relative w-full h-[520px] sm:h-[580px] lg:h-[640px] flex items-center justify-center select-none">
+                <div className="relative w-full h-[380px] sm:h-[460px] md:h-[540px] lg:h-[640px] flex items-center justify-center select-none overflow-visible">
                   <CardSwap
                     items={churchHistoryItems}
                     width={540}
@@ -276,15 +276,15 @@ const AboutUs = () => {
         >
           
           {/* Section Header: Title on Top-Left & Navigation on Right */}
-          <div data-reveal className="flex items-center justify-between gap-4 border-b border-black/10 dark:border-white/10 pb-3 flex-shrink-0">
-            <div className="space-y-1 max-w-xl">
+          <div data-reveal className="flex items-center justify-between gap-2 sm:gap-4 border-b border-black/10 dark:border-white/10 pb-3 flex-shrink-0">
+            <div className="space-y-0.5 sm:space-y-1 max-w-xl">
               <div className="flex items-center space-x-2">
-                <span className="w-6 h-[2px] bg-[#D9A31A]" />
-                <span className="font-sans-clean text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#2C3A82] dark:text-blue-400">
+                <span className="w-5 sm:w-6 h-[2px] bg-[#D9A31A]" />
+                <span className="font-sans-clean text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#2C3A82] dark:text-blue-400">
                   THOSE WHO LEAD
                 </span>
               </div>
-              <h2 className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-tight">
+              <h2 className="font-editorial text-xl sm:text-3xl lg:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-tight">
                 Leadership With Purpose
               </h2>
               <p className="font-sans-clean text-xs sm:text-sm text-text-secondary line-clamp-1 max-w-lg hidden sm:block">

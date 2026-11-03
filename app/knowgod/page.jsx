@@ -524,7 +524,7 @@ export default function KnowGod() {
                   
                   {/* Map Footer Info and Done Button */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-black/5 dark:bg-white/5 p-3 rounded-xl border border-border">
-                    <div className="text-text-secondary text-[10px] sm:text-xs max-w-[50%]">
+                    <div className="text-text-secondary text-[10px] sm:text-xs max-w-full sm:max-w-[50%]">
                       The map will auto-detect your location with high-accuracy GPS. Search above or drag the pin.
                     </div>
                     <div className="flex items-center gap-2 self-end sm:self-auto">

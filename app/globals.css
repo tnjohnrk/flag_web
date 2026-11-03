@@ -58,6 +58,20 @@ body {
   transition: background-color 0.75s cubic-bezier(0.25, 1, 0.5, 1), color 0.75s cubic-bezier(0.25, 1, 0.5, 1);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Universal responsive media safeguards */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
 }
 
 /* Smooth Theme Switching for Backgrounds, Text & Borders */

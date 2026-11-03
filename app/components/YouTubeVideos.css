@@ -41,13 +41,21 @@
 }
 
 .videos-header h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #2c3e50;
     font-family: 'Cormorant Garamond', Georgia, serif;
     letter-spacing: 0.02em;
     margin: 0;
-    white-space: nowrap;
+    text-align: center;
+    word-break: break-word;
+}
+
+@media (min-width: 480px) {
+    .videos-header h2 {
+        font-size: 2rem;
+        white-space: nowrap;
+    }
 }
 
 @media (min-width: 768px) {
@@ -78,8 +86,26 @@
 
 @media (max-width: 640px) {
     .video-wrapper {
-        height: 150px;
-        max-width: 280px;
+        width: 100%;
+        max-width: 290px;
+        aspect-ratio: 16/9;
+        height: auto;
+    }
+    .youtubecontent {
+        padding: 10px 12px;
+        width: 100%;
+    }
+    .swiper-button-next {
+        right: 4px;
+    }
+    .swiper-button-next::after {
+        font-size: 22px;
+    }
+    .swiper-button-prev {
+        left: 4px;
+    }
+    .swiper-button-prev::after {
+        font-size: 22px;
     }
 }
 
