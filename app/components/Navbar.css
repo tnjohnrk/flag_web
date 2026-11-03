@@ -239,72 +239,57 @@ html:not(.dark) .glass-mobile-link.is-active {
   }
 }
 
-/* Gold Know God Navbar Link Shimmer Effect */
-.glass-nav-link.know-god-shine {
-  color: #121216 !important;
-  background: linear-gradient(135deg, #D9A31A 0%, #F5C75D 50%, #D9A31A 100%) !important;
+/* Pastel Red Know God Navbar Item Styling */
+/* 1. In GooeyNav: Unselected state in the main list */
+.gooey-nav__list:not(.gooey-nav__list--active) .know-god-shine-pill {
+  color: #E25C5C !important;
+  font-weight: 600 !important;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.dark .gooey-nav__list:not(.gooey-nav__list--active) .know-god-shine-pill {
+  color: #F87171 !important;
+}
+
+@media (hover: hover) {
+  .gooey-nav__list:not(.gooey-nav__list--active) .know-god-shine-pill:hover {
+    color: #FF8585 !important;
+    opacity: 0.95;
+  }
+}
+
+/* 2. In GooeyNav: Active selected state inside the active overlay list */
+.gooey-nav__list--active .know-god-shine-pill {
+  color: #FFFFFF !important;
   font-weight: 700 !important;
-  border-radius: 9999px;
-  padding: 0.5rem 1.25rem !important;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(217, 163, 26, 0.4);
-  border: 1px solid rgba(217, 163, 26, 0.5);
-  margin-left: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
 }
 
-/* Shine Sweep Keyframes & Effect */
-.glass-nav-link.know-god-shine::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 30%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.6);
-  transform: rotate(30deg);
-  animation: shine-sweep 3s infinite ease-in-out;
-  pointer-events: none;
-  filter: blur(4px);
-}
-
-.glass-nav-link.know-god-shine:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 18px rgba(217, 163, 26, 0.7);
-  background: linear-gradient(135deg, #F5C75D 0%, #FFF3B3 50%, #F5C75D 100%) !important;
-}
-
-/* Mobile Gold Know God Link */
+/* 3. Mobile Pastel Red Know God Link */
 .glass-mobile-link.know-god-shine-mobile {
-  color: #121216 !important;
-  background: linear-gradient(135deg, #D9A31A 0%, #F5C75D 50%, #D9A31A 100%) !important;
-  font-weight: 700 !important;
+  color: #E25C5C !important;
+  background: rgba(226, 92, 92, 0.08) !important;
+  font-weight: 600 !important;
   border-radius: 12px;
+  border: 1px solid rgba(226, 92, 92, 0.25) !important;
   padding: 0.75rem 1rem !important;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 8px rgba(217, 163, 26, 0.3);
   margin-top: 0.5rem;
   display: block;
   text-align: center;
+  transition: all 0.25s ease;
 }
 
-.glass-mobile-link.know-god-shine-mobile::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 30%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.5);
-  transform: rotate(30deg);
-  animation: shine-sweep 3s infinite ease-in-out;
-  pointer-events: none;
-  filter: blur(3px);
+.dark .glass-mobile-link.know-god-shine-mobile {
+  color: #F87171 !important;
+  background: rgba(248, 113, 113, 0.1) !important;
+  border-color: rgba(248, 113, 113, 0.3) !important;
+}
+
+.glass-mobile-link.know-god-shine-mobile.is-active,
+.dark .glass-mobile-link.know-god-shine-mobile.is-active {
+  color: #FFFFFF !important;
+  background: #E25C5C !important;
+  border-color: #E25C5C !important;
+  box-shadow: 0 4px 16px rgba(226, 92, 92, 0.45);
 }
 
 @keyframes shine-sweep {

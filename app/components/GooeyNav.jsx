@@ -235,8 +235,11 @@ const GooeyNav = ({
   const indexRef = useRef(current);
   indexRef.current = current;
   const palette = theme === 'light' ? 'light' : 'dark';
-  const pillColor = color || PILLS[palette].color;
+  const activeItem = items[current];
+  const pillColor = activeItem?.color || color || PILLS[palette].color;
   const pillRgb = parse(pillColor);
+  const activeTints = activeItem?.colors && activeItem.colors.length ? activeItem.colors : colors;
+  const textColor = activeItem?.activeTextColor || activeTextColor || contrastInk(pillRgb);
   const settings = {
     animationTime,
     particleCount,
@@ -246,7 +249,7 @@ const GooeyNav = ({
     wobble,
     hoverEffect,
     pillRgb,
-    tints: colors.map(parse),
+    tints: activeTints.map(parse),
     hoverRgb: parse(PILLS[palette].hover),
     shadow: PILLS[palette].shadow
   };
@@ -255,6 +258,7 @@ const GooeyNav = ({
 
   const select = index => {
     if (index === current) return;
+    engineRef.current?.go(index);
     if (activeIndex === undefined) setInnerIndex(index);
     onChange?.(index, items[index]);
   };
@@ -634,10 +638,23 @@ const GooeyNav = ({
       raf = requestAnimationFrame(frame);
     };
 
+    const applyTargetColors = index => {
+      const s = settingsRef.current;
+      const targetItem = items[index];
+      const targetColor = targetItem?.color || color || PILLS[palette].color;
+      const targetColors = targetItem?.colors && targetItem.colors.length ? targetItem.colors : colors;
+      s.pillRgb = parse(targetColor);
+      s.tints = targetColors.map(parse);
+      const targetInk = targetItem?.activeTextColor || activeTextColor || contrastInk(s.pillRgb);
+      overlay.style.color = targetInk;
+      fallback.style.background = targetColor;
+    };
+
     const settle = index => {
       pills.clear();
       drops.length = 0;
       target = index;
+      applyTargetColors(index);
       const state = pill(index);
       state.mass = 1;
       state.scale = 1;
@@ -653,6 +670,7 @@ const GooeyNav = ({
       }
       const now = performance.now();
       target = index;
+      applyTargetColors(index);
       pill(index);
       for (const drop of drops) {
         drop.index = index;
@@ -739,8 +757,6 @@ const GooeyNav = ({
   useEffect(() => {
     engineRef.current?.refresh();
   }, [pillColor, palette, gooeyness, size, frame]);
-
-  const textColor = activeTextColor || contrastInk(pillRgb);
 
   const labels = interactive =>
     items.map((item, index) => {

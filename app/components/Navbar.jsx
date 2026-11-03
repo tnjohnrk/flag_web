@@ -161,7 +161,14 @@ export default function Navbar() {
     { label: "Donate", href: "/#donate-us" },
     { label: "Connect", href: "/#footer" },
     { label: "About Us", href: "/aboutus" },
-    { label: "Know God", href: "/knowgod", className: "know-god-shine-pill" },
+    { 
+      label: "Know God", 
+      href: "/knowgod", 
+      className: "know-god-shine-pill",
+      color: "#E25C5C",
+      activeTextColor: "#FFFFFF",
+      colors: ["#E25C5C", "#F87171", "#FFAAA6"]
+    },
   ];
 
   const getActiveHref = () => {
@@ -177,6 +184,7 @@ export default function Navbar() {
   };
 
   const activeNavIndex = navItems.findIndex((item) => item.href === getActiveHref());
+  const isKnowGodActive = activeNavIndex === 5;
 
   const handleItemClick = (item, index, event) => {
     if (item.href === "/" && pathname === "/") {
@@ -237,9 +245,9 @@ export default function Navbar() {
               onItemClick={handleItemClick}
               linkComponent={Link}
               theme={theme === "light" ? "light" : "dark"}
-              color="#D9A31A"
-              activeTextColor="#121016"
-              colors={["#D9A31A", "#F5C75D", "#E5B138"]}
+              color={isKnowGodActive ? "#E25C5C" : "#D9A31A"}
+              activeTextColor={isKnowGodActive ? "#FFFFFF" : "#121016"}
+              colors={isKnowGodActive ? ["#E25C5C", "#F87171", "#FFAAA6"] : ["#D9A31A", "#F5C75D", "#E5B138"]}
               size="md"
               frame={true}
               particleCount={16}
