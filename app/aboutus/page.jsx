@@ -31,13 +31,11 @@ const AboutUs = () => {
   }, [pastorsArray]);
 
   const [activePastorIndex, setActivePastorIndex] = useState(defaultCenterIdx);
-  const carouselRef = useRef(null);
-  const mobileRailRef = useRef(null);
 
   // Autoplay Ping-Pong / Sweep:
   // Starts at Center (Pr. Johnson & Pr. Jemimah), moves Right to Sis. Machtalin,
   // then reverses Left to the beginning, and bounces back Right.
-  const [direction, setDirection] = useState(1); // +1 = moving right, -1 = moving left
+  const directionRef = useRef(1); // +1 = moving right, -1 = moving left
   const [isAutoPaused, setIsAutoPaused] = useState(false);
   const pauseTimerRef = useRef(null);
 
@@ -65,23 +63,17 @@ const AboutUs = () => {
     }));
   }, [pastorsArray]);
 
-  const handlePrevPastor = () => {
+  const handlePrevPastor = useCallback(() => {
     pauseAutoPlayTemporarily();
-    setDirection(-1);
-    const newIdx = (activePastorIndex - 1 + pastorsArray.length) % pastorsArray.length;
-    setActivePastorIndex(newIdx);
-    carouselRef.current?.open?.(newIdx);
-    mobileRailRef.current?.open?.(newIdx);
-  };
+    directionRef.current = -1;
+    setActivePastorIndex((prev) => (prev - 1 + pastorsArray.length) % pastorsArray.length);
+  }, [pastorsArray.length, pauseAutoPlayTemporarily]);
 
-  const handleNextPastor = () => {
+  const handleNextPastor = useCallback(() => {
     pauseAutoPlayTemporarily();
-    setDirection(1);
-    const newIdx = (activePastorIndex + 1) % pastorsArray.length;
-    setActivePastorIndex(newIdx);
-    carouselRef.current?.open?.(newIdx);
-    mobileRailRef.current?.open?.(newIdx);
-  };
+    directionRef.current = 1;
+    setActivePastorIndex((prev) => (prev + 1) % pastorsArray.length);
+  }, [pastorsArray.length, pauseAutoPlayTemporarily]);
 
   // Automatic Ping-Pong / Sweep Scrolling
   useEffect(() => {
@@ -91,28 +83,25 @@ const AboutUs = () => {
 
     const timer = setInterval(() => {
       setActivePastorIndex((prevIdx) => {
-        let currentDir = direction;
-        let nextIdx = prevIdx + currentDir;
+        let nextIdx = prevIdx + directionRef.current;
 
         // Reached the right-most end card (Sis. Machtalin) -> reverse left
         if (nextIdx >= pastorsArray.length - 1) {
           nextIdx = pastorsArray.length - 1;
-          setDirection(-1);
+          directionRef.current = -1;
         }
         // Reached the left-most end card (Pr. Johnson & Pr. Christina) -> reverse right
         else if (nextIdx <= 0) {
           nextIdx = 0;
-          setDirection(1);
+          directionRef.current = 1;
         }
 
-        carouselRef.current?.open?.(nextIdx);
-        mobileRailRef.current?.open?.(nextIdx);
         return nextIdx;
       });
     }, 3200);
 
     return () => clearInterval(timer);
-  }, [direction, isAutoPaused, pastorsArray.length]);
+  }, [isAutoPaused, pastorsArray.length]);
 
   useEffect(() => {
     return () => {
@@ -393,17 +382,14 @@ const AboutUs = () => {
             className="hidden md:flex relative w-full max-w-7xl mx-auto items-center justify-center select-none my-2 sm:my-4"
           >
             <ElasticReel
-              ref={carouselRef}
               items={reelItems}
               selectedIndex={activePastorIndex}
               onChange={(index) => {
                 setActivePastorIndex(index);
-                mobileRailRef.current?.open?.(index);
                 pauseAutoPlayTemporarily();
               }}
               onItemClick={(item, index) => {
                 setActivePastorIndex(index);
-                mobileRailRef.current?.open?.(index);
                 pauseAutoPlayTemporarily();
               }}
             />
@@ -415,7 +401,6 @@ const AboutUs = () => {
             className="block md:hidden relative w-full mx-auto select-none my-1"
           >
             <AlbumRail
-              ref={mobileRailRef}
               items={reelItems}
               startIndex={activePastorIndex}
               coverHeight={210}
@@ -425,12 +410,10 @@ const AboutUs = () => {
               showRuler={true}
               onIndexChange={(index) => {
                 setActivePastorIndex(index);
-                carouselRef.current?.open?.(index);
                 pauseAutoPlayTemporarily();
               }}
               onSelect={(item, index) => {
                 setActivePastorIndex(index);
-                carouselRef.current?.open?.(index);
                 pauseAutoPlayTemporarily();
               }}
             />
