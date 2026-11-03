@@ -294,7 +294,7 @@ const AboutUs = () => {
             </div>
 
             {/* Prev & Next Navigator Controls on Top-Right with Pill Animation */}
-            <div className="flex items-center space-x-3 select-none flex-shrink-0">
+            <div className="hidden md:flex items-center space-x-3 select-none flex-shrink-0">
               <PillButton
                 onClick={handlePrevPastor}
                 aria-label="Previous Pastor"
