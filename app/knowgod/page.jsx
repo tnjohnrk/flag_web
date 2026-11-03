@@ -690,7 +690,7 @@ export default function KnowGod() {
                   "For you were once darkness, but now you are light in the Lord. Live as children of light."
                 </p>
                 <span className="font-sans-clean text-xs font-bold text-[#D9A31A] block mt-1">
-                  – Ephesians 5:8
+                  (Ephesians 5:8)
                 </span>
               </div>
 
@@ -702,7 +702,7 @@ export default function KnowGod() {
                 <div className="p-4 bg-surface dark:bg-surface-elevated rounded-2xl border border-border space-y-1">
                   <span className="font-bold text-text-primary block">1. Obey Jesus’ Teachings:</span>
                   <p className="leading-relaxed">
-                    Jesus commanded His followers to make disciples, baptize them, and teach them to obey His word. <strong className="text-[#D9A31A]">– Matthew 28:18-20</strong>
+                    Jesus commanded His followers to make disciples, baptize them, and teach them to obey His word. <strong className="font-sans-clean text-[#D9A31A]">(Matthew 28:18-20)</strong>
                   </p>
                 </div>
 

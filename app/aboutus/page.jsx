@@ -149,36 +149,36 @@ const AboutUs = () => {
                   {seniorPastorDetails[1]}
                 </p>
 
-                {/* Divine Encounter & Call to Ministry (Moved up to fill empty space) */}
+                {/* Family & Today's Impact (Switched to right column) */}
                 <div className="pt-4 space-y-4">
                   <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                    DIVINE ENCOUNTER & CALL TO MINISTRY
+                    FAMILY &amp; TODAY’S IMPACT
                   </span>
                   <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
-                    {seniorPastorDetails[2]}
+                    {seniorPastorDetails[4]}
                   </p>
-                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
-                    {seniorPastorDetails[3]}
-                  </p>
+                  {seniorPastorDetails[5] && (
+                    <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
+                      {seniorPastorDetails[5]}
+                    </p>
+                  )}
                 </div>
               </div>
 
             </div>
 
-            {/* Bottom Continuation Story Paragraphs */}
+            {/* Bottom Continuation Story Paragraphs (Divine Encounter & Call to Ministry) */}
             <div data-reveal-stagger className="pt-8 border-t border-black/10 dark:border-white/10">
               <div className="space-y-4 max-w-4xl">
                 <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                  FAMILY & TODAY’S IMPACT
+                  DIVINE ENCOUNTER &amp; CALL TO MINISTRY
                 </span>
                 <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75]">
-                  {seniorPastorDetails[4]}
+                  {seniorPastorDetails[2]}
                 </p>
-                {seniorPastorDetails[5] && (
-                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] mt-3">
-                    {seniorPastorDetails[5]}
-                  </p>
-                )}
+                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] mt-3">
+                  {seniorPastorDetails[3]}
+                </p>
               </div>
             </div>
           </div>

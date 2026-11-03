@@ -14,7 +14,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
         <div id={id} data-reveal className="Youtubecontainer bg-background">
             <div className="youtubecontent bg-background">
                 <div className="videos-header">
-                    <h2 className="text-text-primary dark:text-white">{title}</h2>
+                    <h2 className="text-text-primary dark:text-white font-editorial">{title}</h2>
                     <div className="underline bg-flag-blue" />
                 </div>
 

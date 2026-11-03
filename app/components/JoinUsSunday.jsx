@@ -3,6 +3,8 @@
 import React from 'react';
 import { getMediaUrl } from '@/lib/media';
 
+const CHURCH_LOCATION_URL = "https://maps.google.com/?q=Full+Life+Centre+A.G+Church+Thiruverkadu";
+
 export default function JoinUsSunday() {
   const mainServices = [
     { name: "Prep Prayer", time: "5:30 AM - 5:55 AM" },
@@ -27,6 +29,9 @@ export default function JoinUsSunday() {
             Join Us This Sunday
           </h2>
           <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />
+          <p className="font-sans-clean text-xs sm:text-sm text-text-secondary mt-2">
+            Click any service to view church location &amp; get directions 📍
+          </p>
         </div>
 
         {/* Two-Column Timings Layout */}
@@ -54,17 +59,23 @@ export default function JoinUsSunday() {
               
               <div className="space-y-4">
                 {mainServices.map((svc, idx) => (
-                  <div 
+                  <a 
                     key={idx} 
-                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all duration-200"
+                    href={CHURCH_LOCATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Get Directions to Full Life Centre for ${svc.name}`}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
                   >
-                    <span className="font-semibold text-sm sm:text-base text-white">
-                      {svc.name}
-                    </span>
-                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm sm:text-base text-white group-hover/item:text-[#D9A31A] transition-colors">
+                        {svc.name}
+                      </span>
+                    </div>
+                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors">
                       {svc.time}
                     </span>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -93,17 +104,23 @@ export default function JoinUsSunday() {
               
               <div className="space-y-4">
                 {sundaySchool.map((school, idx) => (
-                  <div 
+                  <a 
                     key={idx} 
-                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all duration-200"
+                    href={CHURCH_LOCATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Get Directions to Full Life Centre for ${school.name}`}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#D9A31A]/50 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer group/item"
                   >
-                    <span className="font-semibold text-sm sm:text-base text-white">
-                      {school.name}
-                    </span>
-                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm sm:text-base text-white group-hover/item:text-[#D9A31A] transition-colors">
+                        {school.name}
+                      </span>
+                    </div>
+                    <span className="font-sans-clean text-xs sm:text-sm text-[#D9A31A] font-bold bg-[#D9A31A]/15 px-3 py-1 rounded-full border border-[#D9A31A]/20 group-hover/item:bg-[#D9A31A] group-hover/item:text-gray-900 transition-colors">
                       {school.time}
                     </span>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>

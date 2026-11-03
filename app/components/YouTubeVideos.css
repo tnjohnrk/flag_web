@@ -44,7 +44,8 @@
     font-size: 2rem;
     font-weight: 700;
     color: #2c3e50;
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: 0.02em;
     margin: 0;
     white-space: nowrap;
 }

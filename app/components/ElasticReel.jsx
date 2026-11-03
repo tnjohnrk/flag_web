@@ -18,8 +18,8 @@ const STAGE_POSITIONS = {
   "-04": { zIndex: 6,  leftPct: 23.70, widthPct: 5.95,  heightPct: 90.81 },
   "-03": { zIndex: 7,  leftPct: 27.59, widthPct: 5.92,  heightPct: 93.98 },
   "-02": { zIndex: 8,  leftPct: 31.90, widthPct: 8.66,  heightPct: 92.68 },
-  "-01": { zIndex: 9,  leftPct: 36.33, widthPct: 12.34, heightPct: 95.44 },
-  "01":  { zIndex: 18, leftPct: 46.82, widthPct: 12.12, heightPct: 94.30 }, // Rev. N. Johnson & Pastor Jemimah in front center
+  "-01": { zIndex: 19, leftPct: 36.33, widthPct: 12.34, heightPct: 95.44 }, // In front of 01 layer
+  "01":  { zIndex: 18, leftPct: 46.82, widthPct: 12.12, heightPct: 94.30 }, // Rev. N. Johnson & Pastor Jemimah in back of -01
   "02":  { zIndex: 17, leftPct: 54.03, widthPct: 11.36, heightPct: 97.23 }, // Jerusha & family
   "03":  { zIndex: 16, leftPct: 60.60, widthPct: 9.34,  heightPct: 81.94 }, // Pr. Balaji
   "04":  { zIndex: 15, leftPct: 67.84, widthPct: 5.82,  heightPct: 88.93 }, // Pr. Daniel

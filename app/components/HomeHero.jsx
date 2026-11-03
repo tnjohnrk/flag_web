@@ -125,7 +125,7 @@ export default function HomeHero() {
             “{currentVerse.verse}”
           </p>
           <p className="mt-1.5 text-xs sm:text-xs md:text-sm font-sans-clean font-bold tracking-widest text-[#D9A31A] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-            — {currentVerse.reference}
+            ({currentVerse.reference})
           </p>
         </div>
       </div>

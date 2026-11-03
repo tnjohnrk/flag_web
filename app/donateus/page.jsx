@@ -81,7 +81,7 @@ export default function DonateUs() {
           </h1>
           <div className="w-20 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />
           <p className="font-editorial italic text-xl sm:text-2xl text-text-secondary leading-relaxed">
-            “God Loves a Cheerful Giver” <span className="font-sans-clean not-italic text-sm text-[#D9A31A] font-bold uppercase tracking-wider">— 2 Corinthians 9:7</span>
+            “God Loves a Cheerful Giver” <span className="font-sans-clean not-italic text-sm text-[#D9A31A] font-bold uppercase tracking-wider">(2 Corinthians 9:7)</span>
           </p>
         </div>
 
