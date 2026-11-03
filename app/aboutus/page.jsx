@@ -8,6 +8,7 @@ import pastorsDetails from "../conf/pastors";
 import ourChurchDetails, { churchHistoryItems } from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
 import ElasticReel from "../components/ElasticReel";
+import AlbumRail from "../components/AlbumRail";
 import PillButton from "../components/PillButton";
 import CardSwap from "../components/CardSwap";
 
@@ -31,6 +32,7 @@ const AboutUs = () => {
 
   const [activePastorIndex, setActivePastorIndex] = useState(defaultCenterIdx);
   const carouselRef = useRef(null);
+  const mobileRailRef = useRef(null);
 
   const currentPastor = pastorsArray[activePastorIndex] || pastorsArray[0];
 
@@ -52,12 +54,14 @@ const AboutUs = () => {
     const newIdx = (activePastorIndex - 1 + pastorsArray.length) % pastorsArray.length;
     setActivePastorIndex(newIdx);
     carouselRef.current?.open?.(newIdx);
+    mobileRailRef.current?.open?.(newIdx);
   };
 
   const handleNextPastor = () => {
     const newIdx = (activePastorIndex + 1) % pastorsArray.length;
     setActivePastorIndex(newIdx);
     carouselRef.current?.open?.(newIdx);
+    mobileRailRef.current?.open?.(newIdx);
   };
 
   // Scroll-Reveal Intersection Observer Engine
@@ -323,10 +327,11 @@ const AboutUs = () => {
             </div>
           </div>
 
-          {/* Main Pastoral Team Group Photo Stage */}
+          {/* Main Pastoral Team Showcase */}
+          {/* Desktop & Tablet: Master Group Photo Lineup */}
           <div 
             data-reveal
-            className="relative w-full max-w-7xl mx-auto flex items-center justify-center select-none my-2 sm:my-4"
+            className="hidden md:flex relative w-full max-w-7xl mx-auto items-center justify-center select-none my-2 sm:my-4"
           >
             <ElasticReel
               ref={carouselRef}
@@ -334,9 +339,36 @@ const AboutUs = () => {
               selectedIndex={activePastorIndex}
               onChange={(index) => {
                 setActivePastorIndex(index);
+                mobileRailRef.current?.open?.(index);
               }}
               onItemClick={(item, index) => {
                 setActivePastorIndex(index);
+                mobileRailRef.current?.open?.(index);
+              }}
+            />
+          </div>
+
+          {/* Mobile Only: React Bits Pro Album Rail (Vinyl Sleeves Fan) */}
+          <div
+            data-reveal
+            className="block md:hidden relative w-full mx-auto select-none my-1"
+          >
+            <AlbumRail
+              ref={mobileRailRef}
+              items={reelItems}
+              startIndex={activePastorIndex}
+              coverHeight={180}
+              aspectRatio={1}
+              neighborSpacing={0.24}
+              compactness={0.62}
+              showRuler={true}
+              onIndexChange={(index) => {
+                setActivePastorIndex(index);
+                carouselRef.current?.open?.(index);
+              }}
+              onSelect={(item, index) => {
+                setActivePastorIndex(index);
+                carouselRef.current?.open?.(index);
               }}
             />
           </div>
