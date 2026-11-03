@@ -277,23 +277,23 @@ const AlbumRail = forwardRef(function AlbumRail(
               title={isActive ? (item.title || item.name) : `Click to view ${item.title || item.name}`}
             >
               {/* Card Surface */}
-              <div className="album-card-inner group">
-                <div className="relative w-full h-full overflow-hidden flex items-end justify-center">
+              <div className="album-card-inner group bg-white">
+                <div className="relative w-full h-full overflow-hidden flex items-end justify-center bg-white">
                   {/* Pastor Silhouette / Portrait Image */}
                   <img
                     src={item.src || item.fullSrc}
                     alt={item.title || item.name || 'Pastor'}
-                    className="w-full h-full object-contain object-bottom select-none pointer-events-none drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-contain object-bottom select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
                     loading={absOffset <= 1 ? 'eager' : 'lazy'}
                     draggable={false}
                   />
 
                   {/* Gradient Overlay for bottom text legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
 
                   {/* Micro Name Plate on Card Bottom */}
                   <div className="absolute bottom-2 inset-x-2 z-10 text-center pointer-events-none">
-                    <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow">
+                    <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                       {item.title || item.name}
                     </p>
                   </div>
