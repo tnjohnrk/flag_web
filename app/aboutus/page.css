@@ -3,8 +3,7 @@
   #about-us {
     background-color: var(--background, #F2F0EB);
     background-image: 
-      radial-gradient(circle at 15% 15%, rgba(16, 25, 79, 0.03) 0%, transparent 55%),
-      radial-gradient(circle at 85% 85%, rgba(217, 163, 26, 0.06) 0%, transparent 55%);
+      radial-gradient(circle at 15% 15%, rgba(16, 25, 79, 0.03) 0%, transparent 55%);
     transition: background-color 0.4s ease;
     padding-bottom: 4rem;
   }
@@ -12,8 +11,7 @@
   .dark #about-us {
     background-color: #07111F;
     background-image: 
-      radial-gradient(circle at 15% 15%, rgba(21, 27, 91, 0.45) 0%, transparent 55%),
-      radial-gradient(circle at 85% 85%, rgba(196, 197, 42, 0.08) 0%, transparent 55%);
+      radial-gradient(circle at 15% 15%, rgba(21, 27, 91, 0.45) 0%, transparent 55%);
   }
 
   #about-us-new {
@@ -70,7 +68,6 @@
   :root:not(.dark) .pastoral-reference-section {
     background-color: #F2F0EB;
     background-image: 
-      radial-gradient(circle at 88% 25%, rgba(217, 163, 26, 0.1) 0%, transparent 60%),
       radial-gradient(circle at 15% 15%, rgba(16, 25, 79, 0.04) 0%, transparent 50%);
   }
 
