@@ -291,6 +291,7 @@ const GooeyNav = ({
     const tintData = new Float32Array(MAX_DROPS * 3);
     let raf = 0;
     let last = 0;
+    let targetStartTime = 0;
     let disposed = false;
 
     const measure = () => {
@@ -621,6 +622,18 @@ const GooeyNav = ({
       render();
 
       const host = pills.get(target);
+      if (now - targetStartTime > (s.animationTime + 200) && (drops.length > 0 || pills.size > 1)) {
+        drops.length = 0;
+        for (const k of [...pills.keys()]) {
+          if (k !== target) pills.delete(k);
+        }
+        if (host) {
+          host.mass = 1;
+          host.scale = 1;
+          host.velocity = 0;
+        }
+      }
+
       if (drops.length === 0 && host) {
         host.mass = 1;
       }
@@ -684,6 +697,7 @@ const GooeyNav = ({
         return;
       }
       const now = performance.now();
+      targetStartTime = now;
       target = index;
       applyTargetColors(index);
       pill(index);
@@ -732,6 +746,13 @@ const GooeyNav = ({
     resizeObserver.observe(stage);
     resizeObserver.observe(list);
 
+    const onWindowResize = () => {
+      measure();
+      if (!drops.length) settle(target < 0 ? indexRef.current : target);
+      else render();
+    };
+    window.addEventListener('resize', onWindowResize);
+
     list.addEventListener('pointerover', onOver);
     list.addEventListener('pointerleave', onLeave);
 
@@ -748,6 +769,10 @@ const GooeyNav = ({
         measure();
         go(index, true);
       },
+      settle: index => {
+        measure();
+        settle(index);
+      },
       refresh: () => {
         measure();
         render();
@@ -759,6 +784,7 @@ const GooeyNav = ({
       disposed = true;
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
+      window.removeEventListener('resize', onWindowResize);
       list.removeEventListener('pointerover', onOver);
       list.removeEventListener('pointerleave', onLeave);
       if (gl && pipeline) {

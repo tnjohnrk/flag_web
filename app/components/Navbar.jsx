@@ -30,6 +30,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navContainerRef = useRef(null);
+  const isClickScrollingRef = useRef(false);
+  const clickTimeoutRef = useRef(null);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -106,37 +108,47 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
 
-      // 1. Check if user scrolled into the footer on ANY page
+      // If user recently clicked a nav item and page is animating/smooth scrolling, preserve the selected section
+      if (isClickScrollingRef.current) return;
+
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
       const footerEl = document.getElementById("footer");
-      const isFooterInView = footerEl && (footerEl.getBoundingClientRect().top <= window.innerHeight * 0.65);
+      const isAtBottom = scrollY + viewportHeight >= fullHeight - 120;
+      const isFooterInView = isAtBottom || (scrollY > 500 && footerEl && footerEl.getBoundingClientRect().top <= viewportHeight * 0.55);
 
       const cleanPath = pathname?.replace(/\/$/, "") || "/";
 
       // 2. Sections on the Home Page
       if (cleanPath === "/") {
-        if (window.scrollY < 180) {
-          setActiveSection("home");
-          return;
-        }
-
         if (isFooterInView) {
           setActiveSection("footer");
           return;
         }
 
-        const checkSectionInView = (id, topThreshold = 300, bottomThreshold = 140) => {
-          const el = document.getElementById(id);
-          if (!el) return false;
-          const rect = el.getBoundingClientRect();
-          return rect.top <= topThreshold && rect.bottom >= bottomThreshold;
+        if (scrollY < 200) {
+          setActiveSection("home");
+          return;
+        }
+
+        const donateEl = document.getElementById("donate-us");
+        const sermonsEl = document.getElementById("sermons");
+
+        const getTop = (el) => {
+          if (!el) return Infinity;
+          return el.getBoundingClientRect().top + scrollY;
         };
 
-        if (checkSectionInView("donate-us")) {
+        const focalY = scrollY + 220;
+        const donateTop = getTop(donateEl);
+        const sermonsTop = getTop(sermonsEl);
+
+        if (focalY >= donateTop - 80) {
           setActiveSection("donate-us");
-        } else if (checkSectionInView("sermons")) {
+        } else if (focalY >= sermonsTop - 80) {
           setActiveSection("sermons");
         } else {
-          // In the upper announcement/action buttons zone
           setActiveSection("home");
         }
       } else if (cleanPath.startsWith("/aboutus")) {
@@ -187,6 +199,13 @@ export default function Navbar() {
 
       if (targetId && (targetId === "sermons" || targetId === "donate-us" || targetId === "footer")) {
         sessionStorage.removeItem("flag-nav-target");
+        isClickScrollingRef.current = true;
+        if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+        clickTimeoutRef.current = setTimeout(() => {
+          isClickScrollingRef.current = false;
+        }, 1200);
+
+        setActiveSection(targetId);
         let attempts = 0;
         const maxAttempts = 25;
         const interval = setInterval(() => {
@@ -291,6 +310,12 @@ export default function Navbar() {
   };
 
   const handleItemClick = (item, index, event) => {
+    isClickScrollingRef.current = true;
+    if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+    clickTimeoutRef.current = setTimeout(() => {
+      isClickScrollingRef.current = false;
+    }, 1000);
+
     const cleanPath = pathname?.replace(/\/$/, "") || "/";
 
     // 1. Home Link
@@ -388,9 +413,6 @@ export default function Navbar() {
             <GooeyNav
               items={navItems}
               activeIndex={activeNavIndex >= 0 ? activeNavIndex : 0}
-              onChange={(index, item) => {
-                handleItemClick(item, index);
-              }}
               onItemClick={handleItemClick}
               linkComponent={Link}
               theme={theme === "light" ? "light" : "dark"}
