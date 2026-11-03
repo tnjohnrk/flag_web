@@ -5,12 +5,24 @@ import Image from "next/image";
 import { getMediaUrl } from "@/lib/media";
 import "./page.css";
 import pastorsDetails from "../conf/pastors";
-import ourChurchDetails from "../conf/ourChurch";
+import ourChurchDetails, { churchHistoryItems } from "../conf/ourChurch";
 import seniorPastorDetails from "../conf/seniorPastor";
 import ElasticReel from "../components/ElasticReel";
 import PillButton from "../components/PillButton";
+import CardSwap from "../components/CardSwap";
 
 const AboutUs = () => {
+  const [theme, setTheme] = useState('dark');
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const updateTheme = () => {
+      setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    };
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
   const pastorsArray = useMemo(() => Object.values(pastorsDetails), []);
   const defaultCenterIdx = useMemo(() => {
     const dadIdx = pastorsArray.findIndex((p) => p.tag === "01");
@@ -197,27 +209,27 @@ const AboutUs = () => {
               </h2>
             </div>
 
-            {/* Main Composition: All text under one sub-topic alongside featured family photo */}
+            {/* Main Composition: All text under one sub-topic alongside interactive CardSwap stack */}
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
-              {/* Featured Family Image */}
+              {/* Featured Church History Interactive CardStack */}
               <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
-                <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] overflow-hidden rounded-[28px] border border-white/20 dark:border-white/10 shadow-2xl group select-none">
-                  <Image
-                    src={getMediaUrl("/images/familyPic.avif")}
-                    alt="Rev. N. Johnson & Family"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 500px"
-                    priority
-                    className="object-cover object-center w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
+                <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[470px] flex items-center justify-center select-none">
+                  <CardSwap
+                    items={churchHistoryItems}
+                    width={400}
+                    height={300}
+                    cardDistance={48}
+                    verticalDistance={58}
+                    depth={80}
+                    skewAmount={5}
+                    delay={4000}
+                    theme={theme}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <span className="font-editorial text-xs sm:text-sm text-white/90 italic drop-shadow-md block">
-                      Rev. N. Johnson & Family — Pioneering FLAG Ministry
-                    </span>
-                  </div>
                 </div>
+                <span className="font-editorial text-xs sm:text-sm text-text-secondary dark:text-gray-300 italic text-center mt-2 block tracking-wide">
+                  Drag or click cards to explore our church journey
+                </span>
               </div>
 
               {/* Text Column with ONE Sub-topic and all paragraphs flowing continuously */}
