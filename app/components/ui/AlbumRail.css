@@ -35,6 +35,25 @@
   cursor: grabbing;
 }
 
+/* Side Tap Zones for effortless mobile navigation */
+.album-rail-tap-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 26%;
+  z-index: 60;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.album-rail-tap-zone--left {
+  left: 0;
+}
+
+.album-rail-tap-zone--right {
+  right: 0;
+}
+
 /* Individual Card Unit */
 .album-rail-card {
   position: absolute;
@@ -45,6 +64,14 @@
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
               opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: pointer;
+}
+
+.album-rail-card.is-neighbor {
+  cursor: pointer;
+}
+
+.album-rail-card.is-neighbor:active .album-card-inner {
+  transform: scale(0.96);
 }
 
 /* Card Surface */
@@ -58,7 +85,7 @@
   box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.55),
               0 4px 12px -2px rgba(0, 0, 0, 0.35),
               inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 :root:not(.dark) .album-card-inner {
@@ -143,10 +170,10 @@
 
 /* Prev / Next Control Buttons */
 .album-rail-btn {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  min-height: 36px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;

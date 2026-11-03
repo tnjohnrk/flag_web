@@ -12,18 +12,17 @@ import './AlbumRail.css';
 
 /**
  * Album Rail / 3D Card Rail — React Bits Pro
- * A fan of elegant cards fanned in 3D perspective.
- * Pure card representation (no CD/vinyl disc or audio player).
- * Tailored for mobile touch, smooth drag gestures, and reactive navigation.
+ * A fan of elegant cards in 3D perspective.
+ * Smooth touch swipe and instant click-to-move navigation.
  */
 const AlbumRail = forwardRef(function AlbumRail(
   {
     items = [],
     startIndex = 0,
-    aspectRatio = 0.72,
-    coverHeight = 220,
-    neighborSpacing = 0.22,
-    compactness = 0.58,
+    aspectRatio = 0.69,
+    coverHeight = 210,
+    neighborSpacing = 0.28,
+    compactness = 0.5,
     draggable = true,
     showCaption = false,
     showRuler = true,
@@ -41,9 +40,12 @@ const AlbumRail = forwardRef(function AlbumRail(
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const stageRef = useRef(null);
+
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
   const touchCurrentX = useRef(0);
-  const isSwiping = useRef(false);
+  const isDraggingRef = useRef(false);
+  const hasMovedRef = useRef(false);
 
   // Sync external index changes
   useEffect(() => {
@@ -99,38 +101,70 @@ const AlbumRail = forwardRef(function AlbumRail(
     }
   };
 
-  // Touch & Drag Handling for Mobile
-  const handleTouchStart = (e) => {
+  // Touch & Pointer Handling
+  const handlePointerDown = (e) => {
     if (!draggable) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     touchStartX.current = clientX;
+    touchStartY.current = clientY;
     touchCurrentX.current = clientX;
-    isSwiping.current = true;
-    setIsDragging(true);
+    hasMovedRef.current = false;
+    isDraggingRef.current = false;
   };
 
-  const handleTouchMove = (e) => {
-    if (!isSwiping.current || !draggable) return;
+  const handlePointerMove = (e) => {
+    if (!draggable || touchStartX.current === 0) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    touchCurrentX.current = clientX;
-    const diff = clientX - touchStartX.current;
-    setDragOffset(diff);
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - touchStartX.current;
+    const dy = clientY - touchStartY.current;
+
+    // Detect intentional horizontal drag vs tap
+    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+      hasMovedRef.current = true;
+      isDraggingRef.current = true;
+      setIsDragging(true);
+      touchCurrentX.current = clientX;
+      setDragOffset(dx);
+    }
   };
 
-  const handleTouchEnd = () => {
-    if (!isSwiping.current || !draggable) return;
-    isSwiping.current = false;
-    setIsDragging(false);
+  const handlePointerUp = () => {
+    if (isDraggingRef.current) {
+      const diff = touchCurrentX.current - touchStartX.current;
+      const swipeThreshold = 22; // Low threshold for effortless flick
 
-    const threshold = 35; // Pixels needed to trigger slide
-    const diff = touchCurrentX.current - touchStartX.current;
-
-    if (diff > threshold) {
-      handlePrev();
-    } else if (diff < -threshold) {
-      handleNext();
+      if (diff > swipeThreshold) {
+        handlePrev();
+      } else if (diff < -swipeThreshold) {
+        handleNext();
+      }
     }
+
+    touchStartX.current = 0;
+    touchStartY.current = 0;
+    setIsDragging(false);
     setDragOffset(0);
+
+    // Briefly keep hasMovedRef true to block accidental click right after a swipe
+    setTimeout(() => {
+      hasMovedRef.current = false;
+      isDraggingRef.current = false;
+    }, 60);
+  };
+
+  // Direct card click / tap
+  const handleCardClick = (idx, e) => {
+    // If the user just completed a swipe gesture, ignore
+    if (hasMovedRef.current) return;
+    e.stopPropagation();
+
+    if (idx === currentIndex) {
+      onSelect?.(items[idx], idx);
+    } else {
+      goToIndex(idx);
+    }
   };
 
   // Autoplay option
@@ -142,7 +176,7 @@ const AlbumRail = forwardRef(function AlbumRail(
     return () => clearInterval(timer);
   }, [autoplay, autoplayInterval, handleNext]);
 
-  // Width & dimensions of cards
+  // Dimensions of cards
   const cardHeight = coverHeight;
   const cardWidth = Math.round(cardHeight * aspectRatio);
 
@@ -160,39 +194,64 @@ const AlbumRail = forwardRef(function AlbumRail(
       <div
         ref={stageRef}
         className="album-rail-stage"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseMove={handleTouchMove}
-        onMouseUp={handleTouchEnd}
-        onMouseLeave={handleTouchEnd}
+        onTouchStart={handlePointerDown}
+        onTouchMove={handlePointerMove}
+        onTouchEnd={handlePointerUp}
+        onTouchCancel={handlePointerUp}
+        onMouseDown={handlePointerDown}
+        onMouseMove={handlePointerMove}
+        onMouseUp={handlePointerUp}
+        onMouseLeave={handlePointerUp}
       >
+        {/* Left Side Tap-To-Previous Zone */}
+        <div
+          className="album-rail-tap-zone album-rail-tap-zone--left"
+          onClick={(e) => {
+            if (!hasMovedRef.current) {
+              e.stopPropagation();
+              handlePrev();
+            }
+          }}
+          aria-label="Previous card"
+        />
+
+        {/* Right Side Tap-To-Next Zone */}
+        <div
+          className="album-rail-tap-zone album-rail-tap-zone--right"
+          onClick={(e) => {
+            if (!hasMovedRef.current) {
+              e.stopPropagation();
+              handleNext();
+            }
+          }}
+          aria-label="Next card"
+        />
+
         {items.map((item, idx) => {
-          // Calculate relative position to active index
           const offset = idx - currentIndex;
           const isActive = offset === 0;
           const absOffset = Math.abs(offset);
 
-          // Only render visible neighborhood for performance
-          if (absOffset > 4) return null;
+          // Only render visible neighborhood for optimal performance
+          if (absOffset > 3) return null;
 
-          // 3D positioning calculations
+          // 3D positioning calculations: clear offset so next cards are prominently visible
           const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
-          const horizontalSpread = cardWidth * (1 + neighborSpacing * (1 - compactness));
+          // Step distance per card offset: 108px ensures adjacent cards clearly show
+          const stepX = 108;
           
-          let translateX = offset * horizontalSpread * 0.52 + dragInfluence;
-          let translateZ = -absOffset * 70;
-          let rotateY = offset > 0 ? -22 : offset < 0 ? 22 : 0;
-          let scale = Math.max(0.75, 1 - absOffset * 0.08);
-          let opacity = Math.max(0.25, 1 - absOffset * 0.22);
+          let translateX = offset * stepX + dragInfluence;
+          let translateZ = -absOffset * 65;
+          let rotateY = offset > 0 ? -18 : offset < 0 ? 18 : 0;
+          let scale = Math.max(0.78, 1 - absOffset * 0.1);
+          let opacity = Math.max(0.35, 1 - absOffset * 0.22);
           let zIndex = 50 - absOffset;
 
           // When active, center and elevate
           if (isActive) {
             translateX = dragInfluence;
-            translateZ = 30;
-            rotateY = (dragOffset / 260) * 10;
+            translateZ = 20;
+            rotateY = (dragOffset / 240) * 10;
             scale = 1;
             opacity = 1;
             zIndex = 100;
@@ -203,7 +262,7 @@ const AlbumRail = forwardRef(function AlbumRail(
           return (
             <div
               key={`card-${item.tag || item.name || idx}`}
-              className={`album-rail-card ${isActive ? 'is-active' : ''}`}
+              className={`album-rail-card ${isActive ? 'is-active' : 'is-neighbor'}`}
               style={{
                 width: `${cardWidth}px`,
                 height: `${cardHeight}px`,
@@ -211,16 +270,11 @@ const AlbumRail = forwardRef(function AlbumRail(
                 opacity,
                 zIndex
               }}
-              onClick={() => {
-                if (isActive) {
-                  onSelect?.(item, idx);
-                } else {
-                  goToIndex(idx);
-                }
-              }}
+              onClick={(e) => handleCardClick(idx, e)}
               role="group"
               aria-roledescription="slide"
               aria-label={item.title || item.name}
+              title={isActive ? (item.title || item.name) : `Click to view ${item.title || item.name}`}
             >
               {/* Card Surface */}
               <div className="album-card-inner group">
@@ -235,7 +289,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                   />
 
                   {/* Gradient Overlay for bottom text legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
 
                   {/* Micro Name Plate on Card Bottom */}
                   <div className="absolute bottom-2 inset-x-2 z-10 text-center pointer-events-none">
@@ -268,11 +322,14 @@ const AlbumRail = forwardRef(function AlbumRail(
           {/* Previous Arrow Button */}
           <button
             type="button"
-            onClick={handlePrev}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
             aria-label="Previous Pastor"
             className="album-rail-btn"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -284,7 +341,10 @@ const AlbumRail = forwardRef(function AlbumRail(
               return (
                 <div
                   key={`tick-${i}`}
-                  onClick={() => goToIndex(i)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToIndex(i);
+                  }}
                   className={`album-rail-tick ${active ? 'is-active' : ''}`}
                   role="tab"
                   aria-selected={active}
@@ -299,11 +359,14 @@ const AlbumRail = forwardRef(function AlbumRail(
           {/* Next Arrow Button */}
           <button
             type="button"
-            onClick={handleNext}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
             aria-label="Next Pastor"
             className="album-rail-btn"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
