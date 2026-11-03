@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Playfair_Display } from 'next/font/google';
+import Letter3DSwap from './ui/Letter3DSwap';
 
 const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic' });
 
@@ -99,12 +100,19 @@ export default function HomeHero() {
     return words.map((word, i) => (
       <span 
         key={i} 
-        className={`inline-block overflow-hidden mr-[0.25em] pb-2 -mb-2 align-bottom ${
+        className={`inline-block mr-[0.25em] pb-2 -mb-2 align-bottom ${
           isItalic ? 'pr-3 sm:pr-4' : 'pr-1'
         }`}
       >
         <span className={`word inline-block origin-bottom-left opacity-0 ${extraClass} ${isItalic ? 'pr-1' : ''}`}>
-          {word}
+          <Letter3DSwap
+            rotateDirection="top"
+            staggerDuration={0.025}
+            frontFaceClassName="text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
+            secondFaceClassName="text-[#D9A31A] drop-shadow-[0_4px_20px_rgba(217,163,26,0.6)]"
+          >
+            {word}
+          </Letter3DSwap>
         </span>
       </span>
     ));
@@ -112,8 +120,8 @@ export default function HomeHero() {
 
   return (
     <div className="absolute left-5 sm:left-8 md:left-16 lg:left-20 bottom-20 sm:bottom-16 md:bottom-12 lg:bottom-14 max-w-2xl lg:max-w-3xl z-10 p-2 sm:p-4 pointer-events-none">
-      {/* Main Hero Heading (Increased font size and lifted higher on mobile) */}
-      <h1 ref={containerRef} className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+      {/* Main Hero Heading (Increased font size, 3D letter swap on hover, and lifted higher on mobile) */}
+      <h1 ref={containerRef} className="pointer-events-auto text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] select-none">
         <div className="mb-1 sm:mb-1.5">{renderWords(text1)}</div>
         <div className={`${playfair.className} font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] mb-1 sm:mb-1.5 pr-2 sm:pr-4`}>
           {renderWords(text2, '', true)}
