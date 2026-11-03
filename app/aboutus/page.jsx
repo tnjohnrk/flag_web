@@ -128,9 +128,6 @@ const AboutUs = () => {
               
               {/* Senior Pastor Cutout Portrait Photo (Left Column) */}
               <div className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4 lg:sticky lg:top-28">
-                {/* Subtle Ambient Halo Glow behind Senior Pastor */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#D9A31A]/20 via-[#2C3A82]/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
-
                 <div className="relative w-full max-w-[280px] sm:max-w-[360px] lg:max-w-[400px] flex flex-col items-center select-none group">
                   <Image
                     src={getMediaUrl("/images/Pr._Johnson_Magazine.png")}
@@ -138,7 +135,7 @@ const AboutUs = () => {
                     width={700}
                     height={1017}
                     priority
-                    className="w-full h-auto object-contain filter drop-shadow-[0_18px_30px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                    className="w-full h-auto object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:drop-shadow-[0_6px_16px_rgba(0,0,0,0.25)] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                   />
                   <span className="font-editorial text-xs sm:text-sm text-text-secondary dark:text-gray-300 italic text-center mt-3 block tracking-wide">
                     Rev. N. Johnson — Senior Pastor, FLAG Church
