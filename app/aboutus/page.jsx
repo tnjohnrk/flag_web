@@ -116,7 +116,7 @@ const AboutUs = () => {
             <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
               {/* Senior Pastor Cutout Portrait Photo (Left Column) */}
-              <div className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4">
+              <div className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4 lg:sticky lg:top-28">
                 {/* Subtle Ambient Halo Glow behind Senior Pastor */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#D9A31A]/20 via-[#2C3A82]/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
@@ -135,7 +135,7 @@ const AboutUs = () => {
                 </div>
               </div>
 
-              {/* Right Editorial Text Column (Strict Paragraph Width & Line-Height) */}
+              {/* Right Editorial Text Column (All story content consolidated beside the image) */}
               <div className="lg:col-span-7 order-2 lg:order-2 space-y-6">
                 {/* Lead Featured Paragraph */}
                 <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
@@ -144,13 +144,26 @@ const AboutUs = () => {
                   </p>
                 </div>
 
-                {/* Continuation Paragraph 1 */}
+                {/* Continuation Paragraph 1 - Early Life */}
                 <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px] pt-1">
                   {seniorPastorDetails[1]}
                 </p>
 
-                {/* Family & Today's Impact (Switched to right column) */}
-                <div className="pt-4 space-y-4">
+                {/* Divine Encounter & Call to Ministry */}
+                <div className="pt-2 space-y-4">
+                  <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
+                    DIVINE ENCOUNTER &amp; CALL TO MINISTRY
+                  </span>
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
+                    {seniorPastorDetails[2]}
+                  </p>
+                  <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px]">
+                    {seniorPastorDetails[3]}
+                  </p>
+                </div>
+
+                {/* Family & Today's Impact */}
+                <div className="pt-2 space-y-4">
                   <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
                     FAMILY &amp; TODAY’S IMPACT
                   </span>
@@ -165,21 +178,6 @@ const AboutUs = () => {
                 </div>
               </div>
 
-            </div>
-
-            {/* Bottom Continuation Story Paragraphs (Divine Encounter & Call to Ministry) */}
-            <div data-reveal-stagger className="pt-8 border-t border-black/10 dark:border-white/10">
-              <div className="space-y-4 max-w-4xl">
-                <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
-                  DIVINE ENCOUNTER &amp; CALL TO MINISTRY
-                </span>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75]">
-                  {seniorPastorDetails[2]}
-                </p>
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] mt-3">
-                  {seniorPastorDetails[3]}
-                </p>
-              </div>
             </div>
           </div>
         </section>
