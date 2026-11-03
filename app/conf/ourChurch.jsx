@@ -13,9 +13,9 @@ export const churchHistoryItems = [
     )
   },
   {
-    title: 'The Humble Beginning (1998)',
-    image: getMediaUrl('/images/church_timing.avif'),
-    alt: 'First Sunday service held in a rented house with two people',
+    title: 'Early Prayer Fellowship (1998)',
+    image: getMediaUrl('/images/history/church_early_prayer_1998.jpg'),
+    alt: 'Pioneering days of faith and open-air prayer fellowship',
     icon: (
       <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -23,9 +23,9 @@ export const churchHistoryItems = [
     )
   },
   {
-    title: 'Gathering of Faith & Worship',
-    image: getMediaUrl('/images/Somthingthatneeded.avif'),
-    alt: 'From two people to thousands worshipping together',
+    title: 'Early Church Congregation',
+    image: getMediaUrl('/images/history/church_early_congregation.jpg'),
+    alt: 'First generation believers gathered in worship',
     icon: (
       <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 20 20">
         <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
@@ -33,12 +33,32 @@ export const churchHistoryItems = [
     )
   },
   {
-    title: 'Children & Family Ministries',
-    image: getMediaUrl('/images/children_services.avif'),
-    alt: 'FLAG Children Ministries',
+    title: 'First Hall Construction (2003)',
+    image: getMediaUrl('/images/history/church_first_hall_construction_2003.jpg'),
+    alt: 'Building the first church hall provided by God',
+    icon: (
+      <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    )
+  },
+  {
+    title: 'Faith Through Trials (2005)',
+    image: getMediaUrl('/images/history/church_demolition_trials_2005.jpg'),
+    alt: 'Demolition during government project where faith held firm',
     icon: (
       <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+      </svg>
+    )
+  },
+  {
+    title: 'God Opens Another Door (2005)',
+    image: getMediaUrl('/images/history/church_god_opens_doors_2005.jpg'),
+    alt: 'God opening new doors leading to the dedicated church sanctuary',
+    icon: (
+      <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clipRule="evenodd" />
       </svg>
     )
   }

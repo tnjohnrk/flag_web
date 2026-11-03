@@ -400,5 +400,45 @@
     "format": "avif",
     "bytes": 253322,
     "uploaded_at": "2026-10-28T10:41:59.294Z"
+  },
+  "/images/history/church_early_prayer_1998.jpg": {
+    "public_id": "flagweb/history/church_early_prayer_1998",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793698812/flagweb/history/church_early_prayer_1998.jpg",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793698812/flagweb/history/church_early_prayer_1998.jpg",
+    "format": "jpg",
+    "bytes": 194613,
+    "uploaded_at": "2026-11-03T09:40:16.608Z"
+  },
+  "/images/history/church_early_congregation.jpg": {
+    "public_id": "flagweb/history/church_early_congregation",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793698812/flagweb/history/church_early_congregation.jpg",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793698812/flagweb/history/church_early_congregation.jpg",
+    "format": "jpg",
+    "bytes": 168973,
+    "uploaded_at": "2026-11-03T09:40:17.351Z"
+  },
+  "/images/history/church_first_hall_construction_2003.jpg": {
+    "public_id": "flagweb/history/church_first_hall_construction_2003",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793698813/flagweb/history/church_first_hall_construction_2003.jpg",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793698813/flagweb/history/church_first_hall_construction_2003.jpg",
+    "format": "jpg",
+    "bytes": 87019,
+    "uploaded_at": "2026-11-03T09:40:17.925Z"
+  },
+  "/images/history/church_demolition_trials_2005.jpg": {
+    "public_id": "flagweb/history/church_demolition_trials_2005",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793698814/flagweb/history/church_demolition_trials_2005.jpg",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793698814/flagweb/history/church_demolition_trials_2005.jpg",
+    "format": "jpg",
+    "bytes": 113477,
+    "uploaded_at": "2026-11-03T09:40:18.824Z"
+  },
+  "/images/history/church_god_opens_doors_2005.jpg": {
+    "public_id": "flagweb/history/church_god_opens_doors_2005",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793698815/flagweb/history/church_god_opens_doors_2005.jpg",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793698815/flagweb/history/church_god_opens_doors_2005.jpg",
+    "format": "jpg",
+    "bytes": 88722,
+    "uploaded_at": "2026-11-03T09:40:19.957Z"
   }
 }
