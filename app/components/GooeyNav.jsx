@@ -258,8 +258,10 @@ const GooeyNav = ({
 
   const select = index => {
     if (index === current) return;
-    engineRef.current?.go(index);
-    if (activeIndex === undefined) setInnerIndex(index);
+    if (activeIndex === undefined) {
+      engineRef.current?.go(index);
+      setInnerIndex(index);
+    }
     onChange?.(index, items[index]);
   };
 
@@ -725,12 +727,16 @@ const GooeyNav = ({
     document.fonts?.ready?.then(() => {
       if (disposed) return;
       measure();
-      if (!drops.length) settle(target);
+      if (!drops.length) settle(target < 0 ? indexRef.current : target);
     }).catch?.(() => {});
 
     engineRef.current = {
-      go: index => go(index, true),
+      go: index => {
+        measure();
+        go(index, true);
+      },
       refresh: () => {
+        measure();
         render();
         wake();
       }

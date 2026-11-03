@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/media";
 import "./Navbar.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "./ThemeProvider";
 import GooeyNav from "./GooeyNav";
@@ -14,7 +14,18 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const pathname = usePathname();
   const { theme } = useTheme();
-  const [activeSection, setActiveSection] = useState("home");
+
+  const [activeSection, setActiveSection] = useState(() => {
+    if (typeof window === "undefined") return "home";
+    const path = window.location.pathname.replace(/\/$/, "") || "/";
+    if (path.startsWith("/aboutus")) return "about-us";
+    if (path.startsWith("/knowgod")) return "know-god";
+    if (path.startsWith("/donateus")) return "donate-us";
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "sermons" || hash === "donate-us" || hash === "footer") return hash;
+    return "home";
+  });
+
   const [isNavReady, setIsNavReady] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -87,39 +98,105 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
 
-      if (pathname === "/") {
+      // 1. Check if user scrolled into the footer on ANY page
+      const footerEl = document.getElementById("footer");
+      if (footerEl) {
+        const footerRect = footerEl.getBoundingClientRect();
+        if (footerRect.top <= window.innerHeight * 0.55) {
+          setActiveSection("footer");
+          return;
+        }
+      }
+
+      const cleanPath = pathname?.replace(/\/$/, "") || "/";
+
+      // 2. Sections on the Home Page
+      if (cleanPath === "/") {
         const sections = [
           { id: "home", selector: ".hero-video-wrapper" },
           { id: "sermons", selector: "#sermons" },
           { id: "donate-us", selector: "#donate-us" },
-          { id: "footer", selector: "#footer" },
         ];
 
-        const scrollPos = window.scrollY + 220;
+        const scrollPos = window.scrollY + 240;
         for (let i = sections.length - 1; i >= 0; i--) {
           const el =
             document.querySelector(sections[i].selector) ||
             document.getElementById(sections[i].id);
           if (el && el.offsetTop <= scrollPos) {
             setActiveSection(sections[i].id);
-            break;
+            return;
           }
         }
+        setActiveSection("home");
+      } else if (cleanPath.startsWith("/aboutus")) {
+        setActiveSection("about-us");
+      } else if (cleanPath.startsWith("/knowgod")) {
+        setActiveSection("know-god");
+      } else if (cleanPath.startsWith("/donateus")) {
+        setActiveSection("donate-us");
+      } else {
+        setActiveSection("");
       }
     };
-
-    if (pathname === "/aboutus") {
-      setActiveSection("about-us");
-    } else if (pathname === "/knowgod") {
-      setActiveSection("know-god");
-    } else if (pathname !== "/") {
-      setActiveSection("");
-    }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
+  // Route change synchronization
+  useEffect(() => {
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+    if (cleanPath.startsWith("/aboutus")) {
+      setActiveSection("about-us");
+    } else if (cleanPath.startsWith("/knowgod")) {
+      setActiveSection("know-god");
+    } else if (cleanPath.startsWith("/donateus")) {
+      setActiveSection("donate-us");
+    } else if (cleanPath === "/") {
+      const storedTarget = typeof window !== "undefined" ? sessionStorage.getItem("flag-nav-target") : null;
+      const hash = typeof window !== "undefined" ? window.location.hash.replace("#", "") : "";
+      const targetId = storedTarget || hash;
+      if (targetId && (targetId === "sermons" || targetId === "donate-us" || targetId === "footer")) {
+        setActiveSection(targetId);
+      } else {
+        setActiveSection("home");
+      }
+    }
+  }, [pathname]);
+
+  // Cross-page Hash Navigation Handler (e.g. from /aboutus to /#sermons or /#donate-us)
+  useEffect(() => {
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+    if (cleanPath === "/") {
+      const storedTarget = typeof window !== "undefined" ? sessionStorage.getItem("flag-nav-target") : null;
+      const hash = typeof window !== "undefined" ? window.location.hash.replace("#", "") : "";
+      const targetId = storedTarget || hash;
+
+      if (targetId && (targetId === "sermons" || targetId === "donate-us" || targetId === "footer")) {
+        sessionStorage.removeItem("flag-nav-target");
+        let attempts = 0;
+        const maxAttempts = 25;
+        const interval = setInterval(() => {
+          attempts++;
+          const el = document.getElementById(targetId) || document.querySelector(`.${targetId}`);
+          if (el) {
+            clearInterval(interval);
+            setTimeout(() => {
+              const top = el.getBoundingClientRect().top + window.scrollY - 80;
+              window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+              setActiveSection(targetId);
+            }, 100);
+          } else if (attempts >= maxAttempts) {
+            clearInterval(interval);
+          }
+        }, 100);
+
+        return () => clearInterval(interval);
+      }
+    }
   }, [pathname]);
 
   // Global Scroll-Reveal Intersection Observer Engine
@@ -171,38 +248,94 @@ export default function Navbar() {
     },
   ];
 
-  const getActiveHref = () => {
-    if (pathname === "/aboutus") return "/aboutus";
-    if (pathname === "/knowgod") return "/knowgod";
-    if (pathname === "/") {
+  const getActiveHref = useCallback(() => {
+    // If user scrolled into footer on any page, "Connect" is active
+    if (activeSection === "footer") return "/#footer";
+
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+
+    if (cleanPath.startsWith("/aboutus")) return "/aboutus";
+    if (cleanPath.startsWith("/knowgod")) return "/knowgod";
+    if (cleanPath.startsWith("/donateus")) return "/#donate-us";
+
+    if (cleanPath === "/") {
       if (activeSection === "sermons") return "/#sermons";
       if (activeSection === "donate-us") return "/#donate-us";
-      if (activeSection === "footer") return "/#footer";
       return "/";
     }
-    return pathname;
-  };
+
+    return cleanPath;
+  }, [activeSection, pathname]);
 
   const activeNavIndex = navItems.findIndex((item) => item.href === getActiveHref());
   const isKnowGodActive = activeNavIndex === 5;
 
+  const scrollToTarget = (elementId, offset = 80) => {
+    const el = document.getElementById(elementId) || document.querySelector(`.${elementId}`);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      return true;
+    }
+    return false;
+  };
+
   const handleItemClick = (item, index, event) => {
-    if (item.href === "/" && pathname === "/") {
-      event?.preventDefault?.();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      window.history.pushState(null, "", "/");
-      setActiveSection("home");
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+
+    // 1. Home Link
+    if (item.href === "/") {
+      if (cleanPath === "/") {
+        event?.preventDefault?.();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState(null, "", "/");
+        setActiveSection("home");
+      }
       return;
     }
-    if (item.href?.startsWith("/#") && pathname === "/") {
+
+    // 2. Connect (#footer is present on every page: /, /aboutus, /knowgod)
+    if (item.href === "/#footer" || item.href === "#footer") {
+      event?.preventDefault?.();
+      scrollToTarget("footer", 40);
+      window.history.pushState(null, "", "#footer");
+      setActiveSection("footer");
+      return;
+    }
+
+    // 3. Sermons or Donate (embedded sections on Home page)
+    if (item.href?.startsWith("/#")) {
       const targetId = item.href.replace("/#", "");
-      const el = document.getElementById(targetId) || document.querySelector(`.${targetId}`);
-      if (el) {
+      if (cleanPath === "/") {
         event?.preventDefault?.();
-        el.scrollIntoView({ behavior: "smooth" });
-        window.history.pushState(null, "", item.href.replace("/", ""));
+        scrollToTarget(targetId, 80);
+        window.history.pushState(null, "", `#${targetId}`);
         setActiveSection(targetId);
+      } else {
+        // Navigating from another route (e.g. /aboutus) to /#sermons or /#donate-us
+        sessionStorage.setItem("flag-nav-target", targetId);
       }
+      return;
+    }
+
+    // 4. About Us
+    if (item.href === "/aboutus") {
+      if (cleanPath.startsWith("/aboutus")) {
+        event?.preventDefault?.();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveSection("about-us");
+      }
+      return;
+    }
+
+    // 5. Know God
+    if (item.href === "/knowgod") {
+      if (cleanPath.startsWith("/knowgod")) {
+        event?.preventDefault?.();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveSection("know-god");
+      }
+      return;
     }
   };
 
@@ -221,9 +354,12 @@ export default function Navbar() {
             className={`logo navbar-logo glass-badge-btn ${isScrolled ? "is-scrolled" : ""}`}
             aria-label="FLAG Church Home"
             onClick={(e) => {
-              if (pathname === "/") {
+              const cleanPath = pathname?.replace(/\/$/, "") || "/";
+              if (cleanPath === "/") {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
+                window.history.pushState(null, "", "/");
+                setActiveSection("home");
               }
             }}
           >
