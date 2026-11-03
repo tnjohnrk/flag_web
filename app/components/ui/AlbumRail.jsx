@@ -8,38 +8,36 @@ import React, {
   useImperativeHandle,
   forwardRef
 } from 'react';
-import Image from 'next/image';
 import './AlbumRail.css';
 
 /**
- * Album Rail — React Bits Pro
- * A fan of album sleeves, each with a record tucked inside.
- * Optimized for mobile touch, smooth gestures, and reactive navigation.
+ * Album Rail / 3D Card Rail — React Bits Pro
+ * A fan of elegant cards fanned in 3D perspective.
+ * Pure card representation (no CD/vinyl disc or audio player).
+ * Tailored for mobile touch, smooth drag gestures, and reactive navigation.
  */
 const AlbumRail = forwardRef(function AlbumRail(
   {
     items = [],
     startIndex = 0,
-    aspectRatio = 1,
+    aspectRatio = 0.72,
     coverHeight = 220,
     neighborSpacing = 0.22,
-    compactness = 0.55,
+    compactness = 0.58,
     draggable = true,
     showCaption = false,
     showRuler = true,
     autoplay = false,
     autoplayInterval = 4000,
-    ariaLabel = 'Pastoral team album rail',
+    ariaLabel = 'Pastoral team card rail',
     className = '',
     style,
     onIndexChange,
-    onSelect,
-    onPlayStateChange
+    onSelect
   },
   ref
 ) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
-  const [isPlaying, setIsPlaying] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const stageRef = useRef(null);
@@ -53,24 +51,6 @@ const AlbumRail = forwardRef(function AlbumRail(
       setCurrentIndex(startIndex);
     }
   }, [startIndex, items.length]);
-
-  // Imperative navigation handle for parent component
-  useImperativeHandle(ref, () => ({
-    next: () => {
-      handleNext();
-    },
-    prev: () => {
-      handlePrev();
-    },
-    open: (idx) => {
-      if (idx >= 0 && idx < items.length) {
-        goToIndex(idx);
-      }
-    },
-    play: () => setIsPlaying(true),
-    pause: () => setIsPlaying(false),
-    togglePlay: () => setIsPlaying((p) => !p)
-  }));
 
   const goToIndex = useCallback(
     (newIndex) => {
@@ -94,11 +74,16 @@ const AlbumRail = forwardRef(function AlbumRail(
     goToIndex(next);
   }, [currentIndex, items.length, goToIndex]);
 
-  const togglePlay = () => {
-    const nextState = !isPlaying;
-    setIsPlaying(nextState);
-    onPlayStateChange?.(nextState);
-  };
+  // Imperative navigation handle for parent component
+  useImperativeHandle(ref, () => ({
+    next: handleNext,
+    prev: handlePrev,
+    open: (idx) => {
+      if (idx >= 0 && idx < items.length) {
+        goToIndex(idx);
+      }
+    }
+  }));
 
   // Keyboard Navigation
   const handleKeyDown = (e) => {
@@ -137,7 +122,7 @@ const AlbumRail = forwardRef(function AlbumRail(
     isSwiping.current = false;
     setIsDragging(false);
 
-    const threshold = 40; // Pixels needed to trigger slide
+    const threshold = 35; // Pixels needed to trigger slide
     const diff = touchCurrentX.current - touchStartX.current;
 
     if (diff > threshold) {
@@ -157,9 +142,9 @@ const AlbumRail = forwardRef(function AlbumRail(
     return () => clearInterval(timer);
   }, [autoplay, autoplayInterval, handleNext]);
 
-  // Width & dimensions of album cards
-  const sleeveSize = coverHeight;
-  const sleeveWidth = sleeveSize * aspectRatio;
+  // Width & dimensions of cards
+  const cardHeight = coverHeight;
+  const cardWidth = Math.round(cardHeight * aspectRatio);
 
   return (
     <div
@@ -190,24 +175,24 @@ const AlbumRail = forwardRef(function AlbumRail(
           const absOffset = Math.abs(offset);
 
           // Only render visible neighborhood for performance
-          if (absOffset > 5) return null;
+          if (absOffset > 4) return null;
 
           // 3D positioning calculations
-          const dragInfluence = isDragging ? dragOffset * 0.4 : 0;
-          const horizontalSpread = sleeveWidth * (1 + neighborSpacing * (1 - compactness));
+          const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
+          const horizontalSpread = cardWidth * (1 + neighborSpacing * (1 - compactness));
           
-          let translateX = offset * horizontalSpread * 0.42 + dragInfluence;
-          let translateZ = -absOffset * 80;
-          let rotateY = offset > 0 ? -28 : offset < 0 ? 28 : 0;
-          let scale = Math.max(0.72, 1 - absOffset * 0.08);
-          let opacity = Math.max(0.2, 1 - absOffset * 0.22);
+          let translateX = offset * horizontalSpread * 0.52 + dragInfluence;
+          let translateZ = -absOffset * 70;
+          let rotateY = offset > 0 ? -22 : offset < 0 ? 22 : 0;
+          let scale = Math.max(0.75, 1 - absOffset * 0.08);
+          let opacity = Math.max(0.25, 1 - absOffset * 0.22);
           let zIndex = 50 - absOffset;
 
-          // When active, center and stand out
+          // When active, center and elevate
           if (isActive) {
             translateX = dragInfluence;
-            translateZ = 40;
-            rotateY = (dragOffset / 300) * 12; // Dynamic tilt while dragging
+            translateZ = 30;
+            rotateY = (dragOffset / 260) * 10;
             scale = 1;
             opacity = 1;
             zIndex = 100;
@@ -217,11 +202,11 @@ const AlbumRail = forwardRef(function AlbumRail(
 
           return (
             <div
-              key={`album-${item.tag || item.name || idx}`}
-              className={`album-rail-card ${isActive ? 'is-active' : ''} ${isPlaying ? 'is-playing' : ''}`}
+              key={`card-${item.tag || item.name || idx}`}
+              className={`album-rail-card ${isActive ? 'is-active' : ''}`}
               style={{
-                width: `${sleeveWidth}px`,
-                height: `${sleeveSize}px`,
+                width: `${cardWidth}px`,
+                height: `${cardHeight}px`,
                 transform: transformStyle,
                 opacity,
                 zIndex
@@ -237,38 +222,22 @@ const AlbumRail = forwardRef(function AlbumRail(
               aria-roledescription="slide"
               aria-label={item.title || item.name}
             >
-              {/* Vinyl Record (Tucked Inside Sleeve) */}
-              <div className="album-vinyl">
-                <div className="album-vinyl-grooves" />
-                <div className="album-vinyl-luster" />
-                <div className="album-vinyl-label">
-                  <div className="album-vinyl-spindle" />
-                </div>
-              </div>
-
-              {/* Album Sleeve Jacket */}
-              <div className="album-sleeve group cursor-pointer">
-                {/* Pastor Portrait / Image */}
-                <div className="relative w-full h-full bg-gradient-to-b from-[#1E2640] to-[#0D1222] overflow-hidden flex items-end justify-center">
+              {/* Card Surface */}
+              <div className="album-card-inner group">
+                <div className="relative w-full h-full overflow-hidden flex items-end justify-center">
+                  {/* Pastor Silhouette / Portrait Image */}
                   <img
                     src={item.src || item.fullSrc}
                     alt={item.title || item.name || 'Pastor'}
                     className="w-full h-full object-contain object-bottom select-none pointer-events-none drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-                    loading={absOffset <= 2 ? 'eager' : 'lazy'}
+                    loading={absOffset <= 1 ? 'eager' : 'lazy'}
                     draggable={false}
                   />
 
-                  {/* Gradient Overlay for Crisp Framing */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 pointer-events-none" />
+                  {/* Gradient Overlay for bottom text legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Sleeve Card Badge / Tag */}
-                  <div className="absolute top-2.5 left-2.5 z-10">
-                    <span className="font-sans-clean text-[9px] font-bold tracking-widest uppercase text-[#D9A31A] bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-[#D9A31A]/30">
-                      FLAG LEADERSHIP
-                    </span>
-                  </div>
-
-                  {/* Micro Name Plate on Sleeve Bottom */}
+                  {/* Micro Name Plate on Card Bottom */}
                   <div className="absolute bottom-2 inset-x-2 z-10 text-center pointer-events-none">
                     <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow">
                       {item.title || item.name}
@@ -283,7 +252,7 @@ const AlbumRail = forwardRef(function AlbumRail(
 
       {/* Optional Integrated Caption */}
       {showCaption && items[currentIndex] && (
-        <div className="mt-3 text-center px-4 max-w-sm">
+        <div className="mt-2 text-center px-4 max-w-sm">
           <p className="font-sans-clean text-[10px] font-bold tracking-[0.2em] uppercase text-[#D9A31A]">
             {items[currentIndex].subtitle || items[currentIndex].role}
           </p>
@@ -326,25 +295,6 @@ const AlbumRail = forwardRef(function AlbumRail(
               );
             })}
           </div>
-
-          {/* Play/Pause Vinyl Spin Button */}
-          <button
-            type="button"
-            onClick={togglePlay}
-            aria-label={isPlaying ? 'Pause Vinyl Rotation' : 'Spin Vinyl Record'}
-            className="album-rail-btn !w-7 !h-7 !text-[10px]"
-            title={isPlaying ? 'Pause Spin' : 'Spin Vinyl'}
-          >
-            {isPlaying ? (
-              <svg className="w-3 h-3 text-[#D9A31A]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-              </svg>
-            ) : (
-              <svg className="w-3 h-3 text-[#D9A31A]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
 
           {/* Next Arrow Button */}
           <button

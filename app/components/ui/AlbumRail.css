@@ -1,7 +1,7 @@
 /* ==========================================================
-   Album Rail — React Bits Pro (Tailwind & CSS)
-   A fan of album sleeves, each with a record tucked inside.
-   Adapted for mobile & responsive pastoral leadership showcase.
+   Card Rail / Showcase — React Bits Pro Style
+   Clean 3D fan of profile cards. No CD / vinyl or music playback.
+   Specifically tuned for mobile responsiveness in pastoral team view.
    ========================================================== */
 
 .album-rail-root {
@@ -22,7 +22,7 @@
 .album-rail-stage {
   position: relative;
   width: 100%;
-  height: 240px;
+  height: 270px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,178 +35,71 @@
   cursor: grabbing;
 }
 
-/* Individual Album Card Unit (Sleeve + Record) */
+/* Individual Card Unit */
 .album-rail-card {
   position: absolute;
   top: 50%;
   left: 50%;
   transform-style: preserve-3d;
   will-change: transform, opacity;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-              opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
 }
 
-/* Album Sleeve (Jacket) */
-.album-sleeve {
+/* Card Surface */
+.album-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  background: #181c2b;
+  background: linear-gradient(165deg, #182033 0%, #0d1222 100%);
   box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.55),
               0 4px 12px -2px rgba(0, 0, 0, 0.35),
               inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  z-index: 2;
-  transform-style: preserve-3d;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-:root:not(.dark) .album-sleeve {
-  background: #f0ede6;
-  box-shadow: 0 16px 32px -10px rgba(18, 24, 40, 0.25),
-              0 4px 10px -2px rgba(18, 24, 40, 0.15),
+:root:not(.dark) .album-card-inner {
+  background: linear-gradient(165deg, #ffffff 0%, #f4f1ea 100%);
+  box-shadow: 0 16px 32px -10px rgba(18, 24, 40, 0.2),
+              0 4px 10px -2px rgba(18, 24, 40, 0.1),
               inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-/* Cardboard Paper Texture & Specular Sheen on Sleeve */
-.album-sleeve::before {
+/* Gold border highlight for active card */
+.album-rail-card.is-active .album-card-inner {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65),
+              0 0 0 2px rgba(217, 163, 26, 0.8),
+              0 0 20px -2px rgba(217, 163, 26, 0.35);
+}
+
+/* Subtle Card Light Sheen */
+.album-card-inner::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.05) 30%,
-    transparent 60%,
-    rgba(0, 0, 0, 0.25) 100%
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    transparent 70%
   );
   pointer-events: none;
-  z-index: 4;
-}
-
-/* Spine Crease / Opening on Right Edge */
-.album-sleeve::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.45), transparent);
-  pointer-events: none;
-  z-index: 4;
-}
-
-/* Vinyl Record */
-.album-vinyl {
-  position: absolute;
-  top: 4%;
-  bottom: 4%;
-  right: 0;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  background: #0f1118;
-  z-index: 1;
-  transform-origin: center center;
-  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.15);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-/* Micro-Grooves on Vinyl Surface */
-.album-vinyl-grooves {
-  position: absolute;
-  inset: 2px;
-  border-radius: 50%;
-  background: repeating-radial-gradient(
-    circle at center,
-    rgba(25, 28, 38, 1) 0,
-    rgba(25, 28, 38, 1) 2px,
-    rgba(12, 14, 20, 1) 3px,
-    rgba(12, 14, 20, 1) 5px
-  );
-  overflow: hidden;
-}
-
-/* Dynamic Vinyl Luster / Sheen */
-.album-vinyl-luster {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 45deg,
-    rgba(255, 255, 255, 0.16) 0deg,
-    transparent 60deg,
-    rgba(255, 255, 255, 0.16) 120deg,
-    transparent 180deg,
-    rgba(255, 255, 255, 0.16) 240deg,
-    transparent 300deg,
-    rgba(255, 255, 255, 0.16) 360deg
-  );
-  mix-blend-mode: overlay;
-  opacity: 0.85;
-}
-
-/* Vinyl Center Label (Pastoral / Church Badge) */
-.album-vinyl-label {
-  position: relative;
-  width: 36%;
-  height: 36%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 40%, #1e2640 0%, #0d1222 100%);
-  border: 2px solid #d9a31a;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5),
-              0 2px 6px rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  overflow: hidden;
-}
-
-/* Center Spindle Hole */
-.album-vinyl-spindle {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #090a0f;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
-  z-index: 4;
-}
-
-/* Vinyl Slide Out States */
-.album-rail-card.is-active .album-vinyl {
-  transform: translateX(42%) translateZ(-1px);
-}
-
-.album-rail-card.is-active.is-playing .album-vinyl-grooves {
-  animation: album-vinyl-spin 6s linear infinite;
-}
-
-@keyframes album-vinyl-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  z-index: 5;
 }
 
 /* Timeline Ruler Navigation */
 .album-rail-ruler {
   width: 100%;
-  max-width: 360px;
-  margin: 12px auto 0 auto;
+  max-width: 320px;
+  margin: 10px auto 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  gap: 8px;
+  padding: 6px 10px;
+  gap: 12px;
 }
 
 .album-rail-ticks {
@@ -220,7 +113,7 @@
 
 .album-rail-tick {
   flex: 1;
-  height: 14px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +141,7 @@
   box-shadow: 0 0 8px rgba(217, 163, 26, 0.6);
 }
 
-/* Control Buttons (Prev / Next / Play) */
+/* Prev / Next Control Buttons */
 .album-rail-btn {
   width: 36px;
   height: 36px;
@@ -268,13 +161,6 @@
   touch-action: manipulation;
 }
 
-/* 44px minimum touch target expansion */
-.album-rail-btn::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-}
-
 :root:not(.dark) .album-rail-btn {
   color: #1e2640;
   background: rgba(0, 0, 0, 0.05);
@@ -290,4 +176,10 @@
 
 .album-rail-btn:active {
   transform: scale(0.95);
+}
+
+.album-rail-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
 }

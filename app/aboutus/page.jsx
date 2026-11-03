@@ -348,7 +348,7 @@ const AboutUs = () => {
             />
           </div>
 
-          {/* Mobile Only: React Bits Pro Album Rail (Vinyl Sleeves Fan) */}
+          {/* Mobile Only: React Bits Pro Card Rail (Fan of Profile Cards) */}
           <div
             data-reveal
             className="block md:hidden relative w-full mx-auto select-none my-1"
@@ -357,10 +357,10 @@ const AboutUs = () => {
               ref={mobileRailRef}
               items={reelItems}
               startIndex={activePastorIndex}
-              coverHeight={180}
-              aspectRatio={1}
-              neighborSpacing={0.24}
-              compactness={0.62}
+              coverHeight={210}
+              aspectRatio={0.72}
+              neighborSpacing={0.22}
+              compactness={0.58}
               showRuler={true}
               onIndexChange={(index) => {
                 setActivePastorIndex(index);
