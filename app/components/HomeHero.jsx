@@ -95,10 +95,17 @@ export default function HomeHero() {
   const text2 = "Full Life Centre".split(' ');
   const text3 = "Assembly of God Church".split(' ');
 
-  const renderWords = (words, extraClass = '') => {
+  const renderWords = (words, extraClass = '', isItalic = false) => {
     return words.map((word, i) => (
-      <span key={i} className="inline-block overflow-hidden mr-[0.25em] pb-2 -mb-2 align-bottom">
-        <span className={`word inline-block origin-bottom-left opacity-0 ${extraClass}`}>{word}</span>
+      <span 
+        key={i} 
+        className={`inline-block overflow-hidden mr-[0.25em] pb-2 -mb-2 align-bottom ${
+          isItalic ? 'pr-3 sm:pr-4' : 'pr-1'
+        }`}
+      >
+        <span className={`word inline-block origin-bottom-left opacity-0 ${extraClass} ${isItalic ? 'pr-1' : ''}`}>
+          {word}
+        </span>
       </span>
     ));
   };
@@ -109,7 +116,7 @@ export default function HomeHero() {
       <h1 ref={containerRef} className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
         <div className="mb-1 sm:mb-1.5">{renderWords(text1)}</div>
         <div className={`${playfair.className} font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] mb-1 sm:mb-1.5 pr-2 sm:pr-4`}>
-          {renderWords(text2)}
+          {renderWords(text2, '', true)}
         </div>
         <div>{renderWords(text3)}</div>
       </h1>
