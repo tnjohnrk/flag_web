@@ -440,5 +440,13 @@
     "format": "jpg",
     "bytes": 88722,
     "uploaded_at": "2026-11-03T09:40:19.957Z"
+  },
+  "/images/pastors/pastor-19_10_Mac.png": {
+    "public_id": "flagweb/images/pastors/pastor-19_10_Mac",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793704292/flagweb/images/pastors/pastor-19_10_Mac.png",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793704292/flagweb/images/pastors/pastor-19_10_Mac.png",
+    "format": "png",
+    "bytes": 450120,
+    "uploaded_at": "2026-11-03T11:11:32.000Z"
   }
 }

@@ -28,7 +28,7 @@ const STAGE_POSITIONS = {
   "07":  { zIndex: 12, leftPct: 77.86, widthPct: 9.48,  heightPct: 96.42 }, // Pr. Sundar
   "08":  { zIndex: 11, leftPct: 81.30, widthPct: 11.50, heightPct: 97.07 }, // Pr. Vicky
   "09":  { zIndex: 10, leftPct: 90.86, widthPct: 8.33,  heightPct: 94.30 }, // Sis. Jency
-  "10":  { zIndex: 9,   leftPct: 94.80, widthPct: 7.20,  heightPct: 94.30 }  // Sis. Machtalin
+  "10":  { zIndex: 9,   leftPct: 93.80, widthPct: 7.20,  heightPct: 94.30 }  // Sis. Machtalin
 };
 
 const ElasticReel = forwardRef(function ElasticReel(
