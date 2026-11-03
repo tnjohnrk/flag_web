@@ -214,16 +214,16 @@ const AboutUs = () => {
               
               {/* Featured Church History Interactive CardStack */}
               <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
-                <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[470px] flex items-center justify-center select-none">
+                <div className="relative w-full h-[450px] sm:h-[520px] lg:h-[600px] flex items-center justify-center select-none">
                   <CardSwap
                     items={churchHistoryItems}
-                    width={400}
-                    height={300}
-                    cardDistance={48}
-                    verticalDistance={58}
-                    depth={80}
-                    skewAmount={5}
                     delay={4000}
+                    cardDistance={2}
+                    verticalDistance={56}
+                    depth={100}
+                    skewAmount={0}
+                    bounce={0.5}
+                    parallax={0.4}
                     theme={theme}
                   />
                 </div>
