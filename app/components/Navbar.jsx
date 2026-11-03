@@ -16,13 +16,10 @@ export default function Navbar() {
   const { theme } = useTheme();
 
   const [activeSection, setActiveSection] = useState(() => {
-    if (typeof window === "undefined") return "home";
-    const path = window.location.pathname.replace(/\/$/, "") || "/";
-    if (path.startsWith("/aboutus")) return "about-us";
-    if (path.startsWith("/knowgod")) return "know-god";
-    if (path.startsWith("/donateus")) return "donate-us";
-    const hash = window.location.hash.replace("#", "");
-    if (hash === "sermons" || hash === "donate-us" || hash === "footer") return hash;
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+    if (cleanPath.startsWith("/aboutus")) return "about-us";
+    if (cleanPath.startsWith("/knowgod")) return "know-god";
+    if (cleanPath.startsWith("/donateus")) return "donate-us";
     return "home";
   });
 
