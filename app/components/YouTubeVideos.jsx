@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import "./YouTubeVideos.css";
 import { getMediaUrl } from "@/lib/media";
 
@@ -25,7 +24,6 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                             loop={false}
                             watchOverflow={true}
                             navigation={true}
-                            pagination={{ clickable: true }}
                             autoplay={videos.length > 1 ? { delay: 3000, disableOnInteraction: false } : false}
                             observer={true}
                             observeParents={true}
@@ -47,8 +45,8 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                                     spaceBetween: 24
                                 }
                             }}
-                            modules={[Navigation, Pagination, Autoplay]}
-                            style={{ width: '100%', paddingBottom: '10px', position: 'relative' }}
+                            modules={[Navigation, Autoplay]}
+                            style={{ width: '100%', position: 'relative' }}
                         >
                             {videos.map((video) => {
                                 const s = stats[video.id.videoId];

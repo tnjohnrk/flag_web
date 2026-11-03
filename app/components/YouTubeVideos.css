@@ -240,3 +240,10 @@
     height: auto;
     border-radius: 4px; 
 }
+
+/* Hide pagination dots on playlists */
+.swiper-pagination,
+.swiper-pagination-bullets,
+.swiper-pagination-bullet {
+    display: none !important;
+}
