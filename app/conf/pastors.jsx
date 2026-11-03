@@ -186,6 +186,7 @@ const mobileImagesByTag = {
   "-01": "/images/paster/jerry.png",
   "03": "/images/paster/balaji.png",
   "04": "/images/paster/daniel.png",
+  "05": "/images/paster/nagaraj.png",
   "06": "/images/paster/joshwa.png",
   "07": "/images/paster/sundar.png",
   "08": "/images/paster/vicky.png",

@@ -1121,5 +1121,13 @@
     "width": 1112,
     "height": 1415,
     "bytes": 1368201
+  },
+  "/images/paster/nagaraj.png": {
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793720500/flagweb/images/paster/nagaraj.jpg",
+    "public_id": "flagweb/images/paster/nagaraj",
+    "format": "jpg",
+    "width": 1075,
+    "height": 1463,
+    "bytes": 181231
   }
 }
