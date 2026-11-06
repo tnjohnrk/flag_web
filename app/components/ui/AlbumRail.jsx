@@ -305,18 +305,18 @@ const AlbumRail = forwardRef(function AlbumRail(
           const isActive = offset === 0;
           const absOffset = Math.abs(offset);
 
-          // Render only visible neighborhood for peak performance (active + 3 on each side)
-          if (absOffset > 3.5) return null;
+          // Render visible stack across wide and mobile viewports (active + up to 5 on each side)
+          if (absOffset > 5.5) return null;
 
           // 3D positioning calculations
           const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
-          const stepX = Math.round(cardWidth * (shouldShowRecord ? 0.52 : 0.48));
+          const stepX = Math.round(cardWidth * (shouldShowRecord ? 0.54 : 0.48));
 
           let translateX = offset * stepX + dragInfluence;
-          let translateZ = -absOffset * (shouldShowRecord ? 70 : 65);
+          let translateZ = -absOffset * (shouldShowRecord ? 65 : 60);
           let rotateY = offset > 0 ? -18 : offset < 0 ? 18 : 0;
-          let scale = Math.max(0.76, 1 - absOffset * 0.09);
-          let opacity = Math.max(0.3, 1 - absOffset * 0.2);
+          let scale = Math.max(0.80, 1 - absOffset * 0.05);
+          let opacity = 1; // Keep back stack videos fully visible without reducing opacity
           let zIndex = 50 - Math.round(absOffset);
 
           // Active elevated card
@@ -380,7 +380,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                         src={item.src || item.fullSrc}
                         alt={item.title || item.name || 'Song'}
                         className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
-                        loading={absOffset <= 2 ? 'eager' : 'lazy'}
+                        loading={absOffset <= 4 ? 'eager' : 'lazy'}
                         draggable={false}
                       />
 
