@@ -11,32 +11,35 @@ import React, {
 import './AlbumRail.css';
 
 /**
- * Album Rail / 3D Card Rail — React Bits Pro
- * A fan of elegant cards in 3D perspective.
- * Smooth touch swipe and instant click-to-move navigation.
+ * Album Rail — React Bits Pro (Tailwind & CSS)
+ * A fan of album sleeves, each with a record tucked inside.
+ * Optimized for touch swipe, reactive mouse drag, and 3D perspective animations.
  */
 const AlbumRail = forwardRef(function AlbumRail(
   {
     items = [],
     startIndex = 0,
-    aspectRatio = 0.69,
-    coverHeight = 210,
-    neighborSpacing = 0.28,
-    compactness = 0.5,
+    aspectRatio = 1,
+    coverHeight = 240,
+    neighborSpacing = 0.25,
+    compactness = 0.55,
     draggable = true,
+    withRecord = null, // Auto-detect: true for square albums (1:1), false for custom cards
     showCaption = false,
     showRuler = true,
     autoplay = false,
     autoplayInterval = 4000,
-    ariaLabel = 'Pastoral team card rail',
+    ariaLabel = 'Album Rail',
     className = '',
     style,
     onIndexChange,
-    onSelect
+    onSelect,
+    onPlayStateChange
   },
   ref
 ) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const stageRef = useRef(null);
@@ -76,6 +79,14 @@ const AlbumRail = forwardRef(function AlbumRail(
     goToIndex(next);
   }, [currentIndex, items.length, goToIndex]);
 
+  const togglePlay = useCallback(() => {
+    setIsPlaying((prev) => {
+      const nextState = !prev;
+      onPlayStateChange?.(nextState);
+      return nextState;
+    });
+  }, [onPlayStateChange]);
+
   // Imperative navigation handle for parent component
   useImperativeHandle(ref, () => ({
     next: handleNext,
@@ -84,7 +95,16 @@ const AlbumRail = forwardRef(function AlbumRail(
       if (idx >= 0 && idx < items.length) {
         goToIndex(idx);
       }
-    }
+    },
+    play: () => {
+      setIsPlaying(true);
+      onPlayStateChange?.(true);
+    },
+    pause: () => {
+      setIsPlaying(false);
+      onPlayStateChange?.(false);
+    },
+    togglePlay
   }));
 
   // Keyboard Navigation
@@ -101,7 +121,7 @@ const AlbumRail = forwardRef(function AlbumRail(
     }
   };
 
-  // Touch & Pointer Handling
+  // Pointer & Touch Events
   const handlePointerDown = (e) => {
     if (!draggable) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -109,76 +129,76 @@ const AlbumRail = forwardRef(function AlbumRail(
     touchStartX.current = clientX;
     touchStartY.current = clientY;
     touchCurrentX.current = clientX;
+    isDraggingRef.current = true;
     hasMovedRef.current = false;
-    isDraggingRef.current = false;
+    setIsDragging(true);
   };
 
   const handlePointerMove = (e) => {
-    if (!draggable || touchStartX.current === 0) return;
+    if (!isDraggingRef.current || !draggable) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const dx = clientX - touchStartX.current;
-    const dy = clientY - touchStartY.current;
 
-    // Detect intentional horizontal drag vs tap
-    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
-      hasMovedRef.current = true;
-      isDraggingRef.current = true;
-      setIsDragging(true);
-      touchCurrentX.current = clientX;
-      setDragOffset(dx);
+    const diffX = clientX - touchStartX.current;
+    const diffY = clientY - touchStartY.current;
+
+    // Ignore if mostly vertical scrolling on mobile
+    if (Math.abs(diffY) > Math.abs(diffX) && !hasMovedRef.current) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
+      return;
     }
+
+    if (Math.abs(diffX) > 6) {
+      hasMovedRef.current = true;
+    }
+
+    touchCurrentX.current = clientX;
+    setDragOffset(diffX);
   };
 
   const handlePointerUp = () => {
-    if (isDraggingRef.current) {
-      const diff = touchCurrentX.current - touchStartX.current;
-      const swipeThreshold = 22; // Low threshold for effortless flick
-
-      if (diff > swipeThreshold) {
-        handlePrev();
-      } else if (diff < -swipeThreshold) {
-        handleNext();
-      }
-    }
-
-    touchStartX.current = 0;
-    touchStartY.current = 0;
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
     setIsDragging(false);
-    setDragOffset(0);
 
-    // Briefly keep hasMovedRef true to block accidental click right after a swipe
-    setTimeout(() => {
-      hasMovedRef.current = false;
-      isDraggingRef.current = false;
-    }, 60);
-  };
+    const diff = touchCurrentX.current - touchStartX.current;
+    const threshold = 40;
 
-  // Direct card click / tap
-  const handleCardClick = (idx, e) => {
-    // If the user just completed a swipe gesture, ignore
-    if (hasMovedRef.current) return;
-    e.stopPropagation();
-
-    if (idx === currentIndex) {
-      onSelect?.(items[idx], idx);
-    } else {
-      goToIndex(idx);
+    if (diff > threshold) {
+      handlePrev();
+    } else if (diff < -threshold) {
+      handleNext();
     }
+    setDragOffset(0);
   };
 
-  // Autoplay option
+  // Autoplay
   useEffect(() => {
-    if (!autoplay) return;
+    if (!autoplay || items.length <= 1) return;
     const timer = setInterval(() => {
       handleNext();
     }, autoplayInterval);
     return () => clearInterval(timer);
-  }, [autoplay, autoplayInterval, handleNext]);
+  }, [autoplay, autoplayInterval, handleNext, items.length]);
 
-  // Dimensions of cards
+  // Card & Sleeve Dimensions
   const cardHeight = coverHeight;
-  const cardWidth = Math.round(cardHeight * aspectRatio);
+  const cardWidth = cardHeight * aspectRatio;
+
+  // Determine whether to show the vinyl record (default true for square 1:1 albums)
+  const shouldShowRecord = withRecord !== null ? withRecord : Math.abs(aspectRatio - 1) < 0.1;
+
+  const handleCardClick = (idx, e) => {
+    e.stopPropagation();
+    if (hasMovedRef.current) return;
+
+    if (idx === currentIndex) {
+      onSelect?.(items[currentIndex], currentIndex);
+    } else {
+      goToIndex(idx);
+    }
+  };
 
   return (
     <div
@@ -232,25 +252,25 @@ const AlbumRail = forwardRef(function AlbumRail(
           const isActive = offset === 0;
           const absOffset = Math.abs(offset);
 
-          // Only render visible neighborhood for optimal performance
-          if (absOffset > 3) return null;
+          // Render visible neighborhood for high performance
+          if (absOffset > 4) return null;
 
-          // 3D positioning calculations: clear offset so next cards are prominently visible
+          // 3D positioning calculations
           const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
-          // Step distance per card offset: 108px ensures adjacent cards clearly show
-          const stepX = 108;
-          
+          // Step distance per card offset adapted to sleeve width
+          const stepX = Math.round(cardWidth * (shouldShowRecord ? 0.52 : 0.48));
+
           let translateX = offset * stepX + dragInfluence;
-          let translateZ = -absOffset * 65;
+          let translateZ = -absOffset * (shouldShowRecord ? 70 : 65);
           let rotateY = offset > 0 ? -18 : offset < 0 ? 18 : 0;
-          let scale = Math.max(0.78, 1 - absOffset * 0.1);
-          let opacity = Math.max(0.35, 1 - absOffset * 0.22);
+          let scale = Math.max(0.76, 1 - absOffset * 0.09);
+          let opacity = Math.max(0.3, 1 - absOffset * 0.2);
           let zIndex = 50 - absOffset;
 
-          // When active, center and elevate
+          // Active elevated card
           if (isActive) {
             translateX = dragInfluence;
-            translateZ = 20;
+            translateZ = 25;
             rotateY = (dragOffset / 240) * 10;
             scale = 1;
             opacity = 1;
@@ -261,8 +281,10 @@ const AlbumRail = forwardRef(function AlbumRail(
 
           return (
             <div
-              key={`card-${item.tag || item.name || idx}`}
-              className={`album-rail-card ${isActive ? 'is-active' : 'is-neighbor'}`}
+              key={`card-${item.id || item.tag || item.videoId || idx}`}
+              className={`album-rail-card ${isActive ? 'is-active' : 'is-neighbor'} ${
+                isActive && isPlaying ? 'is-playing' : ''
+              }`}
               style={{
                 width: `${cardWidth}px`,
                 height: `${cardHeight}px`,
@@ -274,31 +296,110 @@ const AlbumRail = forwardRef(function AlbumRail(
               role="group"
               aria-roledescription="slide"
               aria-label={item.title || item.name}
-              title={isActive ? (item.title || item.name) : `Click to view ${item.title || item.name}`}
+              title={isActive ? (item.title || item.name) : `Select ${item.title || item.name}`}
             >
-              {/* Card Surface */}
-              <div className="album-card-inner group bg-white">
-                <div className="relative w-full h-full overflow-hidden flex items-end justify-center bg-white">
-                  {/* Pastor Silhouette / Portrait Image */}
-                  <img
-                    src={item.src || item.fullSrc}
-                    alt={item.title || item.name || 'Pastor'}
-                    className="w-full h-full object-contain object-bottom select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
-                    loading={absOffset <= 1 ? 'eager' : 'lazy'}
-                    draggable={false}
-                  />
+              {/* Variant 1: Music Album Sleeve with Vinyl Record tucked inside */}
+              {shouldShowRecord ? (
+                <>
+                  {/* Vinyl Record */}
+                  <div className="album-vinyl">
+                    {/* Micro-Grooves */}
+                    <div className="album-vinyl-grooves" />
+                    {/* Dynamic Conic Luster Sheen */}
+                    <div className="album-vinyl-luster" />
+                    {/* Center Vinyl Label */}
+                    <div className="album-vinyl-label">
+                      {item.labelSrc ? (
+                        <img src={item.labelSrc} alt="" className="w-full h-full object-cover" />
+                      ) : item.src ? (
+                        <img src={item.src} alt="" className="w-full h-full object-cover opacity-85" />
+                      ) : (
+                        <span className="text-[9px] font-bold text-[#D9A31A]">FLAG</span>
+                      )}
+                      {/* Spindle Center Hole */}
+                      <div className="album-vinyl-spindle" />
+                    </div>
+                  </div>
 
-                  {/* Gradient Overlay for bottom text legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+                  {/* Album Sleeve Jacket */}
+                  <div className="album-sleeve group cursor-pointer">
+                    <div className="relative w-full h-full bg-[#121626] overflow-hidden flex items-center justify-center">
+                      <img
+                        src={item.src || item.fullSrc}
+                        alt={item.title || item.name || 'Song'}
+                        className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
+                        loading={absOffset <= 2 ? 'eager' : 'lazy'}
+                        draggable={false}
+                      />
 
-                  {/* Micro Name Plate on Card Bottom */}
-                  <div className="absolute bottom-2 inset-x-2 z-10 text-center pointer-events-none">
-                    <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {item.title || item.name}
-                    </p>
+                      {/* Gradient Overlay for bottom text legibility */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30 pointer-events-none" />
+
+                      {/* Center Play Button Icon on Active Sleeve */}
+                      {isActive && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-[#D9A31A]/70 flex items-center justify-center text-[#D9A31A] shadow-[0_0_20px_rgba(217,163,26,0.5)] transition-transform duration-200 group-hover:scale-110">
+                            <svg className="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Top Duration Badge */}
+                      {item.duration && (
+                        <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">
+                          <span className="font-sans-clean text-[10px] font-bold tracking-wider text-white bg-black/75 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10 shadow-sm">
+                            {item.duration}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Top Corner Flag Tag */}
+                      <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+                        <span className="font-sans-clean text-[9px] font-bold tracking-widest text-[#D9A31A] bg-black/70 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#D9A31A]/30 uppercase">
+                          WORSHIP
+                        </span>
+                      </div>
+
+                      {/* Bottom Title & Subtitle */}
+                      <div className="absolute bottom-2.5 inset-x-2.5 z-10 text-left pointer-events-none">
+                        <p className="font-editorial text-sm font-bold text-white tracking-wide truncate drop-shadow">
+                          {item.title || item.name}
+                        </p>
+                        {item.subtitle && (
+                          <p className="font-sans-clean text-[10px] font-semibold text-[#D9A31A] truncate tracking-wider uppercase">
+                            {item.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Variant 2: Portrait Card Surface (for Pastoral Team) */
+                <div className="album-card-inner group bg-white">
+                  <div className="relative w-full h-full overflow-hidden flex items-end justify-center bg-white">
+                    <img
+                      src={item.src || item.fullSrc}
+                      alt={item.title || item.name || 'Card'}
+                      className="w-full h-full object-contain object-bottom select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
+                      loading={absOffset <= 1 ? 'eager' : 'lazy'}
+                      draggable={false}
+                    />
+
+                    {/* Gradient Overlay for bottom text legibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Micro Name Plate on Card Bottom */}
+                    <div className="absolute bottom-2 inset-x-2 z-10 text-center pointer-events-none">
+                      <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                        {item.title || item.name}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
@@ -326,7 +427,7 @@ const AlbumRail = forwardRef(function AlbumRail(
               e.stopPropagation();
               handlePrev();
             }}
-            aria-label="Previous Pastor"
+            aria-label="Previous item"
             className="album-rail-btn"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -335,7 +436,7 @@ const AlbumRail = forwardRef(function AlbumRail(
           </button>
 
           {/* Interactive Scrub Ruler Ticks */}
-          <div className="album-rail-ticks" role="tablist" aria-label="Choose pastor">
+          <div className="album-rail-ticks" role="tablist" aria-label="Choose album">
             {items.map((it, i) => {
               const active = i === currentIndex;
               return (
@@ -348,13 +449,37 @@ const AlbumRail = forwardRef(function AlbumRail(
                   className={`album-rail-tick ${active ? 'is-active' : ''}`}
                   role="tab"
                   aria-selected={active}
-                  aria-label={it.title || it.name || `Pastor ${i + 1}`}
+                  aria-label={it.title || it.name || `Track ${i + 1}`}
                 >
                   <div className="album-rail-tick-bar" />
                 </div>
               );
             })}
           </div>
+
+          {/* Play/Pause Vinyl Spin Button (Shown for music albums) */}
+          {shouldShowRecord && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                togglePlay();
+              }}
+              aria-label={isPlaying ? 'Pause Vinyl Rotation' : 'Spin Vinyl Record'}
+              className="album-rail-btn !w-9 !h-9 text-xs"
+              title={isPlaying ? 'Pause Vinyl Spin' : 'Spin Vinyl'}
+            >
+              {isPlaying ? (
+                <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              ) : (
+                <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </button>
+          )}
 
           {/* Next Arrow Button */}
           <button
@@ -363,7 +488,7 @@ const AlbumRail = forwardRef(function AlbumRail(
               e.stopPropagation();
               handleNext();
             }}
-            aria-label="Next Pastor"
+            aria-label="Next item"
             className="album-rail-btn"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

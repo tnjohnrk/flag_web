@@ -1,7 +1,7 @@
 /* ==========================================================
-   Card Rail / Showcase — React Bits Pro Style
-   Clean 3D fan of profile cards. No CD / vinyl or music playback.
-   Specifically tuned for mobile responsiveness in pastoral team view.
+   Album Rail — React Bits Pro (Tailwind & CSS)
+   A fan of album sleeves, each with a record tucked inside.
+   Supports both square vinyl music albums and custom card showcases.
    ========================================================== */
 
 .album-rail-root {
@@ -22,13 +22,19 @@
 .album-rail-stage {
   position: relative;
   width: 100%;
-  height: 270px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
   cursor: grab;
   overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .album-rail-stage {
+    height: 320px;
+  }
 }
 
 .album-rail-stage:active {
@@ -40,7 +46,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 26%;
+  width: 25%;
   z-index: 60;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -54,27 +60,190 @@
   right: 0;
 }
 
-/* Individual Card Unit */
+/* Individual Album Card Unit (Sleeve + Record) */
 .album-rail-card {
   position: absolute;
   top: 50%;
   left: 50%;
   transform-style: preserve-3d;
   will-change: transform, opacity;
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-              opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: pointer;
 }
 
-.album-rail-card.is-neighbor {
-  cursor: pointer;
-}
-
-.album-rail-card.is-neighbor:active .album-card-inner {
+.album-rail-card.is-neighbor:active .album-card-inner,
+.album-rail-card.is-neighbor:active .album-sleeve {
   transform: scale(0.96);
 }
 
-/* Card Surface - Solid pure white background for all pastor portraits */
+/* ==========================================================
+   Album Sleeve Jacket (Square LP Vinyl Sleeve)
+   ========================================================== */
+.album-sleeve {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #121626;
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.65),
+              0 6px 16px -2px rgba(0, 0, 0, 0.45),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  z-index: 2;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+:root:not(.dark) .album-sleeve {
+  background: #f4f1ea;
+  box-shadow: 0 18px 36px -10px rgba(18, 24, 40, 0.28),
+              0 6px 14px -2px rgba(18, 24, 40, 0.18),
+              inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Cardboard Paper Texture & Specular Sheen on Sleeve */
+.album-sleeve::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Spine Crease / Opening on Right Edge where vinyl emerges */
+.album-sleeve::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.album-rail-card.is-active .album-sleeve {
+  box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.75),
+              0 0 0 2px #d9a31a,
+              0 0 24px -2px rgba(217, 163, 26, 0.45);
+}
+
+/* ==========================================================
+   Realistic Vinyl Record
+   ========================================================== */
+.album-vinyl {
+  position: absolute;
+  top: 3%;
+  bottom: 3%;
+  right: 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #0b0c10;
+  z-index: 1;
+  transform-origin: center center;
+  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.15);
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.75),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Micro-Grooves on Vinyl Surface */
+.album-vinyl-grooves {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    rgba(28, 32, 45, 1) 0,
+    rgba(28, 32, 45, 1) 2px,
+    rgba(10, 12, 18, 1) 3px,
+    rgba(10, 12, 18, 1) 5px
+  );
+  overflow: hidden;
+}
+
+/* Dynamic Conic Vinyl Luster / Sheen */
+.album-vinyl-luster {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 45deg,
+    rgba(255, 255, 255, 0.22) 0deg,
+    transparent 60deg,
+    rgba(255, 255, 255, 0.22) 120deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.22) 240deg,
+    transparent 300deg,
+    rgba(255, 255, 255, 0.22) 360deg
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+}
+
+/* Vinyl Center Label */
+.album-vinyl-label {
+  position: relative;
+  width: 36%;
+  height: 36%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #1e2640 0%, #0d1222 100%);
+  border: 2px solid #d9a31a;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5),
+              0 2px 6px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  overflow: hidden;
+}
+
+/* Center Spindle Hole */
+.album-vinyl-spindle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #090a0f;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+  z-index: 5;
+}
+
+/* Vinyl Slide Out States */
+.album-rail-card.is-active .album-vinyl {
+  transform: translateX(45%) translateZ(-1px);
+}
+
+/* Vinyl Continuous Rotation */
+.album-rail-card.is-active.is-playing .album-vinyl-grooves {
+  animation: album-vinyl-spin 6s linear infinite;
+}
+
+@keyframes album-vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================
+   Card Surface (Solid pure white for portrait pastor cards)
+   ========================================================== */
 .album-card-inner {
   position: relative;
   width: 100%;
@@ -93,28 +262,24 @@
   background: #ffffff !important;
 }
 
-/* Gold border highlight for active card */
 .album-rail-card.is-active .album-card-inner {
   box-shadow: 0 18px 36px -8px rgba(0, 0, 0, 0.3),
               0 0 0 2.5px #d9a31a,
               0 0 20px -2px rgba(217, 163, 26, 0.4);
 }
 
-/* Card Light Sheen (disabled for pure white clarity) */
-.album-card-inner::before {
-  display: none;
-}
-
-/* Timeline Ruler Navigation */
+/* ==========================================================
+   Timeline Ruler Navigation
+   ========================================================== */
 .album-rail-ruler {
   width: 100%;
-  max-width: 320px;
-  margin: 10px auto 0 auto;
+  max-width: 380px;
+  margin: 14px auto 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
-  gap: 12px;
+  padding: 6px 12px;
+  gap: 10px;
 }
 
 .album-rail-ticks {
@@ -150,13 +315,13 @@
 }
 
 .album-rail-tick.is-active .album-rail-tick-bar {
-  height: 14px;
+  height: 15px;
   width: 3px;
   background: #d9a31a;
   box-shadow: 0 0 8px rgba(217, 163, 26, 0.6);
 }
 
-/* Prev / Next Control Buttons */
+/* Prev / Next / Play Control Buttons */
 .album-rail-btn {
   width: 38px;
   height: 38px;
@@ -168,7 +333,7 @@
   justify-content: center;
   color: #fff;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
