@@ -176,19 +176,6 @@ export default function FlagPreloader({ onComplete }) {
           {/* Direct Raw Stream Fallback */}
           <source src="https://res.cloudinary.com/hqsoyezk/video/upload/v1793953957/flagweb/preloader1_4k.mp4" type="video/mp4" />
         </video>
-
-        {/* Subtle tap-to-skip button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            triggerExitAnimation();
-          }}
-          className="absolute top-5 right-5 z-50 text-[11px] font-sans-clean font-semibold tracking-widest uppercase text-white/75 hover:text-white bg-black/50 hover:bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 transition-all cursor-pointer active:scale-95 shadow-lg"
-          aria-label="Skip preloader"
-        >
-          Skip
-        </button>
       </div>
     </div>
   );
