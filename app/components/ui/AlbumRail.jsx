@@ -13,22 +13,22 @@ import './AlbumRail.css';
 /**
  * Album Rail — React Bits Pro (Tailwind & CSS)
  * A fan of album sleeves, each with a record tucked inside.
- * Optimized for touch swipe, reactive mouse drag, and 3D perspective animations.
+ * Features smooth infinite auto-scrolling, touch gestures, and 3D perspective animations.
  */
 const AlbumRail = forwardRef(function AlbumRail(
   {
     items = [],
     startIndex = 0,
     aspectRatio = 1,
-    coverHeight = 240,
+    coverHeight = 250,
     neighborSpacing = 0.25,
     compactness = 0.55,
     draggable = true,
     withRecord = null, // Auto-detect: true for square albums (1:1), false for custom cards
     showCaption = false,
     showRuler = true,
-    autoplay = false,
-    autoplayInterval = 4000,
+    autoplay = true,
+    autoplayInterval = 3500,
     ariaLabel = 'Album Rail',
     className = '',
     style,
@@ -42,13 +42,34 @@ const AlbumRail = forwardRef(function AlbumRail(
   const [isPlaying, setIsPlaying] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const stageRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [responsiveHeight, setResponsiveHeight] = useState(coverHeight);
 
+  const stageRef = useRef(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchCurrentX = useRef(0);
   const isDraggingRef = useRef(false);
   const hasMovedRef = useRef(false);
+  const userInteractionTimerRef = useRef(null);
+
+  // Responsive cover height calculation
+  useEffect(() => {
+    const updateSize = () => {
+      if (typeof window === 'undefined') return;
+      if (window.innerWidth < 640) {
+        setResponsiveHeight(Math.min(coverHeight, 210));
+      } else if (window.innerWidth < 1024) {
+        setResponsiveHeight(Math.min(coverHeight, 240));
+      } else {
+        setResponsiveHeight(coverHeight);
+      }
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, [coverHeight]);
 
   // Sync external index changes
   useEffect(() => {
@@ -57,10 +78,18 @@ const AlbumRail = forwardRef(function AlbumRail(
     }
   }, [startIndex, items.length]);
 
+  const pauseAutoPlayTemporarily = useCallback((durationMs = 4500) => {
+    setIsUserInteracting(true);
+    if (userInteractionTimerRef.current) clearTimeout(userInteractionTimerRef.current);
+    userInteractionTimerRef.current = setTimeout(() => {
+      setIsUserInteracting(false);
+    }, durationMs);
+  }, []);
+
   const goToIndex = useCallback(
     (newIndex) => {
       if (items.length === 0) return;
-      const validIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+      const validIndex = ((newIndex % items.length) + items.length) % items.length;
       setCurrentIndex(validIndex);
       onIndexChange?.(validIndex);
     },
@@ -69,15 +98,21 @@ const AlbumRail = forwardRef(function AlbumRail(
 
   const handlePrev = useCallback(() => {
     if (items.length === 0) return;
+    pauseAutoPlayTemporarily();
     const prev = (currentIndex - 1 + items.length) % items.length;
     goToIndex(prev);
-  }, [currentIndex, items.length, goToIndex]);
+  }, [currentIndex, items.length, goToIndex, pauseAutoPlayTemporarily]);
 
   const handleNext = useCallback(() => {
     if (items.length === 0) return;
     const next = (currentIndex + 1) % items.length;
     goToIndex(next);
   }, [currentIndex, items.length, goToIndex]);
+
+  const handleNextWithPause = useCallback(() => {
+    pauseAutoPlayTemporarily();
+    handleNext();
+  }, [handleNext, pauseAutoPlayTemporarily]);
 
   const togglePlay = useCallback(() => {
     setIsPlaying((prev) => {
@@ -87,14 +122,26 @@ const AlbumRail = forwardRef(function AlbumRail(
     });
   }, [onPlayStateChange]);
 
+  // Smooth Auto-Scrolling Loop
+  useEffect(() => {
+    if (!autoplay || !isPlaying || isHovered || isUserInteracting || items.length <= 1) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      handleNext();
+    }, autoplayInterval);
+
+    return () => clearInterval(timer);
+  }, [autoplay, isPlaying, isHovered, isUserInteracting, autoplayInterval, handleNext, items.length]);
+
   // Imperative navigation handle for parent component
   useImperativeHandle(ref, () => ({
-    next: handleNext,
+    next: handleNextWithPause,
     prev: handlePrev,
     open: (idx) => {
-      if (idx >= 0 && idx < items.length) {
-        goToIndex(idx);
-      }
+      pauseAutoPlayTemporarily();
+      goToIndex(idx);
     },
     play: () => {
       setIsPlaying(true);
@@ -114,7 +161,7 @@ const AlbumRail = forwardRef(function AlbumRail(
       handlePrev();
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
-      handleNext();
+      handleNextWithPause();
     } else if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       onSelect?.(items[currentIndex], currentIndex);
@@ -124,6 +171,7 @@ const AlbumRail = forwardRef(function AlbumRail(
   // Pointer & Touch Events
   const handlePointerDown = (e) => {
     if (!draggable) return;
+    pauseAutoPlayTemporarily();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     touchStartX.current = clientX;
@@ -163,27 +211,18 @@ const AlbumRail = forwardRef(function AlbumRail(
     setIsDragging(false);
 
     const diff = touchCurrentX.current - touchStartX.current;
-    const threshold = 40;
+    const threshold = 35;
 
     if (diff > threshold) {
       handlePrev();
     } else if (diff < -threshold) {
-      handleNext();
+      handleNextWithPause();
     }
     setDragOffset(0);
   };
 
-  // Autoplay
-  useEffect(() => {
-    if (!autoplay || items.length <= 1) return;
-    const timer = setInterval(() => {
-      handleNext();
-    }, autoplayInterval);
-    return () => clearInterval(timer);
-  }, [autoplay, autoplayInterval, handleNext, items.length]);
-
   // Card & Sleeve Dimensions
-  const cardHeight = coverHeight;
+  const cardHeight = responsiveHeight;
   const cardWidth = cardHeight * aspectRatio;
 
   // Determine whether to show the vinyl record (default true for square 1:1 albums)
@@ -191,6 +230,7 @@ const AlbumRail = forwardRef(function AlbumRail(
 
   const handleCardClick = (idx, e) => {
     e.stopPropagation();
+    pauseAutoPlayTemporarily();
     if (hasMovedRef.current) return;
 
     if (idx === currentIndex) {
@@ -209,6 +249,8 @@ const AlbumRail = forwardRef(function AlbumRail(
       aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* 3D Rail Stage */}
       <div
@@ -241,23 +283,33 @@ const AlbumRail = forwardRef(function AlbumRail(
           onClick={(e) => {
             if (!hasMovedRef.current) {
               e.stopPropagation();
-              handleNext();
+              handleNextWithPause();
             }
           }}
           aria-label="Next card"
         />
 
         {items.map((item, idx) => {
-          const offset = idx - currentIndex;
+          let offset = idx - currentIndex;
+
+          // Infinite circular wrapping so adjacent items wrap seamlessly around the ends
+          if (items.length > 4) {
+            const half = items.length / 2;
+            if (offset > half) {
+              offset -= items.length;
+            } else if (offset < -half) {
+              offset += items.length;
+            }
+          }
+
           const isActive = offset === 0;
           const absOffset = Math.abs(offset);
 
-          // Render visible neighborhood for high performance
-          if (absOffset > 4) return null;
+          // Render only visible neighborhood for peak performance (active + 3 on each side)
+          if (absOffset > 3.5) return null;
 
           // 3D positioning calculations
           const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
-          // Step distance per card offset adapted to sleeve width
           const stepX = Math.round(cardWidth * (shouldShowRecord ? 0.52 : 0.48));
 
           let translateX = offset * stepX + dragInfluence;
@@ -265,7 +317,7 @@ const AlbumRail = forwardRef(function AlbumRail(
           let rotateY = offset > 0 ? -18 : offset < 0 ? 18 : 0;
           let scale = Math.max(0.76, 1 - absOffset * 0.09);
           let opacity = Math.max(0.3, 1 - absOffset * 0.2);
-          let zIndex = 50 - absOffset;
+          let zIndex = 50 - Math.round(absOffset);
 
           // Active elevated card
           if (isActive) {
@@ -327,7 +379,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                       <img
                         src={item.src || item.fullSrc}
                         alt={item.title || item.name || 'Song'}
-                        className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
                         loading={absOffset <= 2 ? 'eager' : 'lazy'}
                         draggable={false}
                       />
@@ -338,7 +390,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                       {/* Center Play Button Icon on Active Sleeve */}
                       {isActive && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-[#D9A31A]/70 flex items-center justify-center text-[#D9A31A] shadow-[0_0_20px_rgba(217,163,26,0.5)] transition-transform duration-200 group-hover:scale-110">
+                          <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-[#D9A31A]/70 flex items-center justify-center text-[#D9A31A] shadow-[0_0_20px_rgba(217,163,26,0.5)] transition-transform duration-300 group-hover:scale-110">
                             <svg className="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
                               <path d="M8 5v14l11-7z" />
                             </svg>
@@ -383,7 +435,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                     <img
                       src={item.src || item.fullSrc}
                       alt={item.title || item.name || 'Card'}
-                      className="w-full h-full object-contain object-bottom select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-contain object-bottom select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
                       loading={absOffset <= 1 ? 'eager' : 'lazy'}
                       draggable={false}
                     />
@@ -444,6 +496,7 @@ const AlbumRail = forwardRef(function AlbumRail(
                   key={`tick-${i}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    pauseAutoPlayTemporarily();
                     goToIndex(i);
                   }}
                   className={`album-rail-tick ${active ? 'is-active' : ''}`}
@@ -457,7 +510,7 @@ const AlbumRail = forwardRef(function AlbumRail(
             })}
           </div>
 
-          {/* Play/Pause Vinyl Spin Button (Shown for music albums) */}
+          {/* Play/Pause Vinyl Spin & Auto-scroll Button (Shown for music albums) */}
           {shouldShowRecord && (
             <button
               type="button"
@@ -465,9 +518,9 @@ const AlbumRail = forwardRef(function AlbumRail(
                 e.stopPropagation();
                 togglePlay();
               }}
-              aria-label={isPlaying ? 'Pause Vinyl Rotation' : 'Spin Vinyl Record'}
+              aria-label={isPlaying ? 'Pause Auto-scroll & Vinyl' : 'Resume Auto-scroll & Vinyl'}
               className="album-rail-btn !w-9 !h-9 text-xs"
-              title={isPlaying ? 'Pause Vinyl Spin' : 'Spin Vinyl'}
+              title={isPlaying ? 'Pause Auto-scroll & Vinyl' : 'Resume Auto-scroll & Vinyl'}
             >
               {isPlaying ? (
                 <svg className="w-3.5 h-3.5 text-[#D9A31A]" fill="currentColor" viewBox="0 0 24 24">
@@ -486,7 +539,7 @@ const AlbumRail = forwardRef(function AlbumRail(
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              handleNext();
+              handleNextWithPause();
             }}
             aria-label="Next item"
             className="album-rail-btn"

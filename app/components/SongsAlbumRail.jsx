@@ -149,6 +149,8 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
                 compactness={0.52}
                 withRecord={true}
                 showRuler={true}
+                autoplay={true}
+                autoplayInterval={3500}
                 onIndexChange={(index) => setActiveIndex(index)}
                 onSelect={(item) => handleSelectAlbum(item)}
               />
