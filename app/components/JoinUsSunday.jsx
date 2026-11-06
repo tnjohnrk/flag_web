@@ -25,7 +25,7 @@ export default function JoinUsSunday() {
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">
+          <h2 className="text-3xl sm:text-4xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">
             Join Us This Sunday
           </h2>
           <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />

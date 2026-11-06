@@ -144,7 +144,7 @@ export default function ImportantAnnouncement() {
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold font-editorial text-text-primary dark:text-white tracking-wide">
+          <h2 className="text-3xl sm:text-4xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">
             IMPORTANT ANNOUNCEMENTS
           </h2>
           <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />

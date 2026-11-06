@@ -264,7 +264,7 @@ const AboutUs = () => {
                   OUR STORY
                 </span>
               </div>
-              <h2 className="font-editorial text-3xl sm:text-5xl lg:text-6xl font-bold text-flag-navy dark:text-white leading-[1.1] tracking-tight">
+              <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-wide">
                 Our Church History
               </h2>
             </div>
@@ -347,7 +347,7 @@ const AboutUs = () => {
                   THOSE WHO LEAD
                 </span>
               </div>
-              <h2 className="font-editorial text-xl sm:text-3xl lg:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-tight">
+              <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-flag-navy dark:text-white leading-tight tracking-wide">
                 Leadership With Purpose
               </h2>
               <p className="font-sans-clean text-xs sm:text-sm text-text-secondary line-clamp-1 max-w-lg hidden sm:block">

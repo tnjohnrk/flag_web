@@ -41,26 +41,19 @@
 }
 
 .videos-header h2 {
-    font-size: 1.75rem;
+    font-size: 1.875rem; /* text-3xl (30px) */
     font-weight: 700;
-    color: #2c3e50;
+    color: inherit;
     font-family: 'Cormorant Garamond', Georgia, serif;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.025em;
     margin: 0;
     text-align: center;
     word-break: break-word;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 640px) {
     .videos-header h2 {
-        font-size: 2rem;
-        white-space: nowrap;
-    }
-}
-
-@media (min-width: 768px) {
-    .videos-header h2 {
-        font-size: 2.5rem;
+        font-size: 2.25rem; /* text-4xl (36px) */
     }
 }
 

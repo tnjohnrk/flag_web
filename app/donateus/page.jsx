@@ -76,9 +76,9 @@ export default function DonateUs() {
           <span className="font-sans-clean text-xs font-bold tracking-[0.3em] uppercase text-[#D9A31A] block">
             GENEROSITY & STEWARDSHIP
           </span>
-          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-white tracking-tight leading-[1.1]">
+          <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-flag-navy dark:text-white tracking-wide uppercase">
             Give With Purpose
-          </h1>
+          </h2>
           <div className="w-20 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />
           <p className="font-editorial italic text-xl sm:text-2xl text-text-secondary leading-relaxed">
             “God Loves a Cheerful Giver” <span className="font-sans-clean not-italic text-sm text-[#D9A31A] font-bold uppercase tracking-wider">(2 Corinthians 9:7)</span>

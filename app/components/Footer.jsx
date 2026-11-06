@@ -28,7 +28,7 @@ export default function Footer() {
           <span className="font-sans-clean text-xs font-bold tracking-[0.3em] uppercase text-[#D9A31A] block">
             GET IN TOUCH
           </span>
-          <h2 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-[1.1]">
+          <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-white tracking-wide uppercase">
             We’d Love to Hear From You
           </h2>
           <div className="w-20 h-0.5 bg-[#D9A31A]/80 mx-auto rounded-full" />

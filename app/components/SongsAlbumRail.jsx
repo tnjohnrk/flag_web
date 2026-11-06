@@ -98,11 +98,11 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
             Worship & Praise Playlist
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-editorial font-bold text-text-primary dark:text-white tracking-wide">
+          <h2 className="text-3xl sm:text-4xl font-editorial font-bold text-text-primary dark:text-white tracking-wide uppercase">
             {title}
           </h2>
 
-          <div className="w-20 h-1 bg-gradient-to-r from-transparent via-[#D9A31A] to-transparent mx-auto mt-3 rounded-full" />
+          <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />
 
           <p className="mt-3 text-sm sm:text-base text-text-secondary dark:text-gray-400 font-sans-clean max-w-xl mx-auto">
             Experience the divine presence of God through spirit-filled worship, praise, and songs written & ministered at Full Life Centre.
