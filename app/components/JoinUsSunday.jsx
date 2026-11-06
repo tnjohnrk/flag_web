@@ -21,7 +21,7 @@ export default function JoinUsSunday() {
   ];
 
   return (
-    <section id="timings" data-reveal className="w-full bg-background py-10 px-4">
+    <section id="timings" data-reveal className="w-full bg-background py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">

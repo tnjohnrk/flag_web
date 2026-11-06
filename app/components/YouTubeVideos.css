@@ -24,8 +24,8 @@
 }
 
 .youtubecontent {
-    max-width: 2000px;
-    width: 97%;
+    max-width: 1280px;
+    width: 100%;
     margin: 0 auto;
     height: auto;
     justify-content: space-between;
@@ -34,10 +34,10 @@
     gap: 15px;
     align-items: center;
     align-self: stretch;
-    padding: 15px 20px;
+    padding: 15px 24px;
     position: relative;
     overflow: hidden;
-    padding-left: 9px;
+    box-sizing: border-box;
 }
 
 .videos-header h2 {
