@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
 import { getMediaUrl } from '@/lib/media';
-import { Check, Loader2, AlertCircle } from 'lucide-react';
+import { Check, Loader2, AlertCircle, MapPin, Map } from 'lucide-react';
 import PillButton from '../components/PillButton';
 
 export default function KnowGod() {
@@ -490,7 +490,7 @@ export default function KnowGod() {
                   size="sm"
                   className="text-xs font-bold"
                 >
-                  <span>🗺️</span>
+                  <Map className="w-3.5 h-3.5" />
                   <span>{showMap ? "Hide Map" : "Select on Map"}</span>
                 </PillButton>
               </div>
@@ -535,7 +535,8 @@ export default function KnowGod() {
                         size="sm"
                         className="!text-xs font-bold"
                       >
-                        <span>📍 Current Location</span>
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>Current Location</span>
                       </PillButton>
                       <PillButton
                         type="button"
@@ -715,9 +716,9 @@ export default function KnowGod() {
                   <span className="font-bold text-text-primary block">3. Stay Connected with Fellow Believers:</span>
                   <p className="leading-relaxed">Join a group where you can grow spiritually and encourage others:</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">🙏 Church Prayer Gatherings</div>
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">🏠 House Cell Groups</div>
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">📖 Bible Studies</div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">Church Prayer Gatherings</div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">House Cell Groups</div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-semibold text-text-primary text-center shadow-sm">Bible Studies</div>
                   </div>
                 </div>
 
@@ -725,10 +726,10 @@ export default function KnowGod() {
                   <span className="font-bold text-text-primary block">4. Worship with Us Every Sunday:</span>
                   <p className="leading-relaxed">Gather with us to worship and grow in faith:</p>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-center">
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">⏰ 6 AM<br/><span className="text-text-secondary font-normal">First Service</span></div>
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">⏰ 8:30 AM<br/><span className="text-text-secondary font-normal">Second Service</span></div>
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">⏰ 11 AM<br/><span className="text-text-secondary font-normal">Third Service</span></div>
-                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">⏰ 6:30 PM<br/><span className="text-text-secondary font-normal">Evening Service</span></div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">6:00 AM<br/><span className="text-text-secondary font-normal">First Service</span></div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">8:30 AM<br/><span className="text-text-secondary font-normal">Second Service</span></div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">11:00 AM<br/><span className="text-text-secondary font-normal">Third Service</span></div>
+                    <div className="bg-background border border-border p-3 rounded-xl text-xs font-bold text-[#D9A31A]">6:30 PM<br/><span className="text-text-secondary font-normal">Evening Service</span></div>
                   </div>
                 </div>
               </div>

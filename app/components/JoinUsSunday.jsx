@@ -30,7 +30,7 @@ export default function JoinUsSunday() {
           </h2>
           <div className="w-[80px] h-[3px] bg-[#8a0303] mx-auto mt-3 rounded-full" />
           <p className="font-sans-clean text-xs sm:text-sm text-text-secondary mt-2">
-            Click any service to view church location &amp; get directions 📍
+            Click any service to view church location &amp; get directions
           </p>
         </div>
 
