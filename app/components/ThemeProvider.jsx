@@ -32,7 +32,7 @@ export function ThemeProvider({ children }) {
     setTheme(newTheme);
   };
 
-  const toggleTheme = (e) => {
+  const toggleTheme = async (e) => {
     if (isTransitioningRef.current) return;
     const newTheme = theme === "light" ? "dark" : "light";
     const isDark = newTheme === "dark";
@@ -69,58 +69,66 @@ export function ThemeProvider({ children }) {
         ? "theme-transition-to-dark"
         : "theme-transition-to-light";
 
-      document.documentElement.classList.add(transitionClass);
+      // Suppress all child CSS transitions so snapshot captures instant 100% final colors
+      document.documentElement.classList.add("theme-transitioning", transitionClass);
 
       try {
         const transition = document.startViewTransition(() => {
           applyTheme(newTheme);
         });
 
-        transition.ready.then(() => {
-          const duration = 520;
-          const easing = "cubic-bezier(0.4, 0, 0.2, 1)";
+        await transition.ready;
 
-          if (isDark) {
-            // Light -> Dark: Smooth in-to-out circular expansion from toggle button
-            document.documentElement.animate(
-              {
-                clipPath: [
-                  `circle(0px at ${x}px ${y}px)`,
-                  `circle(${endRadius}px at ${x}px ${y}px)`,
-                ],
-              },
-              {
-                duration,
-                easing,
-                pseudoElement: "::view-transition-new(root)",
-              }
-            );
-          } else {
-            // Dark -> Light: Smooth out-to-in circular contraction into toggle button
-            document.documentElement.animate(
-              {
-                clipPath: [
-                  `circle(${endRadius}px at ${x}px ${y}px)`,
-                  `circle(0px at ${x}px ${y}px)`,
-                ],
-              },
-              {
-                duration,
-                easing,
-                pseudoElement: "::view-transition-old(root)",
-              }
-            );
-          }
-        });
+        const duration = 480;
+        const easing = "cubic-bezier(0.4, 0, 0.2, 1)";
 
-        transition.finished.finally(() => {
-          document.documentElement.classList.remove(transitionClass);
+        let anim;
+        if (isDark) {
+          // Light -> Dark: Smooth in-to-out circular expansion from toggle button
+          anim = document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration,
+              easing,
+              fill: "forwards",
+              pseudoElement: "::view-transition-new(root)",
+            }
+          );
+        } else {
+          // Dark -> Light: Smooth out-to-in circular contraction into toggle button
+          anim = document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+                `circle(0px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration,
+              easing,
+              fill: "forwards",
+              pseudoElement: "::view-transition-old(root)",
+            }
+          );
+        }
+
+        if (anim) {
+          await anim.finished;
+        }
+        await transition.finished;
+      } catch (err) {
+        applyTheme(newTheme);
+      } finally {
+        // Wait for next animation frame so DOM is completely settled before restoring regular transitions
+        requestAnimationFrame(() => {
+          document.documentElement.classList.remove("theme-transitioning", transitionClass);
           isTransitioningRef.current = false;
         });
-      } catch (err) {
-        document.documentElement.classList.remove(transitionClass);
-        isTransitioningRef.current = false;
-        applyTheme(newTheme);
       }
     } else {
       // Fallback

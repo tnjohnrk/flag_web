@@ -66,6 +66,10 @@ body {
    - Light to Dark: Smooth in-to-out circular expansion from toggle button
    - Dark to Light: Smooth out-to-in circular contraction into toggle button
    ========================================================================== */
+::view-transition-group(root) {
+  animation-duration: 480ms;
+}
+
 ::view-transition-image-pair(root) {
   isolation: isolate;
 }
@@ -93,11 +97,12 @@ body {
   z-index: 1;
 }
 
-/* Disable body CSS transitions during clip-path view transition so snapshot is instant */
-:root.theme-transition-to-dark,
-:root.theme-transition-to-dark body,
-:root.theme-transition-to-light,
-:root.theme-transition-to-light body {
+/* Completely suppress all CSS background, color, and border transitions during view transition
+   so the snapshot captured for the new theme is immediate and 100% settled with zero jerk */
+:root.theme-transitioning,
+:root.theme-transitioning *,
+:root.theme-transitioning *::before,
+:root.theme-transitioning *::after {
   transition: none !important;
 }
 
