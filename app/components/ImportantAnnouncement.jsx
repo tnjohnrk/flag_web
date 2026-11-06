@@ -1,7 +1,96 @@
 'use client';
 
+import React, { useState } from 'react';
 import PillButton from './PillButton';
 import { getMediaUrl } from '@/lib/media';
+
+function PhoneCallButton({ ann }) {
+  const [copied, setCopied] = useState(false);
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = (e) => {
+    // On website/desktop view, prevent launching tel: handler and reveal/copy number
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      e.preventDefault();
+      setClicked(true);
+      if (ann.phoneNumber) {
+        const numToCopy = ann.rawNumber || ann.phoneNumber.replace(/\s+/g, '');
+        navigator.clipboard?.writeText(numToCopy).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2500);
+        }).catch(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2500);
+        });
+      }
+    }
+    // On mobile (< 768px), allow default behavior to open dialer directly
+  };
+
+  return (
+    <div className="relative mt-auto group/phone flex flex-col items-center">
+      {/* Website View Floating Tooltip on Hover or Click */}
+      <div
+        className={`hidden md:flex absolute -top-11 left-1/2 -translate-x-1/2 items-center gap-1.5 px-3 py-1 rounded-full bg-black/95 backdrop-blur-md border border-[#D9A31A]/60 text-white text-[11px] font-sans-clean shadow-xl pointer-events-none transition-all duration-300 z-30 whitespace-nowrap ${
+          clicked || copied
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-1 scale-95 group-hover/phone:opacity-100 group-hover/phone:translate-y-0 group-hover/phone:scale-100'
+        }`}
+      >
+        {copied ? (
+          <>
+            <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-green-300 font-semibold tracking-wide">Copied: {ann.phoneNumber}</span>
+          </>
+        ) : (
+          <>
+            <svg className="w-3 h-3 text-[#D9A31A] fill-current" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-1C9.716 18 2 10.284 2 2V3z"/>
+            </svg>
+            <span className="text-white font-medium">{ann.phoneNumber}</span>
+            <span className="text-gray-400 text-[10px] ml-0.5">• Click to copy</span>
+          </>
+        )}
+        {/* Subtle downward arrow */}
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/95 rotate-45 border-r border-b border-[#D9A31A]/60" />
+      </div>
+
+      {/* Pill Button */}
+      <PillButton
+        href={ann.href}
+        onClick={handleClick}
+        variant="gold"
+        size="sm"
+        className="shadow-md transition-all duration-300 min-w-[125px] md:group-hover/phone:min-w-[175px]"
+      >
+        <svg className="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-1C9.716 18 2 10.284 2 2V3z"/>
+        </svg>
+
+        {/* Mobile View Text (Standard action label) */}
+        <span className="md:hidden">{ann.actionText}</span>
+
+        {/* Website View Text (Reveals phone number on hover or click) */}
+        <span className="hidden md:inline-flex items-center">
+          {copied ? (
+            <span className="text-black font-bold">Copied!</span>
+          ) : clicked ? (
+            <span className="font-semibold tracking-wide">{ann.phoneNumber}</span>
+          ) : (
+            <>
+              <span className="group-hover/phone:hidden">{ann.actionText}</span>
+              <span className="hidden group-hover/phone:inline-block font-semibold tracking-wide">
+                {ann.phoneNumber}
+              </span>
+            </>
+          )}
+        </span>
+      </PillButton>
+    </div>
+  );
+}
 
 export default function ImportantAnnouncement() {
   const announcements = [
@@ -16,6 +105,8 @@ export default function ImportantAnnouncement() {
       ),
       actionText: "Call Now",
       href: "tel:9841677587",
+      phoneNumber: "+91 98416 77587",
+      rawNumber: "9841677587",
       isPhone: true
     },
     {
@@ -42,6 +133,8 @@ export default function ImportantAnnouncement() {
       ),
       actionText: "Call Bureau",
       href: "tel:7904480259",
+      phoneNumber: "+91 79044 80259",
+      rawNumber: "7904480259",
       isPhone: true
     }
   ];
@@ -90,18 +183,16 @@ export default function ImportantAnnouncement() {
                   {ann.description}
                 </p>
 
-                {/* Pill Action Button */}
-                <PillButton
-                  href={ann.href}
-                  variant="gold"
-                  size="sm"
-                  className="mt-auto shadow-md"
-                >
-                  {ann.isPhone ? (
-                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-1C9.716 18 2 10.284 2 2V3z"/>
-                    </svg>
-                  ) : (
+                {/* Action Button: Special hover/click phone reveal on website view */}
+                {ann.isPhone ? (
+                  <PhoneCallButton ann={ann} />
+                ) : (
+                  <PillButton
+                    href={ann.href}
+                    variant="gold"
+                    size="sm"
+                    className="mt-auto shadow-md"
+                  >
                     <svg className="w-3.5 h-3.5 stroke-current fill-none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
@@ -109,9 +200,9 @@ export default function ImportantAnnouncement() {
                       <line x1="16" y1="17" x2="8" y2="17"/>
                       <polyline points="10 9 9 9 8 9"/>
                     </svg>
-                  )}
-                  <span>{ann.actionText}</span>
-                </PillButton>
+                    <span>{ann.actionText}</span>
+                  </PillButton>
+                )}
               </div>
             </div>
           ))}
