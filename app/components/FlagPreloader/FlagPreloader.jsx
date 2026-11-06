@@ -4,9 +4,12 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import './FlagPreloader.css';
 
-const CLOUDINARY_MOBILE_VIDEO_URL = 'https://res.cloudinary.com/r8qlzh1b/video/upload/w_720,c_limit,q_auto,f_auto/FLAG_Cinematic_Website_Prel.mp4';
-const CLOUDINARY_2K_VIDEO_URL = 'https://res.cloudinary.com/r8qlzh1b/video/upload/w_1920,h_1080,c_limit,q_auto,f_auto/FLAG_Cinematic_Website_Prel.mp4';
-const CLOUDINARY_4K_VIDEO_URL = 'https://res.cloudinary.com/r8qlzh1b/video/upload/w_3840,h_2160,c_limit,q_100,f_auto/FLAG_Cinematic_Website_Prel.mp4';
+const CLOUDINARY_MOBILE_VIDEO_URL =
+  'https://res.cloudinary.com/hqsoyezk/video/upload/w_1080,c_limit,q_auto,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
+const CLOUDINARY_2K_VIDEO_URL =
+  'https://res.cloudinary.com/hqsoyezk/video/upload/w_1920,h_1080,c_scale,q_auto:best,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
+const CLOUDINARY_4K_VIDEO_URL =
+  'https://res.cloudinary.com/hqsoyezk/video/upload/w_3840,h_2160,c_scale,q_100,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
 
 const EXIT_ANIMATION_DURATION = 0.25;
 
@@ -94,8 +97,8 @@ export default function FlagPreloader({ onComplete }) {
     setPreloaderState('VISIBLE');
     document.body.style.overflow = 'hidden';
 
-    // Maximum safety timeout: 2.2s on mobile, 4.5s on desktop
-    const maxSafetyMs = isMobile ? 2200 : 4500;
+    // Maximum safety timeout: 11.5s (full video is 10s)
+    const maxSafetyMs = 11500;
     const safetyTimer = setTimeout(() => {
       if (!isFinishedRef.current) {
         triggerExitAnimation();
@@ -105,6 +108,7 @@ export default function FlagPreloader({ onComplete }) {
     const videoEl = videoRef.current;
     if (videoEl) {
       videoEl.muted = true;
+      videoEl.volume = 0;
       videoEl.setAttribute('muted', '');
       videoEl.setAttribute('playsinline', '');
       videoEl.setAttribute('webkit-playsinline', '');
@@ -165,8 +169,12 @@ export default function FlagPreloader({ onComplete }) {
         >
           {/* Mobile-first resolution stream */}
           <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" media="(max-width: 767px)" />
+          {/* Desktop 2K stream */}
           <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" media="(max-width: 1920px)" />
+          {/* 4K Ultra-HD stream */}
           <source src={CLOUDINARY_4K_VIDEO_URL} type="video/mp4" />
+          {/* Direct Raw Stream Fallback */}
+          <source src="https://res.cloudinary.com/hqsoyezk/video/upload/v1793953957/flagweb/preloader1_4k.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle tap-to-skip button */}
@@ -176,9 +184,10 @@ export default function FlagPreloader({ onComplete }) {
             e.stopPropagation();
             triggerExitAnimation();
           }}
-          className="absolute top-4 right-4 z-50 text-[11px] font-sans-clean font-semibold tracking-widest uppercase text-white/70 hover:text-white bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 transition-all cursor-pointer active:scale-95"
+          className="absolute top-5 right-5 z-50 text-[11px] font-sans-clean font-semibold tracking-widest uppercase text-white/75 hover:text-white bg-black/50 hover:bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 transition-all cursor-pointer active:scale-95 shadow-lg"
+          aria-label="Skip preloader"
         >
-          Skip ✕
+          Skip
         </button>
       </div>
     </div>

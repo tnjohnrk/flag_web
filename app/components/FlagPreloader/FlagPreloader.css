@@ -37,22 +37,23 @@
 }
 
 
-/* Native HTML5 video formatting: 4K resolution, watermark crop scale, and vivid contrast */
+/* Native HTML5 video formatting: 4K resolution, perfectly centered alignment for web & mobile */
 .flag-cinematic-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  max-width: 100vw;
+  max-height: 100dvh;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   outline: none;
   border: none;
-  background: transparent;
+  background: #000000;
   pointer-events: none;
-  /* Scale up slightly to push any corner watermark/star badge completely out of frame */
-  transform: scale(1.08) translateZ(0);
+  transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   image-rendering: -webkit-optimize-contrast;
-  filter: contrast(1.06) brightness(1.02) saturate(1.04);
 }
 
 /* Suppress all native player controls across Webkit / Blink / Gecko */
@@ -95,11 +96,13 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .flag-cinematic-video {
-    /* Precise scale & framing for portrait mobile screens */
-    transform: scale(1.06) translateZ(0);
-    object-fit: cover;
+    /* Precise centered framing for mobile and tablet screens without cropping */
+    width: 100%;
+    height: auto;
+    max-height: 100dvh;
+    object-fit: contain;
     object-position: center center;
   }
 }
