@@ -38,34 +38,52 @@ body.preloader-active::-webkit-scrollbar {
   transition: opacity 250ms ease-out, transform 250ms ease-out;
 }
 
-/* Fullscreen video container covering complete viewport with watermark cropping */
+/* Fullscreen video container covering complete viewport */
 .flag-video-container {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   height: 100dvh;
   max-width: 100vw;
-  max-height: 100vh;
   max-height: 100dvh;
   overflow: hidden;
+  background-color: #000000;
 }
 
+/* Background ambient glow that blends smoothly with the video's golden particles on mobile */
+.flag-video-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 163, 26, 0.12) 0%,
+    rgba(16, 25, 79, 0.22) 50%,
+    #000000 85%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* Native HTML5 video formatting: 4K resolution, perfectly centered alignment for web & mobile */
 .flag-cinematic-video {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   max-width: 100vw;
   max-height: 100dvh;
+  aspect-ratio: 16 / 9;
   object-fit: contain;
   object-position: center center;
   display: block;
+  margin: auto;
   outline: none;
   border: none;
-  background: #000000;
+  background: transparent;
   pointer-events: none;
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
@@ -106,7 +124,7 @@ body.preloader-active::-webkit-scrollbar {
     height: 100dvh;
   }
   .flag-video-container {
-    width: 100vw;
+    width: 100%;
     height: 100dvh;
     max-width: 100vw;
     max-height: 100dvh;
@@ -115,10 +133,25 @@ body.preloader-active::-webkit-scrollbar {
 
 @media (max-width: 768px) {
   .flag-cinematic-video {
-    /* Precise centered framing for mobile and tablet screens without cropping */
+    /* Responsive fit for mobile portrait: full width, crisp 16:9 ratio, centered */
     width: 100%;
     height: auto;
+    max-width: 100vw;
     max-height: 100dvh;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    object-position: center center;
+  }
+}
+
+/* Landscape orientation on mobile devices */
+@media (max-height: 520px) and (orientation: landscape) {
+  .flag-cinematic-video {
+    width: auto;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    aspect-ratio: 16 / 9;
     object-fit: contain;
     object-position: center center;
   }

@@ -157,7 +157,8 @@ export default function FlagPreloader({ onComplete }) {
           muted
           playsInline
           webkit-playsinline="true"
-          preload="metadata"
+          preload="auto"
+          poster="https://res.cloudinary.com/hqsoyezk/video/upload/so_0,w_1920,f_auto,q_auto/v1793953957/flagweb/preloader1_4k.jpg"
           disablePictureInPicture
           controls={false}
           controlsList="nodownload nofullscreen noremoteplayback"
@@ -173,12 +174,10 @@ export default function FlagPreloader({ onComplete }) {
           aria-hidden="true"
           className="flag-cinematic-video"
         >
-          {/* Mobile-first resolution stream */}
-          <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" media="(max-width: 767px)" />
-          {/* Desktop 2K stream */}
-          <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" media="(max-width: 1920px)" />
-          {/* 4K Ultra-HD stream */}
+          {/* Universal high performance 4K / HD stream */}
           <source src={CLOUDINARY_4K_VIDEO_URL} type="video/mp4" />
+          <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" />
+          <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" />
           {/* Direct Raw Stream Fallback */}
           <source src="https://res.cloudinary.com/hqsoyezk/video/upload/v1793953957/flagweb/preloader1_4k.mp4" type="video/mp4" />
         </video>
