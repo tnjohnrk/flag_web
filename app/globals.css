@@ -61,6 +61,46 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* ==========================================================================
+   Smooth Theme Switch View Transitions
+   - Light to Dark: Smooth in-to-out circular expansion from toggle button
+   - Dark to Light: Smooth out-to-in circular contraction into toggle button
+   ========================================================================== */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+  mix-blend-mode: normal !important;
+  display: block;
+}
+
+/* Light to Dark: New dark snapshot on top expanding outward */
+:root.theme-transition-to-dark::view-transition-old(root) {
+  z-index: 1;
+}
+:root.theme-transition-to-dark::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Dark to Light: Old dark snapshot on top shrinking inward (out to in) */
+:root.theme-transition-to-light::view-transition-old(root) {
+  z-index: 9999;
+}
+:root.theme-transition-to-light::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Disable body CSS transitions during clip-path view transition so snapshot is instant */
+:root.theme-transition-to-dark,
+:root.theme-transition-to-dark body,
+:root.theme-transition-to-light,
+:root.theme-transition-to-light body {
+  transition: none !important;
+}
+
 /* Universal responsive media safeguards */
 img,
 svg,
