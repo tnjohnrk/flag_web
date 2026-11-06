@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import AlbumRail from './ui/AlbumRail';
-import { Play, ExternalLink, X, Eye, ThumbsUp, Disc3, LayoutGrid } from 'lucide-react';
+import { Play, ExternalLink, X, Eye, ThumbsUp, Disc3 } from 'lucide-react';
 
 function formatDuration(duration) {
   if (!duration || duration === 'P0D') return '';
@@ -19,7 +19,6 @@ function formatDuration(duration) {
 export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR SONGS", id = "our-songs" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [viewMode, setViewMode] = useState('rail'); // 'rail' | 'grid'
   const railRef = useRef(null);
 
   // Format playlist videos into album items
@@ -104,38 +103,10 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
           <p className="mt-3 text-sm sm:text-base text-text-secondary dark:text-gray-400 font-sans-clean max-w-xl mx-auto">
             Experience the divine presence of God through spirit-filled worship, praise, and songs written & ministered at Full Life Centre.
           </p>
-
-          {/* View Mode Toggle */}
-          <div className="mt-4 inline-flex items-center p-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-            <button
-              onClick={() => setViewMode('rail')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                viewMode === 'rail'
-                  ? 'bg-[#D9A31A] text-black font-semibold shadow-sm'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-              aria-label="3D Album Rail view"
-            >
-              <Disc3 className="w-3.5 h-3.5" />
-              Vinyl Rail
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                viewMode === 'grid'
-                  ? 'bg-[#D9A31A] text-black font-semibold shadow-sm'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-              aria-label="Grid view"
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              All Songs
-            </button>
-          </div>
         </div>
 
         {/* 3D Vinyl Album Rail View */}
-        {viewMode === 'rail' && items.length > 0 && (
+        {items.length > 0 && (
           <div className="relative w-full">
             {/* 3D Stage */}
             <div className="py-2">
@@ -212,64 +183,6 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
                 </div>
               </div>
             )}
-          </div>
-        )}
-
-        {/* Traditional Grid View */}
-        {viewMode === 'grid' && items.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-4">
-            {items.map((item, idx) => (
-              <div
-                key={`grid-${item.id || idx}`}
-                onClick={() => handleSelectAlbum(item)}
-                className="group relative bg-surface dark:bg-[#121626] rounded-xl overflow-hidden border border-black/5 dark:border-white/10 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
-              >
-                {/* Square Album Cover with vinyl edge preview */}
-                <div className="relative w-full aspect-square overflow-hidden bg-black">
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                  {/* Play Button Overlay on Hover */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px]">
-                    <div className="w-12 h-12 rounded-full bg-[#D9A31A] text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                      <Play className="w-5 h-5 fill-current ml-0.5" />
-                    </div>
-                  </div>
-
-                  {item.duration && (
-                    <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 backdrop-blur-sm text-white text-[11px] font-bold">
-                      {item.duration}
-                    </span>
-                  )}
-                </div>
-
-                {/* Song Info */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h4 className="font-editorial text-base font-bold text-text-primary dark:text-white line-clamp-2 group-hover:text-[#D9A31A] transition-colors">
-                      {item.title}
-                    </h4>
-                    {item.subtitle && (
-                      <p className="mt-1 text-xs text-text-secondary dark:text-gray-400 line-clamp-1">
-                        {item.subtitle}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mt-3 pt-2.5 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-[11px] text-text-secondary">
-                    <span>{item.views ? `${item.views} Views` : 'Full Life AG'}</span>
-                    <span className="text-[#D9A31A] font-semibold flex items-center gap-1">
-                      Play <Play className="w-2.5 h-2.5 fill-current" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         )}
 
