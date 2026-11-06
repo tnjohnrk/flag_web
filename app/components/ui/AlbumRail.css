@@ -118,6 +118,10 @@
   z-index: 4;
 }
 
+.album-rail-card.is-active .album-sleeve::before {
+  opacity: 0.08; /* Keep selected thumbnail bright, crisp, and unaffected by sheen darkening */
+}
+
 /* Spine Crease / Opening on Right Edge where vinyl emerges */
 .album-sleeve::after {
   content: '';

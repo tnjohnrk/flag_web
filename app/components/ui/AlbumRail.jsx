@@ -59,9 +59,9 @@ const AlbumRail = forwardRef(function AlbumRail(
     const updateSize = () => {
       if (typeof window === 'undefined') return;
       if (window.innerWidth < 640) {
-        setResponsiveHeight(Math.min(coverHeight, 210));
+        setResponsiveHeight(aspectRatio > 1.2 ? Math.min(coverHeight, 155) : Math.min(coverHeight, 210));
       } else if (window.innerWidth < 1024) {
-        setResponsiveHeight(Math.min(coverHeight, 240));
+        setResponsiveHeight(aspectRatio > 1.2 ? Math.min(coverHeight, 190) : Math.min(coverHeight, 240));
       } else {
         setResponsiveHeight(coverHeight);
       }
@@ -69,7 +69,7 @@ const AlbumRail = forwardRef(function AlbumRail(
     updateSize();
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, [coverHeight]);
+  }, [coverHeight, aspectRatio]);
 
   // Sync external index changes
   useEffect(() => {
@@ -310,7 +310,7 @@ const AlbumRail = forwardRef(function AlbumRail(
 
           // 3D positioning calculations
           const dragInfluence = isDragging ? dragOffset * 0.45 : 0;
-          const stepX = Math.round(cardWidth * (shouldShowRecord ? 0.54 : 0.48));
+          const stepX = Math.round(cardWidth * (aspectRatio > 1.2 ? 0.42 : (shouldShowRecord ? 0.54 : 0.48)));
 
           let translateX = offset * stepX + dragInfluence;
           let translateZ = -absOffset * (shouldShowRecord ? 65 : 60);
@@ -379,52 +379,50 @@ const AlbumRail = forwardRef(function AlbumRail(
                       <img
                         src={item.src || item.fullSrc}
                         alt={item.title || item.name || 'Song'}
-                        className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          if (item.fallbackSrc && e.currentTarget.src !== item.fallbackSrc) {
+                            e.currentTarget.src = item.fallbackSrc;
+                          }
+                        }}
+                        className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 ${
+                          isActive ? 'scale-100 group-hover:scale-105' : 'group-hover:scale-105'
+                        }`}
                         loading={absOffset <= 4 ? 'eager' : 'lazy'}
                         draggable={false}
                       />
 
-                      {/* Gradient Overlay for bottom text legibility */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30 pointer-events-none" />
-
-                      {/* Center Play Button Icon on Active Sleeve */}
-                      {isActive && (
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-[#D9A31A]/70 flex items-center justify-center text-[#D9A31A] shadow-[0_0_20px_rgba(217,163,26,0.5)] transition-transform duration-300 group-hover:scale-110">
-                            <svg className="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
+                      {/* For Selected Song: Keep thumbnail 100% CLEAR and fully viewable with NO dark gradient covering it! */}
+                      {isActive ? (
+                        <>
+                          {/* Smooth hover play overlay that only reveals on hover, keeping the thumbnail completely clean */}
+                          <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                            <div className="w-14 h-14 rounded-full bg-[#D9A31A] text-black flex items-center justify-center shadow-[0_0_28px_rgba(217,163,26,0.85)] transform scale-90 group-hover:scale-100 transition-transform">
+                              <svg className="w-6 h-6 fill-current ml-0.5" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
                           </div>
-                        </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* Neighbor Card: Subtle gradient and title for 3D stack legibility */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
+
+                          {item.duration && (
+                            <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">
+                              <span className="font-sans-clean text-[9px] font-bold tracking-wider text-white bg-black/75 backdrop-blur-sm px-1.5 py-0.5 rounded border border-white/10 shadow-sm">
+                                {item.duration}
+                              </span>
+                            </div>
+                          )}
+
+                          <div className="absolute bottom-2.5 inset-x-2.5 z-10 text-left pointer-events-none">
+                            <p className="font-editorial text-xs font-bold text-white tracking-wide truncate drop-shadow">
+                              {item.title || item.name}
+                            </p>
+                          </div>
+                        </>
                       )}
-
-                      {/* Top Duration Badge */}
-                      {item.duration && (
-                        <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">
-                          <span className="font-sans-clean text-[10px] font-bold tracking-wider text-white bg-black/75 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10 shadow-sm">
-                            {item.duration}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Top Corner Flag Tag */}
-                      <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
-                        <span className="font-sans-clean text-[9px] font-bold tracking-widest text-[#D9A31A] bg-black/70 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#D9A31A]/30 uppercase">
-                          WORSHIP
-                        </span>
-                      </div>
-
-                      {/* Bottom Title & Subtitle */}
-                      <div className="absolute bottom-2.5 inset-x-2.5 z-10 text-left pointer-events-none">
-                        <p className="font-editorial text-sm font-bold text-white tracking-wide truncate drop-shadow">
-                          {item.title || item.name}
-                        </p>
-                        {item.subtitle && (
-                          <p className="font-sans-clean text-[10px] font-semibold text-[#D9A31A] truncate tracking-wider uppercase">
-                            {item.subtitle}
-                          </p>
-                        )}
-                      </div>
                     </div>
                   </div>
                 </>

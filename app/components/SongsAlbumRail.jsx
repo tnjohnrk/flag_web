@@ -36,12 +36,15 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
       const mainTitle = parts.slice(0, 2).join(' | ');
       const artist = parts.length > 2 ? parts[parts.length - 1] : 'Full Life AG Church';
 
-      const thumbUrl =
+      // Always prioritize Full HD 1280x720 maxresdefault for crystal-clear fidelity without cropping/letterbox
+      const maxresUrl =
         snip.thumbnails?.maxres?.url ||
-        snip.thumbnails?.standard?.url ||
+        `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+
+      const fallbackUrl =
         snip.thumbnails?.high?.url ||
         snip.thumbnails?.medium?.url ||
-        `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
       return {
         id: videoId,
@@ -49,8 +52,9 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
         title: mainTitle,
         fullTitle: rawTitle,
         subtitle: artist,
-        src: thumbUrl,
-        fullSrc: thumbUrl,
+        src: maxresUrl,
+        fallbackSrc: fallbackUrl,
+        fullSrc: maxresUrl,
         duration: formatDuration(s.duration),
         views: s.viewCount ? Number(s.viewCount).toLocaleString() : null,
         likes: s.likeCount ? Number(s.likeCount).toLocaleString() : null,
@@ -114,8 +118,8 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
                 ref={railRef}
                 items={items}
                 startIndex={0}
-                aspectRatio={1}
-                coverHeight={250}
+                aspectRatio={16 / 9}
+                coverHeight={220}
                 neighborSpacing={0.24}
                 compactness={0.52}
                 withRecord={true}
