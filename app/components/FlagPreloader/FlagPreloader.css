@@ -1,5 +1,22 @@
 /* F.L.A.G Cinematic Video Preloader Styles */
 
+/* Suppress all browser scrollbars completely while preloader is active */
+html.preloader-active,
+body.preloader-active {
+  overflow: hidden !important;
+  height: 100% !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html.preloader-active::-webkit-scrollbar,
+body.preloader-active::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
 .flag-cinematic-preloader {
   position: fixed;
   inset: 0;

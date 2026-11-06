@@ -22,6 +22,9 @@ export default function FlagPreloader({ onComplete }) {
   const unlockBodyScroll = useCallback(() => {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.classList.remove('preloader-active');
+      document.body.classList.remove('preloader-active');
       document.body.classList.add('preloader-finished', 'preloader-nav-ready');
     }
   }, []);
@@ -95,6 +98,9 @@ export default function FlagPreloader({ onComplete }) {
     }
 
     setPreloaderState('VISIBLE');
+    document.documentElement.classList.add('preloader-active');
+    document.body.classList.add('preloader-active');
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
     // Maximum safety timeout: 11.5s (full video is 10s)

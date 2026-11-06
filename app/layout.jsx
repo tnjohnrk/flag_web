@@ -39,6 +39,10 @@ export default function RootLayout({ children }) {
                 } else {
                   document.documentElement.classList.remove('dark');
                 }
+                if (!sessionStorage.getItem('hasSeenPreloader')) {
+                  document.documentElement.classList.add('preloader-active');
+                  document.documentElement.style.overflow = 'hidden';
+                }
               } catch (_) {}
             `,
           }}
