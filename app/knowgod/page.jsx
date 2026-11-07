@@ -10,6 +10,7 @@ import PillButton from '../components/PillButton';
 export default function KnowGod() {
   const [formStatus, setFormStatus] = useState("idle"); // "idle" | "submitting" | "success" | "error"
   const [errorMessage, setErrorMessage] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
 
   const [showMap, setShowMap] = useState(false);
   const [addressText, setAddressText] = useState("");
@@ -180,14 +181,22 @@ export default function KnowGod() {
     const form = e.target;
     const formData = new FormData(form);
 
-    const rawMobile = formData.get("mobile") || "";
-    const formattedMobile = rawMobile.startsWith("+") ? rawMobile : `+91 ${rawMobile}`;
+    const rawMobile = mobileNumber || formData.get("mobile") || "";
+    const cleanDigits = String(rawMobile).replace(/\D/g, "");
+
+    if (cleanDigits.length !== 10) {
+      setFormStatus("error");
+      setErrorMessage("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    const formattedMobile = `+91 ${cleanDigits}`;
 
     const payload = {
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
       mobile: formattedMobile,
-      email: formData.get("email"),
+      email: formData.get("email") || "",
       address: addressText,
       mapLink: formData.get("mapLink"),
       houseVisit: formData.get("houseVisit"),
@@ -214,6 +223,7 @@ export default function KnowGod() {
       if (response.ok && data.success) {
         setFormStatus("success");
         form.reset();
+        setMobileNumber("");
         setAddressText("");
         setMapLink("");
         setShowMap(false);
@@ -457,16 +467,52 @@ export default function KnowGod() {
             </div>
 
             <div>
-              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">Mobile Number <span className="text-red-500">*</span></label>
+              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">
+                Mobile Number <span className="text-red-500">*</span>
+              </label>
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-2.5 border border-border rounded-xl bg-background text-text-secondary text-sm font-semibold">+91</span>
-                <input type="tel" name="mobile" className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm" required />
+                <span className="px-3 py-2.5 border border-border rounded-xl bg-background text-text-secondary text-sm font-semibold select-none">
+                  +91
+                </span>
+                <input
+                  type="tel"
+                  name="mobile"
+                  inputMode="numeric"
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  value={mobileNumber}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    setMobileNumber(digits);
+                  }}
+                  onKeyDown={(e) => {
+                    if (
+                      ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key) ||
+                      (e.ctrlKey || e.metaKey)
+                    ) {
+                      return;
+                    }
+                    if (!/^\d$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="10-digit mobile number"
+                  className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm"
+                  required
+                />
               </div>
             </div>
 
             <div>
-              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">Email Address <span className="text-red-500">*</span></label>
-              <input type="email" name="email" className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm" required />
+              <label className="block font-sans-clean text-xs font-bold mb-1 text-text-primary">
+                Email Address <span className="text-text-secondary font-normal">(Optional)</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                placeholder="name@example.com (optional)"
+                className="w-full border border-border bg-background text-text-primary rounded-xl p-2.5 text-sm"
+              />
             </div>
 
             <div>

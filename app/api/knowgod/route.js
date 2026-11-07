@@ -58,7 +58,7 @@ export async function POST(request) {
       communicationConsent,
     } = body;
 
-    if (!firstName || !lastName || !mobile || !email || !address || !houseVisit || !canContact) {
+    if (!firstName || !lastName || !mobile || !address || !houseVisit || !canContact) {
       return NextResponse.json(
         { success: false, error: "Please fill out all required fields." },
         { status: 400 }
@@ -101,7 +101,7 @@ export async function POST(request) {
               </div>
               <div class="field-group">
                 <div class="label">Email Address</div>
-                <div class="value"><a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a></div>
+                <div class="value">${email ? `<a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a>` : '<span style="color: #94a3b8; font-style: italic;">Not provided</span>'}</div>
               </div>
               <div class="field-group">
                 <div class="label">Mobile Number</div>
@@ -138,13 +138,18 @@ export async function POST(request) {
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
+    const emailPayload = {
       from: fromAddress,
       to: [toAddress],
-      replyTo: email,
       subject: emailSubject,
       html: htmlContent,
-    });
+    };
+
+    if (email && typeof email === "string" && email.trim()) {
+      emailPayload.replyTo = email.trim();
+    }
+
+    const { data, error } = await resend.emails.send(emailPayload);
 
     if (error) {
       console.error("Resend API Error details:", error);
