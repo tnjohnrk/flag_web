@@ -5,7 +5,7 @@ import React, { useRef, useState } from 'react';
 import copyIcon from '../assets/copy.svg';
 import flagQRCode from '../assets/flagQrcode.svg';
 import PillButton from '../components/PillButton';
-import { Landmark, QrCode, CreditCard, Tag, Banknote, Folder, KeyRound, Check, Heart, ShieldCheck, Sparkles, Globe } from 'lucide-react';
+import { Landmark, QrCode, CreditCard, Tag, Banknote, Folder, KeyRound, Check, Copy, Heart, ShieldCheck, Sparkles, Globe } from 'lucide-react';
 
 export default function DonateUs() {
   const [activeTab, setActiveTab] = useState('UPI');
@@ -35,19 +35,19 @@ export default function DonateUs() {
       <PillButton
         onClick={handleCopy}
         type="button"
-        variant={isCopied ? "success" : "glass"}
+        variant={isCopied ? "gold" : "glass"}
         size="sm"
-        className="!text-xs !py-1 !px-3"
+        className="!text-xs !py-1 !px-3 font-semibold transition-all duration-300"
         title="Copy to clipboard"
       >
         {isCopied ? (
           <>
-            <Check size={14} className="text-white" />
-            <span>Copied!</span>
+            <Check size={13} className="text-[#121016] stroke-[2.5]" />
+            <span className="text-[#121016] font-bold">Copied!</span>
           </>
         ) : (
           <>
-            <Image src={copyIcon} alt="copy" width={14} height={14} className="opacity-80" />
+            <Copy size={13} className="shrink-0 transition-colors duration-200" />
             <span>{label || "Copy"}</span>
           </>
         )}
