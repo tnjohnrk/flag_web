@@ -211,11 +211,12 @@
   },
   "/images/pastors/pastor-16_07_Sun.png": {
     "public_id": "flagweb/images/pastors/pastor-16_07_Sun",
-    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793183093/flagweb/images/pastors/pastor-16_07_Sun.png",
-    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793183093/flagweb/images/pastors/pastor-16_07_Sun.png",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1794053125/flagweb/images/pastors/pastor-16_07_Sun.png",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1794053125/flagweb/images/pastors/pastor-16_07_Sun.png",
     "format": "png",
-    "bytes": 1670824,
-    "uploaded_at": "2026-10-28T10:24:53.800Z"
+    "bytes": 1376224,
+    "version": 1794053125,
+    "uploaded_at": "2026-11-07T12:05:27.630Z"
   },
   "/images/pastors/pastor-17_08_Vic.png": {
     "public_id": "flagweb/images/pastors/pastor-17_08_Vic",
@@ -227,11 +228,12 @@
   },
   "/images/pastors/pastor-18_09_Jen.png": {
     "public_id": "flagweb/images/pastors/pastor-18_09_Jen",
-    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1793183097/flagweb/images/pastors/pastor-18_09_Jen.png",
-    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793183097/flagweb/images/pastors/pastor-18_09_Jen.png",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1794053127/flagweb/images/pastors/pastor-18_09_Jen.png",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1794053127/flagweb/images/pastors/pastor-18_09_Jen.png",
     "format": "png",
-    "bytes": 1822785,
-    "uploaded_at": "2026-10-28T10:24:57.973Z"
+    "bytes": 1338684,
+    "version": 1794053127,
+    "uploaded_at": "2026-11-07T12:05:29.129Z"
   },
   "/images/pastor-1.avif": {
     "public_id": "flagweb/images/pastor-1",
@@ -443,11 +445,12 @@
   },
   "/images/pastors/pastor-19_10_Mac.png": {
     "public_id": "flagweb/images/pastors/pastor-19_10_Mac",
-    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793705863/flagweb/images/pastors/pastor-19_10_Mac.png",
-    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1793705863/flagweb/images/pastors/pastor-19_10_Mac.png",
+    "secure_url": "https://res.cloudinary.com/hqsoyezk/image/upload/f_auto,q_auto/v1794053128/flagweb/images/pastors/pastor-19_10_Mac.png",
+    "raw_url": "https://res.cloudinary.com/hqsoyezk/image/upload/v1794053128/flagweb/images/pastors/pastor-19_10_Mac.png",
     "format": "png",
-    "bytes": 213462,
-    "uploaded_at": "2026-11-03T11:37:48.062Z"
+    "bytes": 978916,
+    "version": 1794053128,
+    "uploaded_at": "2026-11-07T12:05:30.627Z"
   },
   "/images/balaji.png": {
     "public_id": "flagweb/images/balaji",
