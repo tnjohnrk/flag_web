@@ -204,8 +204,10 @@ export default function KnowGod() {
       communicationConsent: formData.get("communicationConsent") === "on",
     };
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.fulllifeag.in/api/knowgod";
+
     try {
-      const response = await fetch("/api/knowgod", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
