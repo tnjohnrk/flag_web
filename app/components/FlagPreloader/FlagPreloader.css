@@ -169,3 +169,80 @@ body.preloader-active::-webkit-scrollbar {
   }
 }
 
+/* ==========================================================
+   Top-Right Corner Skip Button
+   - Modern glassmorphic pill button
+   - Safe-area aware for mobile notches and Dynamic Island
+   - 44px minimum touch target for accessibility
+   - Interactive hover and pressed state transitions
+   ========================================================== */
+.flag-preloader-skip-btn {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top, 20px));
+  right: max(20px, env(safe-area-inset-right, 20px));
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 18px;
+  background: rgba(18, 18, 24, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+  pointer-events: auto;
+}
+
+.flag-preloader-skip-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.flag-preloader-skip-btn:active {
+  transform: scale(0.96);
+}
+
+.flag-preloader-skip-btn:focus-visible {
+  outline: 2px solid #eab308;
+  outline-offset: 3px;
+}
+
+.flag-preloader-skip-icon {
+  display: inline-block;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.flag-preloader-skip-btn:hover .flag-preloader-skip-icon {
+  transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+  .flag-preloader-skip-btn {
+    top: max(16px, env(safe-area-inset-top, 16px));
+    right: max(16px, env(safe-area-inset-right, 16px));
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+}
+
+

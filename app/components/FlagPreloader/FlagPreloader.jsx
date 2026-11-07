@@ -103,8 +103,16 @@ export default function FlagPreloader({ onComplete }) {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // Maximum safety timeout: 11.5s (full video is 10s)
-    const maxSafetyMs = 11500;
+    // Keyboard listener: Escape key triggers skip
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isFinishedRef.current) {
+        triggerExitAnimation();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Maximum safety timeout: 15s (video duration is ~10s)
+    const maxSafetyMs = 15000;
     const safetyTimer = setTimeout(() => {
       if (!isFinishedRef.current) {
         triggerExitAnimation();
@@ -122,18 +130,14 @@ export default function FlagPreloader({ onComplete }) {
       const playPromise = videoEl.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // If browser restricts autoplay (common on iOS/Android), dismiss preloader smoothly
-          if (!isFinishedRef.current) {
-            triggerExitAnimation();
-          }
+          // If browser restricts autoplay, user can still use the Skip button
         });
       }
-    } else {
-      triggerExitAnimation();
     }
 
     return () => {
       clearTimeout(safetyTimer);
+      window.removeEventListener('keydown', handleKeyDown);
       unlockBodyScroll();
     };
   }, [completeImmediately, triggerExitAnimation, unlockBodyScroll]);
@@ -146,10 +150,38 @@ export default function FlagPreloader({ onComplete }) {
     <div
       ref={overlayRef}
       className={`flag-cinematic-preloader ${preloaderState === 'EXITING' ? 'is-exiting' : ''}`}
-      aria-hidden="true"
-      role="presentation"
-      onClick={triggerExitAnimation}
+      aria-hidden={preloaderState === 'EXITING'}
+      role="region"
+      aria-label="Site introduction"
     >
+      {/* Top-Right Corner Skip Button */}
+      <button
+        type="button"
+        className="flag-preloader-skip-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          triggerExitAnimation();
+        }}
+        aria-label="Skip introduction video"
+      >
+        <span>Skip</span>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="flag-preloader-skip-icon"
+          aria-hidden="true"
+        >
+          <polygon points="5 4 15 12 5 20 5 4" />
+          <line x1="19" y1="5" x2="19" y2="19" strokeWidth="2.5" />
+        </svg>
+      </button>
+
       <div className="flag-video-container">
         <video
           ref={videoRef}
@@ -164,17 +196,6 @@ export default function FlagPreloader({ onComplete }) {
           controlsList="nodownload nofullscreen noremoteplayback"
           onEnded={triggerExitAnimation}
           onError={triggerExitAnimation}
-          onWaiting={() => {
-            // Generous fallback: only exit if buffering takes longer than 6 seconds
-            const bufferTimeout = setTimeout(() => {
-              if (!isFinishedRef.current) triggerExitAnimation();
-            }, 6000);
-            const onPlayingAgain = () => {
-              clearTimeout(bufferTimeout);
-              videoRef.current?.removeEventListener('playing', onPlayingAgain);
-            };
-            videoRef.current?.addEventListener('playing', onPlayingAgain);
-          }}
           aria-hidden="true"
           className="flag-cinematic-video"
         >
