@@ -1,0 +1,299 @@
+/* Know God Page - Interactive & Editorial Experience Styles */
+
+.knowgod-hero-glow {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(750px, 92vw);
+  height: min(750px, 92vw);
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 163, 26, 0.18) 0%,
+    rgba(44, 58, 130, 0.16) 40%,
+    transparent 70%
+  );
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Floating Chapter Navigation Pill Tracker */
+.knowgod-chapter-nav {
+  position: sticky;
+  top: 5rem;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  pointer-events: auto;
+}
+
+.knowgod-chapter-pillbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(18, 16, 22, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 95vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.knowgod-chapter-pillbar::-webkit-scrollbar {
+  display: none;
+}
+
+html:not(.dark) .knowgod-chapter-pillbar {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(24, 24, 27, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.knowgod-nav-btn {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.45rem 0.95rem;
+  border-radius: 9999px;
+  color: rgba(247, 247, 244, 0.75);
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+}
+
+html:not(.dark) .knowgod-nav-btn {
+  color: rgba(24, 24, 27, 0.75);
+}
+
+.knowgod-nav-btn:hover {
+  color: #D9A31A;
+  background: rgba(217, 163, 26, 0.12);
+}
+
+.knowgod-nav-btn.is-active {
+  color: #121016;
+  background: #D9A31A;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(217, 163, 26, 0.45);
+}
+
+/* Perspective Switcher Tabs */
+.perspective-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.1));
+  background: var(--surface, #ffffff);
+  color: var(--text-secondary, #666666);
+}
+
+.dark .perspective-tab-btn {
+  background: var(--surface-elevated, #1a1a24);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.perspective-tab-btn:hover {
+  border-color: #D9A31A;
+  color: #D9A31A;
+  transform: translateY(-1px);
+}
+
+.perspective-tab-btn.is-active {
+  background: #D9A31A;
+  color: #121016;
+  border-color: #D9A31A;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(217, 163, 26, 0.35);
+}
+
+/* 4 Truths Cards */
+.truth-card {
+  position: relative;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-radius: 1.5rem;
+  padding: 1.75rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dark .truth-card {
+  background: var(--surface-elevated, #1a1a24);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.truth-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(217, 163, 26, 0.5);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.1), 0 0 24px rgba(217, 163, 26, 0.15);
+}
+
+.truth-card.is-expanded {
+  border-color: #D9A31A;
+  box-shadow: 0 20px 40px rgba(217, 163, 26, 0.15);
+}
+
+/* Stepper Component */
+.stepper-progress-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.stepper-progress-line {
+  position: absolute;
+  top: 50%;
+  left: 2rem;
+  right: 2rem;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%);
+  z-index: 0;
+  border-radius: 9999px;
+}
+
+.dark .stepper-progress-line {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stepper-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #D9A31A;
+  border-radius: 9999px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stepper-node-btn {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 2px solid var(--border, rgba(0, 0, 0, 0.1));
+  background: var(--surface, #ffffff);
+  color: var(--text-secondary, #666666);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark .stepper-node-btn {
+  background: var(--surface-elevated, #1a1a24);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.stepper-node-btn:hover {
+  border-color: #D9A31A;
+  transform: scale(1.1);
+}
+
+.stepper-node-btn.is-active {
+  background: #D9A31A;
+  color: #121016;
+  border-color: #D9A31A;
+  transform: scale(1.18);
+  box-shadow: 0 4px 18px rgba(217, 163, 26, 0.5);
+}
+
+.stepper-node-btn.is-completed {
+  background: rgba(217, 163, 26, 0.15);
+  color: #D9A31A;
+  border-color: #D9A31A;
+}
+
+/* Interactive Salvation Prayer Celebration Glow */
+.prayer-card-celebration {
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 163, 26, 0.22) 0%,
+    rgba(44, 58, 130, 0.14) 50%,
+    transparent 80%
+  );
+  animation: pulse-aura 3s ease-in-out infinite;
+}
+
+@keyframes pulse-aura {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+/* Festive Confetti / Sparkle Bursts */
+.celebration-sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: float-sparkle 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float-sparkle {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 40px), var(--ty, -60px)) scale(0.2);
+  }
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .truth-card,
+  .perspective-tab-btn,
+  .knowgod-nav-btn,
+  .stepper-node-btn,
+  .prayer-card-celebration,
+  .celebration-sparkle {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
