@@ -9,7 +9,7 @@ const CLOUDINARY_MOBILE_VIDEO_URL =
 const CLOUDINARY_2K_VIDEO_URL =
   'https://res.cloudinary.com/hqsoyezk/video/upload/w_1920,h_1080,c_scale,q_auto:best,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
 const CLOUDINARY_4K_VIDEO_URL =
-  'https://res.cloudinary.com/hqsoyezk/video/upload/w_3840,h_2160,c_scale,q_100,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
+  'https://res.cloudinary.com/hqsoyezk/video/upload/w_3840,h_2160,c_scale,q_auto:best,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
 
 const EXIT_ANIMATION_DURATION = 0.25;
 
@@ -164,20 +164,24 @@ export default function FlagPreloader({ onComplete }) {
           controlsList="nodownload nofullscreen noremoteplayback"
           onEnded={triggerExitAnimation}
           onError={triggerExitAnimation}
-          onStalled={triggerExitAnimation}
           onWaiting={() => {
-            // If buffering exceeds 1 second, exit immediately to never freeze the user
-            setTimeout(() => {
+            // Generous fallback: only exit if buffering takes longer than 6 seconds
+            const bufferTimeout = setTimeout(() => {
               if (!isFinishedRef.current) triggerExitAnimation();
-            }, 1000);
+            }, 6000);
+            const onPlayingAgain = () => {
+              clearTimeout(bufferTimeout);
+              videoRef.current?.removeEventListener('playing', onPlayingAgain);
+            };
+            videoRef.current?.addEventListener('playing', onPlayingAgain);
           }}
           aria-hidden="true"
           className="flag-cinematic-video"
         >
-          {/* Universal high performance 4K / HD stream */}
+          {/* Universal high performance responsive streams */}
+          <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" media="(max-width: 2560px)" />
+          <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" media="(max-width: 768px)" />
           <source src={CLOUDINARY_4K_VIDEO_URL} type="video/mp4" />
-          <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" />
-          <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" />
           {/* Direct Raw Stream Fallback */}
           <source src="https://res.cloudinary.com/hqsoyezk/video/upload/v1793953957/flagweb/preloader1_4k.mp4" type="video/mp4" />
         </video>
