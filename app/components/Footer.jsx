@@ -73,33 +73,42 @@ export default function Footer() {
             </div>
 
             {/* Social Media Links */}
-            <div className="pt-4 border-t border-white/10 flex items-center justify-center gap-6">
+            <div className="social-links-wrapper">
               <a
                 href="https://www.facebook.com/FullLifeCentre"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#F7F7F4]/80 hover:text-[#1877F2] transition-all duration-300 transform hover:scale-110"
+                className="social-btn social-fb"
                 aria-label="Facebook"
               >
-                <FaFacebook size={32} />
+                <span className="social-icon-wrapper">
+                  <FaFacebook size={22} />
+                </span>
+                <span className="social-tooltip">Facebook</span>
               </a>
               <a
                 href="https://www.instagram.com/flag_chennai/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#F7F7F4]/80 hover:text-[#E4405F] transition-all duration-300 transform hover:scale-110"
+                className="social-btn social-insta"
                 aria-label="Instagram"
               >
-                <FaInstagram size={32} />
+                <span className="social-icon-wrapper">
+                  <FaInstagram size={22} />
+                </span>
+                <span className="social-tooltip">Instagram</span>
               </a>
               <a
                 href="https://www.youtube.com/c/FullLifeAGChurch"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#F7F7F4]/80 hover:text-[#FF0000] transition-all duration-300 transform hover:scale-110"
+                className="social-btn social-yt"
                 aria-label="YouTube"
               >
-                <FaYoutube size={32} />
+                <span className="social-icon-wrapper">
+                  <FaYoutube size={22} />
+                </span>
+                <span className="social-tooltip">YouTube</span>
               </a>
             </div>
           </div>
