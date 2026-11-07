@@ -701,18 +701,49 @@ const CardSwap = forwardRef(
         schedule();
       });
       intersectionObserver.observe(root);
+      let wheelAccumulator = 0;
+      let wheelTimer = null;
+      let lastWheelTime = 0;
+
+      const onWheel = event => {
+        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (Math.abs(delta) < 4) return;
+
+        event.preventDefault();
+
+        const now = Date.now();
+        wheelAccumulator += delta;
+
+        if (Math.abs(wheelAccumulator) >= 30 && now - lastWheelTime > 300) {
+          lastWheelTime = now;
+          if (wheelAccumulator > 0) {
+            shift(1);
+          } else {
+            shift(-1);
+          }
+          wheelAccumulator = 0;
+        }
+
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => {
+          wheelAccumulator = 0;
+        }, 200);
+      };
+
       root.addEventListener('pointermove', onMove);
       root.addEventListener('pointerleave', onLeave);
       root.addEventListener('pointerdown', onDown);
       root.addEventListener('pointerup', onUp);
       root.addEventListener('pointercancel', onUp);
       root.addEventListener('click', onClick);
+      root.addEventListener('wheel', onWheel, { passive: false });
       document.addEventListener('visibilitychange', onVisibility);
       schedule();
 
       return () => {
         cancelAnimationFrame(state.raf);
         clearTimeout(state.timer);
+        clearTimeout(wheelTimer);
         state.queue.forEach(clearTimeout);
         resizeObserver.disconnect();
         intersectionObserver.disconnect();
@@ -722,6 +753,7 @@ const CardSwap = forwardRef(
         root.removeEventListener('pointerup', onUp);
         root.removeEventListener('pointercancel', onUp);
         root.removeEventListener('click', onClick);
+        root.removeEventListener('wheel', onWheel);
         document.removeEventListener('visibilitychange', onVisibility);
         apiRef.current = null;
       };

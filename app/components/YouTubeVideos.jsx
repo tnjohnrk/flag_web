@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay, Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import "./YouTubeVideos.css";
@@ -25,6 +25,11 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                             watchOverflow={true}
                             navigation={true}
                             autoplay={videos.length > 1 ? { delay: 3000, disableOnInteraction: false } : false}
+                            mousewheel={{
+                                forceToAxis: true,
+                                releaseOnEdges: true,
+                                sensitivity: 1,
+                            }}
                             observer={true}
                             observeParents={true}
                             breakpoints={{
@@ -45,7 +50,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                                     spaceBetween: 24
                                 }
                             }}
-                            modules={[Navigation, Autoplay]}
+                            modules={[Navigation, Autoplay, Mousewheel]}
                             style={{ width: '100%', position: 'relative' }}
                         >
                             {videos.map((video) => {

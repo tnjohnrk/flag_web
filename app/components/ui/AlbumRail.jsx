@@ -221,6 +221,48 @@ const AlbumRail = forwardRef(function AlbumRail(
     setDragOffset(0);
   };
 
+  // Smooth Mouse Wheel / Trackpad Scroll Navigation
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+
+    let accumulatedDelta = 0;
+    let wheelTimer = null;
+    let lastTriggerTime = 0;
+
+    const onWheel = (e) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(delta) < 4) return;
+
+      // Prevent whole page from jumping while interacting with the album rail
+      e.preventDefault();
+
+      const now = Date.now();
+      accumulatedDelta += delta;
+
+      if (Math.abs(accumulatedDelta) >= 30 && now - lastTriggerTime > 160) {
+        lastTriggerTime = now;
+        if (accumulatedDelta > 0) {
+          handleNextWithPause();
+        } else {
+          handlePrev();
+        }
+        accumulatedDelta = 0;
+      }
+
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => {
+        accumulatedDelta = 0;
+      }, 200);
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      clearTimeout(wheelTimer);
+    };
+  }, [handleNextWithPause, handlePrev]);
+
   // Card & Sleeve Dimensions
   const cardHeight = responsiveHeight;
   const cardWidth = cardHeight * aspectRatio;
