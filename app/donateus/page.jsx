@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import copyIcon from '../assets/copy.svg';
-import flagQRCode from '../assets/flagQrcode.svg';
+import flagQRCode from '../assets/flagQrcode.jpg';
 import PillButton from '../components/PillButton';
 import { Landmark, QrCode, CreditCard, Tag, Banknote, Folder, KeyRound, Check, Copy, Heart, ShieldCheck, Sparkles, Globe } from 'lucide-react';
 
@@ -206,9 +206,9 @@ export default function DonateUs() {
                     <div className="p-3.5 bg-background rounded-2xl border border-border flex items-center justify-between gap-3">
                       <div>
                         <span className="font-sans-clean text-[11px] font-bold uppercase text-text-secondary block">UPI ID</span>
-                        <span className="font-sans-clean text-sm font-bold text-text-primary select-all">FULLLIFECENTRE-2@OKAXIS</span>
+                        <span className="font-sans-clean text-sm font-bold text-text-primary select-all">9841677587-2@ybl</span>
                       </div>
-                      <CopyButton textToCopy="FULLLIFECENTRE-2@OKAXIS" label="Copy ID" />
+                      <CopyButton textToCopy="9841677587-2@ybl" label="Copy ID" />
                     </div>
 
                     <div className="p-3.5 bg-background rounded-2xl border border-border flex items-center justify-between gap-3">
