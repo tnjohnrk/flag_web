@@ -187,118 +187,139 @@ body.preloader-active::-webkit-scrollbar {
   pointer-events: auto;
 }
 
-/* Audio Toggle Button */
-.flag-preloader-audio-btn {
+/* Audio Toggle & Tooltip Wrapper */
+.flag-preloader-audio-wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Circular Sound Toggle Button (Matching Reference Design) */
+.flag-preloader-circle-audio-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 16px;
-  background: rgba(18, 18, 24, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 9999px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(115, 115, 115, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               background 0.2s ease,
               border-color 0.2s ease,
-              box-shadow 0.2s ease,
-              color 0.2s ease;
+              box-shadow 0.2s ease;
+  padding: 0;
 }
 
-.flag-preloader-audio-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px) scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+.flag-preloader-circle-audio-btn:hover {
+  background: rgba(140, 140, 140, 0.95);
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
 }
 
-.flag-preloader-audio-btn:active {
-  transform: scale(0.96);
+.flag-preloader-circle-audio-btn:active {
+  transform: scale(0.94);
 }
 
-.flag-preloader-audio-btn:focus-visible {
+.flag-preloader-circle-audio-btn:focus-visible {
   outline: 2px solid #eab308;
   outline-offset: 3px;
 }
 
-.flag-preloader-audio-btn.is-active {
-  border-color: rgba(234, 179, 8, 0.6);
-  background: rgba(234, 179, 8, 0.2);
-  color: #fbbf24;
+.flag-preloader-circle-audio-btn.is-active {
+  background: rgba(75, 75, 80, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Audio Frequency Equalizer Indicator */
+/* 4 Vertical Frequency Equalizer Bars centered in circle */
 .flag-preloader-freq-symbol {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  gap: 2px;
-  height: 14px;
-  width: 14px;
+  gap: 3px;
+  height: 18px;
+  width: 18px;
 }
 
 .flag-preloader-freq-bar {
   display: block;
-  width: 2px;
-  border-radius: 1px;
-  background-color: currentColor;
+  width: 2.5px;
+  border-radius: 1.5px;
+  background-color: #ffffff;
   transition: height 0.2s ease, opacity 0.2s ease;
 }
 
-/* Equalizer animations when audio is ON */
-.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(1) {
+/* Resting dashes when audio is OFF (Muted) - Matches Reference Screenshot */
+.flag-preloader-circle-audio-btn:not(.is-active) .flag-preloader-freq-bar {
+  height: 6px;
+  opacity: 0.95;
+}
+
+/* Animated frequency wave when audio is ON (Unmuted) */
+.flag-preloader-circle-audio-btn.is-active .flag-preloader-freq-bar:nth-child(1) {
   animation: preloaderFreqWave1 0.75s ease-in-out infinite alternate;
 }
-.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(2) {
+.flag-preloader-circle-audio-btn.is-active .flag-preloader-freq-bar:nth-child(2) {
   animation: preloaderFreqWave2 1.05s ease-in-out infinite alternate 0.12s;
 }
-.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(3) {
+.flag-preloader-circle-audio-btn.is-active .flag-preloader-freq-bar:nth-child(3) {
   animation: preloaderFreqWave3 0.65s ease-in-out infinite alternate 0.24s;
 }
-.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(4) {
+.flag-preloader-circle-audio-btn.is-active .flag-preloader-freq-bar:nth-child(4) {
   animation: preloaderFreqWave4 0.95s ease-in-out infinite alternate 0.18s;
 }
 
 @keyframes preloaderFreqWave1 {
-  0%   { height: 3px; }
-  50%  { height: 14px; }
-  100% { height: 5px; }
+  0%   { height: 4px; }
+  50%  { height: 16px; }
+  100% { height: 6px; }
 }
 
 @keyframes preloaderFreqWave2 {
-  0%   { height: 5px; }
-  50%  { height: 11px; }
-  100% { height: 14px; }
+  0%   { height: 6px; }
+  50%  { height: 13px; }
+  100% { height: 16px; }
 }
 
 @keyframes preloaderFreqWave3 {
-  0%   { height: 13px; }
-  50%  { height: 4px; }
-  100% { height: 11px; }
+  0%   { height: 15px; }
+  50%  { height: 5px; }
+  100% { height: 12px; }
 }
 
 @keyframes preloaderFreqWave4 {
-  0%   { height: 4px; }
-  50%  { height: 14px; }
-  100% { height: 7px; }
+  0%   { height: 5px; }
+  50%  { height: 16px; }
+  100% { height: 8px; }
 }
 
-/* Resting frequency bars when audio is OFF */
-.flag-preloader-audio-btn:not(.is-active) .flag-preloader-freq-bar {
-  height: 3px;
-  opacity: 0.5;
+/* Sound Indicator Badge / Tooltip below button (Matches Reference Screenshot) */
+.flag-preloader-audio-tooltip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #111827;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 3px 8px;
+  border: 1px solid #1f2937;
+  border-radius: 2px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Top-Right Corner Skip Button */
@@ -362,18 +383,24 @@ body.preloader-active::-webkit-scrollbar {
   .flag-preloader-controls {
     top: max(16px, env(safe-area-inset-top, 16px));
     right: max(16px, env(safe-area-inset-right, 16px));
-    gap: 8px;
+    gap: 10px;
   }
 
-  .flag-preloader-audio-btn {
-    padding: 7px 12px;
+  .flag-preloader-circle-audio-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .flag-preloader-audio-tooltip {
     font-size: 11px;
-    gap: 5px;
+    padding: 2px 6px;
+    top: calc(100% + 4px);
   }
 
   .flag-preloader-skip-btn {
     padding: 7px 14px;
     font-size: 11.5px;
+    min-height: 40px;
   }
 }
 

@@ -173,58 +173,28 @@ export default function FlagPreloader({ onComplete }) {
     >
       {/* Top Controls: Audio On/Off with Frequency Visualizer + Skip Button */}
       <div className="flag-preloader-controls">
-        <button
-          type="button"
-          className={`flag-preloader-audio-btn ${!isMuted ? 'is-active' : ''}`}
-          onClick={toggleAudio}
-          aria-label={isMuted ? 'Turn audio on' : 'Mute audio'}
-          title={isMuted ? 'Turn audio on' : 'Mute audio'}
-        >
-          {/* Animated Frequency Equalizer Indicator */}
-          <span className="flag-preloader-freq-symbol" aria-hidden="true">
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-          </span>
+        <div className="flag-preloader-audio-wrapper">
+          <button
+            type="button"
+            className={`flag-preloader-circle-audio-btn ${!isMuted ? 'is-active' : ''}`}
+            onClick={toggleAudio}
+            aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
+            title={isMuted ? 'Sound off' : 'Sound on'}
+          >
+            {/* 4 Frequency Indicator Bars centered in circle */}
+            <span className="flag-preloader-freq-symbol" aria-hidden="true">
+              <span className="flag-preloader-freq-bar" />
+              <span className="flag-preloader-freq-bar" />
+              <span className="flag-preloader-freq-bar" />
+              <span className="flag-preloader-freq-bar" />
+            </span>
+          </button>
 
-          {/* Speaker Icon */}
-          {!isMuted ? (
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-            </svg>
-          ) : (
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-              <line x1="23" y1="9" x2="17" y2="15" />
-              <line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
-          )}
-
-          <span>{isMuted ? 'Sound Off' : 'Sound On'}</span>
-        </button>
+          {/* Tooltip badge matching user reference design */}
+          <div className="flag-preloader-audio-tooltip" aria-hidden="true">
+            {isMuted ? 'Sound off' : 'Sound on'}
+          </div>
+        </div>
 
         <button
           type="button"
