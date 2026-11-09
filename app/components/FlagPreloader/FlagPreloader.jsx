@@ -173,28 +173,21 @@ export default function FlagPreloader({ onComplete }) {
     >
       {/* Top Controls: Audio On/Off with Frequency Visualizer + Skip Button */}
       <div className="flag-preloader-controls">
-        <div className="flag-preloader-audio-wrapper">
-          <button
-            type="button"
-            className={`flag-preloader-circle-audio-btn ${!isMuted ? 'is-active' : ''}`}
-            onClick={toggleAudio}
-            aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
-            title={isMuted ? 'Sound off' : 'Sound on'}
-          >
-            {/* 4 Frequency Indicator Bars centered in circle */}
-            <span className="flag-preloader-freq-symbol" aria-hidden="true">
-              <span className="flag-preloader-freq-bar" />
-              <span className="flag-preloader-freq-bar" />
-              <span className="flag-preloader-freq-bar" />
-              <span className="flag-preloader-freq-bar" />
-            </span>
-          </button>
-
-          {/* Tooltip badge matching user reference design */}
-          <div className="flag-preloader-audio-tooltip" aria-hidden="true">
-            {isMuted ? 'Sound off' : 'Sound on'}
-          </div>
-        </div>
+        <button
+          type="button"
+          className={`flag-preloader-circle-audio-btn ${!isMuted ? 'is-active' : ''}`}
+          onClick={toggleAudio}
+          aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
+          title={isMuted ? 'Sound off' : 'Sound on'}
+        >
+          {/* 4 Frequency Indicator Bars centered in circle */}
+          <span className="flag-preloader-freq-symbol" aria-hidden="true">
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+          </span>
+        </button>
 
         <button
           type="button"
