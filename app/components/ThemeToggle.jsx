@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon } from "lucide-react";
+import "./ThemeToggle.css";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme();
@@ -9,54 +9,68 @@ export default function ThemeToggle() {
   // Prevent hydration mismatch during SSR
   if (!mounted) {
     return (
-      <button
-        className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-300 dark:bg-gray-800 cursor-not-allowed opacity-50"
-        aria-label="Loading theme toggle"
-        disabled
-      >
-        <span className="w-3 h-3 rounded-full bg-gray-400" />
-      </button>
+      <div className="switch opacity-60 pointer-events-none scale-90 sm:scale-100 origin-center" aria-hidden="true">
+        <span className="slider" />
+      </div>
     );
   }
 
   const isDark = theme === "dark";
 
+  const handleToggle = (e) => {
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
+    toggleTheme(e);
+  };
+
   return (
-    <button
-      onClick={toggleTheme}
-      className={`relative group flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full transition-all duration-300 ease-in-out focus:outline-none select-none cursor-pointer active:scale-90 ${
-        isDark
-          ? "bg-[#0B1120]/80 backdrop-blur-md border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:bg-[#0B1120] hover:border-white/20"
-          : "bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-white hover:border-gray-300"
-      }`}
+    <label
+      className="switch scale-90 sm:scale-100 origin-center cursor-pointer"
+      role="switch"
+      aria-checked={isDark}
+      tabIndex={0}
+      onClick={handleToggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleToggle(e);
+        }
+      }}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {/* Moon Icon (Visible in Dark Mode) */}
-      <div
-        className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          isDark
-            ? "opacity-100 scale-100 rotate-0 text-[#F5D061]"
-            : "opacity-0 scale-50 -rotate-90 text-amber-500 pointer-events-none"
-        }`}
-      >
-        <Moon className="w-4 h-4 fill-[#F5D061]/20 stroke-[2]" />
-      </div>
-
-      {/* Sun Icon (Visible in Light Mode) */}
-      <div
-        className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          isDark
-            ? "opacity-0 scale-50 rotate-90 text-amber-400 pointer-events-none"
-            : "opacity-100 scale-100 rotate-0 text-amber-500"
-        }`}
-      >
-        <Sun className="w-4 h-4 fill-amber-500/20 stroke-[2]" />
-      </div>
-    </button>
+      <input
+        type="checkbox"
+        className="input"
+        checked={isDark}
+        readOnly
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <span className="slider">
+        <div className="sun">
+          <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" fill="#FFD43B" />
+            <line x1="12" y1="1.5" x2="12" y2="4" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="12" y1="20" x2="12" y2="22.5" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="1.5" y1="12" x2="4" y2="12" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="20" y1="12" x2="22.5" y2="12" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="4.6" y1="4.6" x2="6.4" y2="6.4" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="17.6" y1="17.6" x2="19.4" y2="19.4" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="4.6" y1="19.4" x2="6.4" y2="17.6" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+            <line x1="17.6" y1="6.4" x2="19.4" y2="4.6" stroke="#FFD43B" strokeWidth="2.2" strokeLinecap="round" />
+          </svg>
+        </div>
+        <div className="moon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#73C0FC" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+              fill="#73C0FC"
+            />
+          </svg>
+        </div>
+      </span>
+    </label>
   );
 }
-
-
-
-
