@@ -1,17 +1,80 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Mousewheel } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import "./YouTubeVideos.css";
 import { getMediaUrl } from "@/lib/media";
 
 export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS", id = "sermons" }) {
+    const swiperRef = useRef(null);
+    const containerRef = useRef(null);
+
+    // Smooth Mouse Wheel / Trackpad Scroll Navigation (matching Songs Album Rail)
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+
+        let accumulatedDelta = 0;
+        let wheelTimer = null;
+        let lastTriggerTime = 0;
+        let resumeAutoplayTimer = null;
+
+        const onWheel = (e) => {
+            const swiper = swiperRef.current;
+            if (!swiper || swiper.destroyed) return;
+
+            // Determine dominant scroll delta
+            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            if (Math.abs(delta) < 4) return;
+
+            // Prevent whole page vertical jump while interacting with the sermons carousel
+            e.preventDefault();
+
+            // Temporarily pause autoplay so it doesn't fight the user's manual scroll
+            if (swiper.autoplay && swiper.autoplay.running) {
+                swiper.autoplay.stop();
+            }
+            clearTimeout(resumeAutoplayTimer);
+            resumeAutoplayTimer = setTimeout(() => {
+                if (swiperRef.current?.autoplay && !swiperRef.current.destroyed) {
+                    swiperRef.current.autoplay.start();
+                }
+            }, 4000);
+
+            const now = Date.now();
+            accumulatedDelta += delta;
+
+            // Trigger next/prev when threshold reached and throttled for silky smooth response
+            if (Math.abs(accumulatedDelta) >= 30 && now - lastTriggerTime > 160) {
+                lastTriggerTime = now;
+                if (accumulatedDelta > 0) {
+                    swiper.slideNext(500);
+                } else {
+                    swiper.slidePrev(500);
+                }
+                accumulatedDelta = 0;
+            }
+
+            clearTimeout(wheelTimer);
+            wheelTimer = setTimeout(() => {
+                accumulatedDelta = 0;
+            }, 200);
+        };
+
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => {
+            el.removeEventListener('wheel', onWheel);
+            clearTimeout(wheelTimer);
+            clearTimeout(resumeAutoplayTimer);
+        };
+    }, []);
+
     return (
         <div id={id} data-reveal className="Youtubecontainer bg-background">
-            <div className="youtubecontent bg-background">
+            <div className="youtubecontent bg-background" ref={containerRef}>
                 <div className="videos-header">
                     <h2 className="text-3xl sm:text-4xl font-bold font-editorial text-text-primary dark:text-white tracking-wide uppercase">{title}</h2>
                     <div className="underline bg-flag-blue" />
@@ -20,16 +83,15 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                 {videos.length > 0 ? (
                     <>
                         <Swiper
+                            onSwiper={(swiper) => {
+                                swiperRef.current = swiper;
+                            }}
                             spaceBetween={24}
-                            loop={false}
+                            loop={videos.length > 4}
                             watchOverflow={true}
                             navigation={true}
-                            autoplay={videos.length > 1 ? { delay: 3000, disableOnInteraction: false } : false}
-                            mousewheel={{
-                                forceToAxis: true,
-                                releaseOnEdges: true,
-                                sensitivity: 1,
-                            }}
+                            speed={500}
+                            autoplay={videos.length > 1 ? { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true } : false}
                             observer={true}
                             observeParents={true}
                             breakpoints={{
@@ -50,7 +112,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                                     spaceBetween: 24
                                 }
                             }}
-                            modules={[Navigation, Autoplay, Mousewheel]}
+                            modules={[Navigation, Autoplay]}
                             style={{ width: '100%', position: 'relative' }}
                         >
                             {videos.map((video) => {
