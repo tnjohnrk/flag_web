@@ -121,7 +121,7 @@ body.preloader-active::-webkit-scrollbar {
 }
 
 ::view-transition-new(root) {
-  animation: theme-circular-wave 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: theme-circular-wave 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   mix-blend-mode: normal;
   display: block;
   z-index: 9999;

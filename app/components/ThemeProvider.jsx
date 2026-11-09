@@ -97,7 +97,7 @@ export function ThemeProvider({ children }) {
               ],
             },
             {
-              duration: 560,
+              duration: 850,
               easing: "cubic-bezier(0.22, 1, 0.36, 1)",
               fill: "forwards",
               pseudoElement: "::view-transition-new(root)",
@@ -138,7 +138,7 @@ export function ThemeProvider({ children }) {
           { clipPath: `circle(${endRadius}px at ${x}px ${y}px)` },
         ],
         {
-          duration: 520,
+          duration: 820,
           easing: "cubic-bezier(0.22, 1, 0.36, 1)",
           fill: "forwards",
         }
