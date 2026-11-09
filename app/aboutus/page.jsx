@@ -11,6 +11,7 @@ import ElasticReel from "../components/ElasticReel";
 import AlbumRail from "../components/AlbumRail";
 import PillButton from "../components/PillButton";
 import CardSwap from "../components/CardSwap";
+import { ChevronDown } from "lucide-react";
 
 const AboutUs = () => {
   const [theme, setTheme] = useState('dark');
@@ -146,8 +147,8 @@ const AboutUs = () => {
       },
       {
         root: null,
-        threshold: 0.15,
-        rootMargin: "0px 0px -10% 0px",
+        threshold: 0.08,
+        rootMargin: "0px 0px -40px 0px",
       }
     );
 
@@ -159,19 +160,39 @@ const AboutUs = () => {
 
   return (
       <div id="about-us" className="pt-24 md:pt-36 space-y-16 lg:space-y-24 overflow-hidden animate-page-entry">
-        {/* Main Title Header */}
-        <div data-reveal className="text-center mb-8 sm:mb-10 px-4 pt-4">
+        {/* Main Title Header & Prominent Scroll to Explore Banner */}
+        <div data-reveal className="text-center px-4 pt-4 flex flex-col items-center">
           <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#D9A31A] mb-2 block">
             WHO WE ARE
           </span>
-          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
             ABOUT US
           </h1>
           <div className="w-16 h-0.5 bg-[#D9A31A]/70 mx-auto mt-3 rounded-full" />
+
+          {/* Prominent Explore to Scroll Callout */}
+          <div className="mt-8 sm:mt-12 flex flex-col items-center space-y-3">
+            <span className="font-editorial text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-wide text-flag-navy/90 dark:text-white/95">
+              Scroll to Explore
+            </span>
+            <p className="font-sans-clean text-xs sm:text-sm tracking-[0.2em] uppercase text-[#D9A31A] font-medium">
+              Discover our story, mission &amp; leadership
+            </p>
+            <a
+              href="#senior-pastor"
+              aria-label="Scroll down to explore"
+              className="mt-3 inline-flex flex-col items-center text-text-secondary hover:text-[#D9A31A] dark:hover:text-[#D9A31A] transition-colors duration-300 group cursor-pointer"
+            >
+              <div className="w-6 h-10 rounded-full border-2 border-flag-navy/30 dark:border-white/30 group-hover:border-[#D9A31A] dark:group-hover:border-[#D9A31A] flex items-start justify-center p-1.5 transition-colors duration-300 shadow-sm">
+                <span className="w-1.5 h-2.5 rounded-full bg-[#D9A31A] animate-scroll-wheel block" />
+              </div>
+              <ChevronDown className="w-4 h-4 mt-1.5 text-flag-navy/50 dark:text-white/50 group-hover:text-[#D9A31A] dark:group-hover:text-[#D9A31A] animate-bounce transition-colors duration-300" />
+            </a>
+          </div>
         </div>
 
         {/* 1. SENIOR PASTOR SECTION */}
-        <section data-reveal id="senior-pastor" className="relative py-8 sm:py-10 md:py-16 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
+        <section id="senior-pastor" className="relative py-8 sm:py-10 md:py-16 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl scroll-mt-24">
           <div className="relative z-10 space-y-8 sm:space-y-10">
             {/* Header Block */}
             <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-5 sm:pb-6">
@@ -187,10 +208,10 @@ const AboutUs = () => {
             </div>
 
             {/* Main Composition */}
-            <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
               {/* Senior Pastor Cutout Portrait Photo (Left Column) */}
-              <div className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4 lg:sticky lg:top-28">
+              <div data-reveal style={{ '--reveal-delay': '100ms' }} className="lg:col-span-5 order-1 lg:order-1 flex flex-col items-center justify-center relative -mt-2 sm:-mt-3 lg:-mt-4 lg:sticky lg:top-28">
                 <div className="relative w-full max-w-[280px] sm:max-w-[360px] lg:max-w-[400px] flex flex-col items-center select-none group">
                   <Image
                     src={getMediaUrl("/images/Pr._Johnson_Magazine.png")}
@@ -209,19 +230,19 @@ const AboutUs = () => {
               {/* Right Editorial Text Column (All story content consolidated beside the image) */}
               <div className="lg:col-span-7 order-2 lg:order-2 space-y-6">
                 {/* Lead Featured Paragraph */}
-                <div className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
+                <div data-reveal style={{ '--reveal-delay': '150ms' }} className="relative pl-5 border-l-2 border-[#D9A31A] dark:border-[#D9A31A]">
                   <p className="font-sans-clean text-base md:text-lg lg:text-xl text-flag-navy dark:text-gray-100 font-bold leading-[1.75] max-w-[680px]">
                     {seniorPastorDetails[0]}
                   </p>
                 </div>
 
                 {/* Continuation Paragraph 1 - Early Life */}
-                <p className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px] pt-1">
+                <p data-reveal style={{ '--reveal-delay': '200ms' }} className="font-sans-clean text-sm md:text-base text-text-secondary leading-[1.75] max-w-[680px] pt-1">
                   {seniorPastorDetails[1]}
                 </p>
 
                 {/* Divine Encounter & Call to Ministry */}
-                <div className="pt-2 space-y-4">
+                <div data-reveal style={{ '--reveal-delay': '250ms' }} className="pt-2 space-y-4">
                   <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
                     DIVINE ENCOUNTER &amp; CALL TO MINISTRY
                   </span>
@@ -234,7 +255,7 @@ const AboutUs = () => {
                 </div>
 
                 {/* Family & Today's Impact */}
-                <div className="pt-2 space-y-4">
+                <div data-reveal style={{ '--reveal-delay': '300ms' }} className="pt-2 space-y-4">
                   <span className="font-sans-clean text-xs font-bold tracking-[0.2em] uppercase text-[#D9A31A] block">
                     FAMILY &amp; TODAY’S IMPACT
                   </span>
@@ -254,7 +275,7 @@ const AboutUs = () => {
         </section>
 
         {/* 2. HISTORY / OUR STORY SECTION */}
-        <section data-reveal id="history" className="relative pt-8 pb-4 sm:pt-10 sm:pb-6 md:pt-12 md:pb-6 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
+        <section id="history" className="relative pt-8 pb-4 sm:pt-10 sm:pb-6 md:pt-12 md:pb-6 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl scroll-mt-24">
           <div className="relative z-10 space-y-8 sm:space-y-10">
             {/* Header Block */}
             <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-5 sm:pb-6">
@@ -270,10 +291,10 @@ const AboutUs = () => {
             </div>
 
             {/* Main Composition: All text under one sub-topic alongside interactive CardSwap stack */}
-            <div data-reveal-stagger className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               
               {/* Featured Church History Interactive CardStack */}
-              <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
+              <div data-reveal style={{ '--reveal-delay': '100ms' }} className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center lg:sticky lg:top-28">
                 <div className="relative w-full h-[380px] sm:h-[460px] md:h-[540px] lg:h-[640px] flex items-center justify-center select-none overflow-visible">
                   <CardSwap
                     items={churchHistoryItems}
@@ -295,7 +316,7 @@ const AboutUs = () => {
               </div>
 
               {/* Text Column with ONE Sub-topic and all paragraphs flowing continuously */}
-              <div className="lg:col-span-6 order-2 lg:order-1 space-y-6">
+              <div data-reveal style={{ '--reveal-delay': '150ms' }} className="lg:col-span-6 order-2 lg:order-1 space-y-6">
                 {/* Single Sub Topic */}
                 <h3 className="font-sans-clean text-xl sm:text-2xl md:text-3xl font-bold text-[#D9A31A] tracking-tight">
                   From Two People to thousands
@@ -330,9 +351,8 @@ const AboutUs = () => {
 
         {/* 3. PASTORAL TEAM SECTION ("THOSE WHO LEAD") - SINGLE FRAME VIEW */}
         <section 
-          data-reveal 
           id="those-who-lead" 
-          className="relative pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col gap-3 sm:gap-5"
+          className="relative pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col gap-3 sm:gap-5 scroll-mt-24"
           onMouseEnter={() => setIsAutoPaused(true)}
           onMouseLeave={() => setIsAutoPaused(false)}
           onTouchStart={pauseAutoPlayTemporarily}

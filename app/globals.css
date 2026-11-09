@@ -296,6 +296,26 @@ body.preloader-finished .div {
   filter: blur(0);
 }
 
+/* Mouse Scroll Wheel Indicator Animation */
+@keyframes scrollWheelPulse {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.animate-scroll-wheel {
+  animation: scrollWheelPulse 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
 /* Stagger Utilities for Child Blocks */
 [data-reveal-stagger] > * {
   opacity: 0;
