@@ -11,7 +11,7 @@ import ElasticReel from "../components/ElasticReel";
 import AlbumRail from "../components/AlbumRail";
 import PillButton from "../components/PillButton";
 import CardSwap from "../components/CardSwap";
-import { ChevronDown } from "lucide-react";
+import StrokeText from "../components/StrokeText";
 
 const AboutUs = () => {
   const [theme, setTheme] = useState('dark');
@@ -124,6 +124,20 @@ const AboutUs = () => {
     };
   }, []);
 
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      const progress = Math.min(1, Math.max(0, y / 200));
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Scroll-Reveal Intersection Observer Engine
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -141,7 +155,11 @@ const AboutUs = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-revealed");
-            observer.unobserve(entry.target);
+          } else {
+            // When user scrolls back up and element leaves bottom of viewport, fade it out
+            if (entry.boundingClientRect.top > 0) {
+              entry.target.classList.remove("is-revealed");
+            }
           }
         });
       },
@@ -159,35 +177,55 @@ const AboutUs = () => {
   }, []);
 
   return (
-      <div id="about-us" className="pt-24 md:pt-36 space-y-16 lg:space-y-24 overflow-hidden animate-page-entry">
-        {/* Main Title Header & Prominent Scroll to Explore Banner */}
-        <div data-reveal className="text-center px-4 pt-4 flex flex-col items-center">
-          <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#D9A31A] mb-2 block">
-            WHO WE ARE
-          </span>
-          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
-            ABOUT US
-          </h1>
-          <div className="w-16 h-0.5 bg-[#D9A31A]/70 mx-auto mt-3 rounded-full" />
-
-          {/* Prominent Explore to Scroll Callout */}
-          <div className="mt-8 sm:mt-12 flex flex-col items-center space-y-3">
-            <span className="font-editorial text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-wide text-flag-navy/90 dark:text-white/95">
-              Scroll to Explore
+      <div id="about-us" className="pt-24 md:pt-32 space-y-16 lg:space-y-24 overflow-hidden animate-page-entry">
+        {/* Main Hero Header & React Bits <StrokeText /> Scroll to Explore */}
+        <div 
+          className="min-h-[72vh] sm:min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-12 sm:pt-20 pb-8 transition-all duration-300"
+        >
+          {/* Main Title Header */}
+          <div data-reveal className="mb-6 sm:mb-8">
+            <span className="font-sans-clean text-xs font-bold tracking-[0.25em] uppercase text-[#D9A31A] mb-2 block">
+              WHO WE ARE
             </span>
-            <p className="font-sans-clean text-xs sm:text-sm tracking-[0.2em] uppercase text-[#D9A31A] font-medium">
+            <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-flag-navy dark:text-text-primary tracking-tight">
+              ABOUT US
+            </h1>
+            <div className="w-16 h-0.5 bg-[#D9A31A]/70 mx-auto mt-3 rounded-full" />
+          </div>
+
+          {/* Bigger React Bits <StrokeText /> - Fades and disappears on scroll down, fades back in on scroll up */}
+          <div
+            style={{
+              opacity: Math.max(0, 1 - scrollProgress * 1.3),
+              transform: `translateY(-${scrollProgress * 36}px)`,
+              pointerEvents: scrollProgress >= 0.85 ? "none" : "auto",
+              transition: "opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center space-y-4 px-2 select-none"
+          >
+            <StrokeText
+              text="Scroll to Explore"
+              strokeColor="#D9A31A"
+              fillColor={theme === "dark" ? "#FFFFFF" : "#1A2249"}
+              strokeWidth={1.8}
+              drawDuration={1.8}
+              fillDelay={0.3}
+              stagger={0.05}
+              ease="power2.out"
+              trigger="mount"
+              fillMode="wipe"
+              wipeFrom="left"
+              fontSize={110}
+              fontWeight={800}
+              fontFamily="var(--font-editorial), 'Cormorant Garamond', Georgia, serif"
+              letterSpacing={-1}
+              shadow={true}
+              shadowColor={theme === "dark" ? "rgba(217, 163, 26, 0.3)" : "rgba(0, 0, 0, 0.15)"}
+              className="w-full max-w-3xl mx-auto"
+            />
+            <p className="font-sans-clean text-xs sm:text-sm tracking-[0.25em] uppercase text-[#D9A31A] font-semibold">
               Discover our story, mission &amp; leadership
             </p>
-            <a
-              href="#senior-pastor"
-              aria-label="Scroll down to explore"
-              className="mt-3 inline-flex flex-col items-center text-text-secondary hover:text-[#D9A31A] dark:hover:text-[#D9A31A] transition-colors duration-300 group cursor-pointer"
-            >
-              <div className="w-6 h-10 rounded-full border-2 border-flag-navy/30 dark:border-white/30 group-hover:border-[#D9A31A] dark:group-hover:border-[#D9A31A] flex items-start justify-center p-1.5 transition-colors duration-300 shadow-sm">
-                <span className="w-1.5 h-2.5 rounded-full bg-[#D9A31A] animate-scroll-wheel block" />
-              </div>
-              <ChevronDown className="w-4 h-4 mt-1.5 text-flag-navy/50 dark:text-white/50 group-hover:text-[#D9A31A] dark:group-hover:text-[#D9A31A] animate-bounce transition-colors duration-300" />
-            </a>
           </div>
         </div>
 
