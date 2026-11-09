@@ -254,7 +254,7 @@ const AboutUs = () => {
         </section>
 
         {/* 2. HISTORY / OUR STORY SECTION */}
-        <section data-reveal id="history" className="relative py-8 sm:py-10 md:py-16 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
+        <section data-reveal id="history" className="relative pt-8 pb-4 sm:pt-10 sm:pb-6 md:pt-12 md:pb-6 px-4 sm:px-6 md:px-12 lg:px-16 mx-auto max-w-7xl">
           <div className="relative z-10 space-y-8 sm:space-y-10">
             {/* Header Block */}
             <div data-reveal className="border-b border-black/10 dark:border-white/10 pb-5 sm:pb-6">
@@ -332,7 +332,7 @@ const AboutUs = () => {
         <section 
           data-reveal 
           id="those-who-lead" 
-          className="relative min-h-[92dvh] lg:min-h-[96dvh] max-h-[1020px] pt-16 pb-6 sm:pt-10 sm:pb-8 lg:py-8 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col justify-between"
+          className="relative pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl flex flex-col gap-3 sm:gap-5"
           onMouseEnter={() => setIsAutoPaused(true)}
           onMouseLeave={() => setIsAutoPaused(false)}
           onTouchStart={pauseAutoPlayTemporarily}
@@ -393,7 +393,7 @@ const AboutUs = () => {
           {/* Desktop & Tablet: Master Group Photo Lineup */}
           <div 
             data-reveal
-            className="hidden md:flex relative w-full max-w-7xl mx-auto items-center justify-center select-none my-2 sm:my-4"
+            className="hidden md:flex relative w-full max-w-7xl mx-auto items-center justify-center select-none my-1"
           >
             <ElasticReel
               items={reelItems}
@@ -412,7 +412,7 @@ const AboutUs = () => {
           {/* Mobile Only: React Bits Pro Card Rail (Fan of Profile Cards) */}
           <div
             data-reveal
-            className="block md:hidden relative w-full mx-auto select-none my-1"
+            className="block md:hidden relative w-full mx-auto select-none my-0"
           >
             <AlbumRail
               items={mobileReelItems}

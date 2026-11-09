@@ -16,7 +16,6 @@
 }
 
 html {
-  scroll-behavior: smooth !important;
   font-family: 'Trebuchet MS';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import ScrollButton from "./components/ScrollButton";
 import { ThemeProvider } from "./components/ThemeProvider";
 import Preloader from "./components/Preloader";
+import SmoothScroll from "./components/SmoothScroll";
 
 export const metadata = {
   title: "Full Life AG Church",
@@ -50,11 +51,13 @@ export default function RootLayout({ children }) {
       </head>
       <body id="home">
         <ThemeProvider>
-        <Preloader />
-        <Navbar />
-        {children}
-        <Footer />
-        <ScrollButton />
+          <SmoothScroll>
+            <Preloader />
+            <Navbar />
+            {children}
+            <Footer />
+            <ScrollButton />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import AlbumRail from './ui/AlbumRail';
 import { Play, ExternalLink, X, Eye, ThumbsUp, Disc3 } from 'lucide-react';
 
@@ -19,7 +20,12 @@ function formatDuration(duration) {
 export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR SONGS", id = "our-songs" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [mounted, setMounted] = useState(false);
   const railRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Format playlist videos into album items
   const items = useMemo(() => {
@@ -200,18 +206,36 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
         )}
       </div>
 
-      {/* Embedded Video Modal */}
-      {selectedVideo && (
+      {/* Embedded Video Modal rendered directly to body via portal to prevent header obstruction */}
+      {selectedVideo && mounted && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200"
+          data-lenis-prevent
+          className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/85 backdrop-blur-md pt-16 pb-6 px-4 sm:p-6 animate-in fade-in duration-200"
           onClick={() => setSelectedVideo(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedVideo.fullTitle}
         >
+          {/* Prominent Floating Close Button on Top Right (Always reachable & clickable) */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedVideo(null);
+            }}
+            aria-label="Close video"
+            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100001] w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 active:scale-90 text-white border border-white/20 backdrop-blur-lg shadow-2xl flex items-center justify-center cursor-pointer transition-all hover:scale-105 pointer-events-auto"
+            title="Close video (Esc)"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
           <div
-            className="relative w-full max-w-4xl bg-[#0B0F19] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+            className="relative w-full max-w-4xl bg-[#0B0F19] rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-[100000]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Top Bar */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#111625] border-b border-white/10">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#111625] border-b border-white/10 relative z-10">
               <div className="flex items-center gap-2 overflow-hidden pr-4">
                 <Disc3 className="w-4 h-4 text-[#D9A31A] animate-spin flex-shrink-0" style={{ animationDuration: '3s' }} />
                 <h4 className="font-editorial text-sm sm:text-base font-bold text-white truncate">
@@ -219,12 +243,18 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
                 </h4>
               </div>
 
+              {/* Header Close Button (Enhanced 40x40px target, always clickable) */}
               <button
-                onClick={() => setSelectedVideo(null)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedVideo(null);
+                }}
                 aria-label="Close video"
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 text-white flex items-center justify-center transition-all flex-shrink-0 cursor-pointer pointer-events-auto relative z-20"
+                title="Close video"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -256,7 +286,8 @@ export default function SongsAlbumRail({ videos = [], stats = {}, title = "OUR S
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
