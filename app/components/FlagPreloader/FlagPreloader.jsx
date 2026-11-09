@@ -3,18 +3,19 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import './FlagPreloader.css';
+import { CLOUDINARY_LIBRARY } from '@/lib/cloudinaryLibrary';
 
-const CLOUDINARY_MOBILE_VIDEO_URL =
-  'https://res.cloudinary.com/hqsoyezk/video/upload/w_1080,c_limit,q_auto,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
-const CLOUDINARY_2K_VIDEO_URL =
-  'https://res.cloudinary.com/hqsoyezk/video/upload/w_1920,h_1080,c_scale,q_auto:best,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
-const CLOUDINARY_4K_VIDEO_URL =
-  'https://res.cloudinary.com/hqsoyezk/video/upload/w_3840,h_2160,c_scale,q_auto:best,ac_none,f_auto/v1793953957/flagweb/preloader1_4k.mp4';
+const PRELOADER_MOBILE_URL = CLOUDINARY_LIBRARY.preloader.videoMobile;
+const PRELOADER_2K_URL = CLOUDINARY_LIBRARY.preloader.video2k;
+const PRELOADER_4K_URL = CLOUDINARY_LIBRARY.preloader.video4k;
+const PRELOADER_RAW_URL = CLOUDINARY_LIBRARY.preloader.videoRaw;
+const PRELOADER_POSTER_URL = CLOUDINARY_LIBRARY.preloader.poster;
 
 const EXIT_ANIMATION_DURATION = 0.25;
 
 export default function FlagPreloader({ onComplete }) {
   const [preloaderState, setPreloaderState] = useState('INITIALIZING');
+  const [isMuted, setIsMuted] = useState(true);
   const overlayRef = useRef(null);
   const videoRef = useRef(null);
   const isFinishedRef = useRef(false);
@@ -84,12 +85,26 @@ export default function FlagPreloader({ onComplete }) {
     onComplete?.();
   }, [onComplete, unlockBodyScroll]);
 
+  const toggleAudio = useCallback((e) => {
+    e?.stopPropagation?.();
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.muted) {
+      video.muted = false;
+      video.volume = 1.0;
+      setIsMuted(false);
+    } else {
+      video.muted = true;
+      setIsMuted(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const hasSeenPreloader = sessionStorage.getItem('hasSeenPreloader');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     // If already seen or user prefers reduced motion, skip immediately
     if (hasSeenPreloader || prefersReducedMotion) {
@@ -103,10 +118,12 @@ export default function FlagPreloader({ onComplete }) {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // Keyboard listener: Escape key triggers skip
+    // Keyboard listener: Escape triggers skip, M toggles audio
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isFinishedRef.current) {
         triggerExitAnimation();
+      } else if (e.key === 'm' || e.key === 'M') {
+        toggleAudio();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -130,7 +147,7 @@ export default function FlagPreloader({ onComplete }) {
       const playPromise = videoEl.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // If browser restricts autoplay, user can still use the Skip button
+          // If browser restricts autoplay, user can still use controls
         });
       }
     }
@@ -140,7 +157,7 @@ export default function FlagPreloader({ onComplete }) {
       window.removeEventListener('keydown', handleKeyDown);
       unlockBodyScroll();
     };
-  }, [completeImmediately, triggerExitAnimation, unlockBodyScroll]);
+  }, [completeImmediately, toggleAudio, triggerExitAnimation, unlockBodyScroll]);
 
   if (preloaderState === 'REMOVED') {
     return null;
@@ -154,43 +171,99 @@ export default function FlagPreloader({ onComplete }) {
       role="region"
       aria-label="Site introduction"
     >
-      {/* Top-Right Corner Skip Button */}
-      <button
-        type="button"
-        className="flag-preloader-skip-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          triggerExitAnimation();
-        }}
-        aria-label="Skip introduction video"
-      >
-        <span>Skip</span>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="flag-preloader-skip-icon"
-          aria-hidden="true"
+      {/* Top Controls: Audio On/Off with Frequency Visualizer + Skip Button */}
+      <div className="flag-preloader-controls">
+        <button
+          type="button"
+          className={`flag-preloader-audio-btn ${!isMuted ? 'is-active' : ''}`}
+          onClick={toggleAudio}
+          aria-label={isMuted ? 'Turn audio on' : 'Mute audio'}
+          title={isMuted ? 'Turn audio on' : 'Mute audio'}
         >
-          <polygon points="5 4 15 12 5 20 5 4" />
-          <line x1="19" y1="5" x2="19" y2="19" strokeWidth="2.5" />
-        </svg>
-      </button>
+          {/* Animated Frequency Equalizer Indicator */}
+          <span className="flag-preloader-freq-symbol" aria-hidden="true">
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+            <span className="flag-preloader-freq-bar" />
+          </span>
+
+          {/* Speaker Icon */}
+          {!isMuted ? (
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+          ) : (
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+              <line x1="23" y1="9" x2="17" y2="15" />
+              <line x1="17" y1="9" x2="23" y2="15" />
+            </svg>
+          )}
+
+          <span>{isMuted ? 'Sound Off' : 'Sound On'}</span>
+        </button>
+
+        <button
+          type="button"
+          className="flag-preloader-skip-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerExitAnimation();
+          }}
+          aria-label="Skip introduction video"
+          title="Skip intro"
+        >
+          <span>Skip</span>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="flag-preloader-skip-icon"
+            aria-hidden="true"
+          >
+            <polygon points="5 4 15 12 5 20 5 4" />
+            <line x1="19" y1="5" x2="19" y2="19" strokeWidth="2.5" />
+          </svg>
+        </button>
+      </div>
 
       <div className="flag-video-container">
         <video
           ref={videoRef}
           autoPlay
-          muted
+          muted={isMuted}
           playsInline
           webkit-playsinline="true"
           preload="auto"
-          poster="https://res.cloudinary.com/hqsoyezk/video/upload/so_0,w_1920,f_auto,q_auto/v1793953957/flagweb/preloader1_4k.jpg"
+          poster={PRELOADER_POSTER_URL}
           disablePictureInPicture
           controls={false}
           controlsList="nodownload nofullscreen noremoteplayback"
@@ -200,11 +273,11 @@ export default function FlagPreloader({ onComplete }) {
           className="flag-cinematic-video"
         >
           {/* Universal high performance responsive streams */}
-          <source src={CLOUDINARY_2K_VIDEO_URL} type="video/mp4" media="(max-width: 2560px)" />
-          <source src={CLOUDINARY_MOBILE_VIDEO_URL} type="video/mp4" media="(max-width: 768px)" />
-          <source src={CLOUDINARY_4K_VIDEO_URL} type="video/mp4" />
+          <source src={PRELOADER_4K_URL} type="video/mp4" media="(min-width: 1921px)" />
+          <source src={PRELOADER_2K_URL} type="video/mp4" media="(min-width: 769px)" />
+          <source src={PRELOADER_MOBILE_URL} type="video/mp4" media="(max-width: 768px)" />
           {/* Direct Raw Stream Fallback */}
-          <source src="https://res.cloudinary.com/hqsoyezk/video/upload/v1793953957/flagweb/preloader1_4k.mp4" type="video/mp4" />
+          <source src={PRELOADER_RAW_URL} type="video/mp4" />
         </video>
       </div>
     </div>

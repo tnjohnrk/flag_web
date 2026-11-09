@@ -170,17 +170,139 @@ body.preloader-active::-webkit-scrollbar {
 }
 
 /* ==========================================================
-   Top-Right Corner Skip Button
-   - Modern glassmorphic pill button
+   Top Controls Cluster: Audio Toggle + Skip Button
+   - Modern glassmorphic pill buttons
    - Safe-area aware for mobile notches and Dynamic Island
    - 44px minimum touch target for accessibility
    - Interactive hover and pressed state transitions
    ========================================================== */
-.flag-preloader-skip-btn {
+.flag-preloader-controls {
   position: absolute;
   top: max(20px, env(safe-area-inset-top, 20px));
   right: max(20px, env(safe-area-inset-right, 20px));
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+/* Audio Toggle Button */
+.flag-preloader-audio-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  background: rgba(18, 18, 24, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease,
+              color 0.2s ease;
+}
+
+.flag-preloader-audio-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.flag-preloader-audio-btn:active {
+  transform: scale(0.96);
+}
+
+.flag-preloader-audio-btn:focus-visible {
+  outline: 2px solid #eab308;
+  outline-offset: 3px;
+}
+
+.flag-preloader-audio-btn.is-active {
+  border-color: rgba(234, 179, 8, 0.6);
+  background: rgba(234, 179, 8, 0.2);
+  color: #fbbf24;
+}
+
+/* Audio Frequency Equalizer Indicator */
+.flag-preloader-freq-symbol {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  height: 14px;
+  width: 14px;
+}
+
+.flag-preloader-freq-bar {
+  display: block;
+  width: 2px;
+  border-radius: 1px;
+  background-color: currentColor;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+/* Equalizer animations when audio is ON */
+.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(1) {
+  animation: preloaderFreqWave1 0.75s ease-in-out infinite alternate;
+}
+.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(2) {
+  animation: preloaderFreqWave2 1.05s ease-in-out infinite alternate 0.12s;
+}
+.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(3) {
+  animation: preloaderFreqWave3 0.65s ease-in-out infinite alternate 0.24s;
+}
+.flag-preloader-audio-btn.is-active .flag-preloader-freq-bar:nth-child(4) {
+  animation: preloaderFreqWave4 0.95s ease-in-out infinite alternate 0.18s;
+}
+
+@keyframes preloaderFreqWave1 {
+  0%   { height: 3px; }
+  50%  { height: 14px; }
+  100% { height: 5px; }
+}
+
+@keyframes preloaderFreqWave2 {
+  0%   { height: 5px; }
+  50%  { height: 11px; }
+  100% { height: 14px; }
+}
+
+@keyframes preloaderFreqWave3 {
+  0%   { height: 13px; }
+  50%  { height: 4px; }
+  100% { height: 11px; }
+}
+
+@keyframes preloaderFreqWave4 {
+  0%   { height: 4px; }
+  50%  { height: 14px; }
+  100% { height: 7px; }
+}
+
+/* Resting frequency bars when audio is OFF */
+.flag-preloader-audio-btn:not(.is-active) .flag-preloader-freq-bar {
+  height: 3px;
+  opacity: 0.5;
+}
+
+/* Top-Right Corner Skip Button */
+.flag-preloader-skip-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -237,11 +359,21 @@ body.preloader-active::-webkit-scrollbar {
 }
 
 @media (max-width: 768px) {
-  .flag-preloader-skip-btn {
+  .flag-preloader-controls {
     top: max(16px, env(safe-area-inset-top, 16px));
     right: max(16px, env(safe-area-inset-right, 16px));
+    gap: 8px;
+  }
+
+  .flag-preloader-audio-btn {
+    padding: 7px 12px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .flag-preloader-skip-btn {
     padding: 7px 14px;
-    font-size: 12px;
+    font-size: 11.5px;
   }
 }
 
