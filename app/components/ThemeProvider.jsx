@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { flushSync } from "react-dom";
 
 const ThemeContext = createContext();
 
@@ -36,7 +37,37 @@ export function ThemeProvider({ children }) {
     if (isTransitioningRef.current) return;
     const newTheme = theme === "light" ? "dark" : "light";
     const isDark = newTheme === "dark";
-    
+
+    // Extract click origin coordinates synchronously before any async gap
+    let x = typeof window !== "undefined" ? window.innerWidth - 44 : 100;
+    let y = 30;
+
+    if (e?.clientX !== undefined && e?.clientY !== undefined && (e.clientX !== 0 || e.clientY !== 0)) {
+      x = Math.round(e.clientX);
+      y = Math.round(e.clientY);
+    } else if (e?.currentTarget?.getBoundingClientRect) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      x = Math.round(rect.left + rect.width / 2);
+      y = Math.round(rect.top + rect.height / 2);
+    }
+
+    // Radius to cover the furthest viewport corner from (x, y)
+    const endRadius = typeof window !== "undefined"
+      ? Math.ceil(
+          Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+          )
+        )
+      : 1500;
+
+    // Set CSS custom properties on documentElement for the wave origin and radius
+    if (typeof document !== "undefined") {
+      document.documentElement.style.setProperty("--theme-x", `${x}px`);
+      document.documentElement.style.setProperty("--theme-y", `${y}px`);
+      document.documentElement.style.setProperty("--theme-radius", `${endRadius}px`);
+    }
+
     // Check for reduced motion
     const prefersReducedMotion =
       typeof window !== "undefined" &&
@@ -45,47 +76,20 @@ export function ThemeProvider({ children }) {
     // View Transitions API
     if (!prefersReducedMotion && typeof document !== "undefined" && document.startViewTransition) {
       isTransitioningRef.current = true;
-
-      // Calculate origin from the click event or button center
-      let x = window.innerWidth / 2;
-      let y = 20;
-
-      if (e?.clientX !== undefined && e?.clientY !== undefined && (e.clientX !== 0 || e.clientY !== 0)) {
-        x = e.clientX;
-        y = e.clientY;
-      } else if (e?.currentTarget?.getBoundingClientRect) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = rect.top + rect.height / 2;
-      }
-
-      // Radius to cover the furthest corner of the viewport
-      const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-      );
-
-      const transitionClass = isDark
-        ? "theme-transition-to-dark"
-        : "theme-transition-to-light";
-
-      // Suppress all child CSS transitions so snapshot captures instant 100% final colors
-      document.documentElement.classList.add("theme-transitioning", transitionClass);
+      document.documentElement.classList.add("theme-transitioning");
 
       try {
         const transition = document.startViewTransition(() => {
-          applyTheme(newTheme);
+          flushSync(() => {
+            applyTheme(newTheme);
+          });
         });
 
         await transition.ready;
 
-        const duration = 480;
-        const easing = "cubic-bezier(0.4, 0, 0.2, 1)";
-
-        let anim;
-        if (isDark) {
-          // Light -> Dark: Smooth in-to-out circular expansion from toggle button
-          anim = document.documentElement.animate(
+        // Also run Web Animations API as enhancement for browsers supporting pseudoElement in animate()
+        try {
+          const anim = document.documentElement.animate(
             {
               clipPath: [
                 `circle(0px at ${x}px ${y}px)`,
@@ -93,45 +97,60 @@ export function ThemeProvider({ children }) {
               ],
             },
             {
-              duration,
-              easing,
+              duration: 560,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
               fill: "forwards",
               pseudoElement: "::view-transition-new(root)",
             }
           );
-        } else {
-          // Dark -> Light: Smooth out-to-in circular contraction into toggle button
-          anim = document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(${endRadius}px at ${x}px ${y}px)`,
-                `circle(0px at ${x}px ${y}px)`,
-              ],
-            },
-            {
-              duration,
-              easing,
-              fill: "forwards",
-              pseudoElement: "::view-transition-old(root)",
-            }
-          );
+          await anim.finished;
+        } catch (_) {
+          // If WAAPI pseudoElement is unsupported, CSS keyframes theme-circular-wave handles it seamlessly
         }
 
-        if (anim) {
-          await anim.finished;
-        }
         await transition.finished;
       } catch (err) {
         applyTheme(newTheme);
       } finally {
-        // Wait for next animation frame so DOM is completely settled before restoring regular transitions
         requestAnimationFrame(() => {
-          document.documentElement.classList.remove("theme-transitioning", transitionClass);
+          document.documentElement.classList.remove("theme-transitioning");
           isTransitioningRef.current = false;
         });
       }
+    } else if (!prefersReducedMotion && typeof document !== "undefined") {
+      // Fallback for browsers without View Transitions API:
+      // In-to-out circular wave overlay that smoothly reveals the target theme
+      isTransitioningRef.current = true;
+      const overlay = document.createElement("div");
+      overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        pointer-events: none;
+        background-color: ${isDark ? "#090B14" : "#F2F0EB"};
+        clip-path: circle(0px at ${x}px ${y}px);
+      `;
+      document.body.appendChild(overlay);
+
+      const anim = overlay.animate(
+        [
+          { clipPath: `circle(0px at ${x}px ${y}px)` },
+          { clipPath: `circle(${endRadius}px at ${x}px ${y}px)` },
+        ],
+        {
+          duration: 520,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "forwards",
+        }
+      );
+
+      anim.onfinish = () => {
+        applyTheme(newTheme);
+        overlay.remove();
+        isTransitioningRef.current = false;
+      };
     } else {
-      // Fallback
+      // Direct update for reduced motion
       applyTheme(newTheme);
     }
   };

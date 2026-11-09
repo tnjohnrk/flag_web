@@ -94,31 +94,41 @@ body.preloader-active::-webkit-scrollbar {
   isolation: isolate;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none !important;
-  mix-blend-mode: normal !important;
+/* ==========================================================
+   Smooth Circular Wave Theme Transition (In-to-Out)
+   - New theme snapshot expands from toggle origin outward
+   - Inside the wave is the target theme (e.g. dark), outside is old theme (light)
+   - 100% GPU-composited, zero flicker, silk-smooth transition
+   ========================================================== */
+@keyframes theme-circular-wave {
+  from {
+    clip-path: circle(0px at var(--theme-x, 50vw) var(--theme-y, 24px));
+  }
+  to {
+    clip-path: circle(var(--theme-radius, 150vmax) at var(--theme-x, 50vw) var(--theme-y, 24px));
+  }
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
   display: block;
-}
-
-/* Light to Dark: New dark snapshot on top expanding outward */
-:root.theme-transition-to-dark::view-transition-old(root) {
   z-index: 1;
 }
-:root.theme-transition-to-dark::view-transition-new(root) {
-  z-index: 9999;
-}
 
-/* Dark to Light: Old dark snapshot on top shrinking inward (out to in) */
-:root.theme-transition-to-light::view-transition-old(root) {
+::view-transition-new(root) {
+  animation: theme-circular-wave 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  mix-blend-mode: normal;
+  display: block;
   z-index: 9999;
-}
-:root.theme-transition-to-light::view-transition-new(root) {
-  z-index: 1;
 }
 
 /* Completely suppress all CSS background, color, and border transitions during view transition
-   so the snapshot captured for the new theme is immediate and 100% settled with zero jerk */
+   so the snapshots captured for old and new themes are immediate and 100% settled with zero jerk */
 :root.theme-transitioning,
 :root.theme-transitioning *,
 :root.theme-transitioning *::before,
