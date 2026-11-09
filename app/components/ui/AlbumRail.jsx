@@ -221,7 +221,7 @@ const AlbumRail = forwardRef(function AlbumRail(
     setDragOffset(0);
   };
 
-  // Smooth Mouse Wheel / Trackpad Scroll Navigation
+  // Ultra-Responsive Smooth Mouse Wheel / Trackpad Scroll Navigation
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
@@ -232,15 +232,19 @@ const AlbumRail = forwardRef(function AlbumRail(
 
     const onWheel = (e) => {
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (Math.abs(delta) < 4) return;
+      if (Math.abs(delta) < 2) return;
 
       // Prevent whole page from jumping while interacting with the album rail
       e.preventDefault();
 
-      const now = Date.now();
+      const now = performance.now();
       accumulatedDelta += delta;
 
-      if (Math.abs(accumulatedDelta) >= 30 && now - lastTriggerTime > 160) {
+      const timeSinceLast = now - lastTriggerTime;
+      const isRapidFlick = Math.abs(delta) > 50 || Math.abs(accumulatedDelta) > 40;
+      const throttleMs = isRapidFlick ? 45 : 65;
+
+      if (Math.abs(accumulatedDelta) >= 8 && timeSinceLast > throttleMs) {
         lastTriggerTime = now;
         if (accumulatedDelta > 0) {
           handleNextWithPause();
@@ -253,7 +257,7 @@ const AlbumRail = forwardRef(function AlbumRail(
       clearTimeout(wheelTimer);
       wheelTimer = setTimeout(() => {
         accumulatedDelta = 0;
-      }, 200);
+      }, 90);
     };
 
     el.addEventListener('wheel', onWheel, { passive: false });

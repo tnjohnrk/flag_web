@@ -12,7 +12,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
     const swiperRef = useRef(null);
     const containerRef = useRef(null);
 
-    // Smooth Mouse Wheel / Trackpad Scroll Navigation (matching Songs Album Rail)
+    // Ultra-Responsive Smooth Mouse Wheel / Trackpad Scroll Navigation
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
@@ -28,12 +28,12 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
 
             // Determine dominant scroll delta
             const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-            if (Math.abs(delta) < 4) return;
+            if (Math.abs(delta) < 2) return;
 
             // Prevent whole page vertical jump while interacting with the sermons carousel
             e.preventDefault();
 
-            // Temporarily pause autoplay so it doesn't fight the user's manual scroll
+            // Temporarily pause autoplay so it doesn't fight user's manual scroll
             if (swiper.autoplay && swiper.autoplay.running) {
                 swiper.autoplay.stop();
             }
@@ -42,18 +42,24 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                 if (swiperRef.current?.autoplay && !swiperRef.current.destroyed) {
                     swiperRef.current.autoplay.start();
                 }
-            }, 4000);
+            }, 3500);
 
-            const now = Date.now();
+            const now = performance.now();
             accumulatedDelta += delta;
 
-            // Trigger next/prev when threshold reached and throttled for silky smooth response
-            if (Math.abs(accumulatedDelta) >= 30 && now - lastTriggerTime > 160) {
+            // Instant reaction: threshold of 8 with adaptive throttle for 120fps fluid response
+            const timeSinceLast = now - lastTriggerTime;
+            const isRapidFlick = Math.abs(delta) > 50 || Math.abs(accumulatedDelta) > 40;
+            const throttleMs = isRapidFlick ? 45 : 65;
+
+            if (Math.abs(accumulatedDelta) >= 8 && timeSinceLast > throttleMs) {
                 lastTriggerTime = now;
+                // Snappy 240-270ms transition duration prevents lag and locks
+                const duration = isRapidFlick ? 230 : 270;
                 if (accumulatedDelta > 0) {
-                    swiper.slideNext(500);
+                    swiper.slideNext(duration);
                 } else {
-                    swiper.slidePrev(500);
+                    swiper.slidePrev(duration);
                 }
                 accumulatedDelta = 0;
             }
@@ -61,7 +67,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
             clearTimeout(wheelTimer);
             wheelTimer = setTimeout(() => {
                 accumulatedDelta = 0;
-            }, 200);
+            }, 90);
         };
 
         el.addEventListener('wheel', onWheel, { passive: false });
@@ -90,7 +96,7 @@ export default function VideosCarousel({ videos, stats, title = "LATEST SERMONS"
                             loop={videos.length > 4}
                             watchOverflow={true}
                             navigation={true}
-                            speed={500}
+                            speed={280}
                             autoplay={videos.length > 1 ? { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true } : false}
                             observer={true}
                             observeParents={true}

@@ -707,14 +707,14 @@ const CardSwap = forwardRef(
 
       const onWheel = event => {
         const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
-        if (Math.abs(delta) < 4) return;
+        if (Math.abs(delta) < 2) return;
 
         event.preventDefault();
 
         const now = Date.now();
         wheelAccumulator += delta;
 
-        if (Math.abs(wheelAccumulator) >= 30 && now - lastWheelTime > 300) {
+        if (Math.abs(wheelAccumulator) >= 8 && now - lastWheelTime > 110) {
           lastWheelTime = now;
           if (wheelAccumulator > 0) {
             shift(1);
@@ -727,7 +727,7 @@ const CardSwap = forwardRef(
         clearTimeout(wheelTimer);
         wheelTimer = setTimeout(() => {
           wheelAccumulator = 0;
-        }, 200);
+        }, 90);
       };
 
       root.addEventListener('pointermove', onMove);
