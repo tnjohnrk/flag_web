@@ -123,8 +123,8 @@ export default function FlagPreloader({ onComplete }) {
     if (contentRef.current) {
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, scale: 0.95, y: 12 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+        { opacity: 0, scale: 0.96, y: 10 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'power2.out' }
       );
     }
 
@@ -165,45 +165,24 @@ export default function FlagPreloader({ onComplete }) {
       role="region"
       aria-label="Site loading preloader"
     >
-      {/* Central Content: Original Logo & Bold 0-100% Count */}
+      {/* Central Content: Original Logo & Big Bold 0-100% Count Only */}
       <div ref={contentRef} className="flag-preloader-center-content">
         {/* Original Logo */}
         <div className="flag-preloader-logo-frame">
           <Image
             src={ORIGINAL_LOGO_SRC}
             alt="Full Life AG Church Logo"
-            width={190}
-            height={190}
+            width={200}
+            height={200}
             priority
             className="flag-preloader-original-logo"
           />
         </div>
 
-        {/* Bold Countdown with Proper Typography Font */}
+        {/* Big Bold Countdown (0% to 100%) */}
         <div className="flag-preloader-counter-wrap" aria-live="polite">
           <span className="flag-preloader-counter-num">{progress}</span>
           <span className="flag-preloader-counter-pct">%</span>
-        </div>
-
-        {/* Minimal Progress Bar */}
-        <div
-          className="flag-preloader-bar-track"
-          role="progressbar"
-          aria-valuenow={progress}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="Site loading progress"
-        >
-          <div
-            className="flag-preloader-bar-indicator"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Church Title & Motto */}
-        <div className="flag-preloader-typography">
-          <h2 className="flag-preloader-title">Full Life AG Church</h2>
-          <p className="flag-preloader-subtitle">Presence &bull; Power &bull; Purpose</p>
         </div>
       </div>
     </div>
