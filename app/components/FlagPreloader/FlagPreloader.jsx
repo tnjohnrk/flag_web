@@ -5,19 +5,15 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import './FlagPreloader.css';
 import { getMediaUrl } from '@/lib/media';
-import { CLOUDINARY_LIBRARY } from '@/lib/cloudinaryLibrary';
 
-const PRELOADER_AUDIO_URL = CLOUDINARY_LIBRARY.preloader.videoRaw;
 const ORIGINAL_LOGO_SRC = getMediaUrl('/images/flag-logo.png');
 
 export default function FlagPreloader({ onComplete }) {
   const [preloaderState, setPreloaderState] = useState('INITIALIZING');
-  const [isMuted, setIsMuted] = useState(true);
   const [progress, setProgress] = useState(0);
 
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
-  const audioRef = useRef(null);
   const isFinishedRef = useRef(false);
   const timelineRef = useRef(null);
 
@@ -48,19 +44,12 @@ export default function FlagPreloader({ onComplete }) {
       window.dispatchEvent(new Event('preloader-nav-ready'));
     }
 
-    const audio = audioRef.current;
-    if (audio) {
-      try {
-        audio.pause();
-      } catch (_) {}
-    }
-
     const overlay = overlayRef.current;
     if (overlay && typeof window !== 'undefined' && gsap) {
       gsap.to(overlay, {
         opacity: 0,
-        scale: 1.04,
-        duration: 0.45,
+        scale: 1.02,
+        duration: 0.35,
         ease: 'power2.out',
         onComplete: () => {
           setPreloaderState('REMOVED');
@@ -90,22 +79,6 @@ export default function FlagPreloader({ onComplete }) {
     onComplete?.();
   }, [onComplete, unlockBodyScroll]);
 
-  const toggleAudio = useCallback((e) => {
-    e?.stopPropagation?.();
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.muted) {
-      audio.muted = false;
-      audio.volume = 1.0;
-      audio.play().catch(() => {});
-      setIsMuted(false);
-    } else {
-      audio.muted = true;
-      setIsMuted(true);
-    }
-  }, []);
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -123,31 +96,20 @@ export default function FlagPreloader({ onComplete }) {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // Keyboard shortcuts
+    // Keyboard shortcut for accessibility
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isFinishedRef.current) {
         triggerExitAnimation();
-      } else if (e.key === 'm' || e.key === 'M') {
-        toggleAudio();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-
-    // Audio setup
-    const audioEl = audioRef.current;
-    if (audioEl) {
-      audioEl.muted = true;
-      audioEl.volume = 0;
-      audioEl.setAttribute('muted', '');
-      audioEl.play().catch(() => {});
-    }
 
     // GSAP Percentage Counter Animation from 0 to 100
     const counterObj = { val: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
-        // When counter reaches 100%, hold briefly (250ms) then enter the home page
-        gsap.delayedCall(0.25, () => {
+        // When counter reaches 100%, smooth transition to home page
+        gsap.delayedCall(0.2, () => {
           if (!isFinishedRef.current) {
             triggerExitAnimation();
           }
@@ -157,31 +119,31 @@ export default function FlagPreloader({ onComplete }) {
 
     timelineRef.current = tl;
 
-    // Smooth entrance of preloader card
+    // Smooth content entrance
     if (contentRef.current) {
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, scale: 0.94, y: 15 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+        { opacity: 0, scale: 0.95, y: 12 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power2.out' }
       );
     }
 
-    // Count percentage from 0 to 100 over 2.2 seconds
+    // Bold countdown animation (0% to 100% over 2.0 seconds)
     tl.to(counterObj, {
       val: 100,
-      duration: 2.2,
+      duration: 2.0,
       ease: 'power1.inOut',
       onUpdate: () => {
         setProgress(Math.round(counterObj.val));
       },
     });
 
-    // Safety timeout (5s fallback)
+    // Safety timeout fallback (4.5s)
     const safetyTimer = setTimeout(() => {
       if (!isFinishedRef.current) {
         triggerExitAnimation();
       }
-    }, 5000);
+    }, 4500);
 
     return () => {
       clearTimeout(safetyTimer);
@@ -189,7 +151,7 @@ export default function FlagPreloader({ onComplete }) {
       tl.kill();
       unlockBodyScroll();
     };
-  }, [completeImmediately, toggleAudio, triggerExitAnimation, unlockBodyScroll]);
+  }, [completeImmediately, triggerExitAnimation, unlockBodyScroll]);
 
   if (preloaderState === 'REMOVED') {
     return null;
@@ -201,89 +163,29 @@ export default function FlagPreloader({ onComplete }) {
       className={`flag-clean-preloader ${preloaderState === 'EXITING' ? 'is-exiting' : ''}`}
       aria-hidden={preloaderState === 'EXITING'}
       role="region"
-      aria-label="Site introduction"
+      aria-label="Site loading preloader"
     >
-      {/* Ambient Depth Glow */}
-      <div className="flag-preloader-ambient-glow" aria-hidden="true" />
-
-      {/* Background Audio */}
-      <audio
-        ref={audioRef}
-        src={PRELOADER_AUDIO_URL}
-        preload="auto"
-        muted={isMuted}
-        loop
-        playsInline
-      />
-
-      {/* Top Controls: Audio On/Off + Skip Button */}
-      <div className="flag-preloader-controls">
-        <button
-          type="button"
-          className={`flag-preloader-circle-audio-btn ${!isMuted ? 'is-active' : ''}`}
-          onClick={toggleAudio}
-          aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
-          title={isMuted ? 'Sound off' : 'Sound on'}
-        >
-          <span className="flag-preloader-freq-symbol" aria-hidden="true">
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-            <span className="flag-preloader-freq-bar" />
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="flag-preloader-skip-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            triggerExitAnimation();
-          }}
-          aria-label="Skip preloader"
-          title="Skip intro"
-        >
-          <span>Skip</span>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="flag-preloader-skip-icon"
-            aria-hidden="true"
-          >
-            <polygon points="5 4 15 12 5 20 5 4" />
-            <line x1="19" y1="5" x2="19" y2="19" strokeWidth="2.5" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Central Content: Original Logo & 0-100% Progress */}
+      {/* Central Content: Original Logo & Bold 0-100% Count */}
       <div ref={contentRef} className="flag-preloader-center-content">
-        {/* Original Logo Card */}
+        {/* Original Logo */}
         <div className="flag-preloader-logo-frame">
-          <div className="flag-preloader-logo-glow" aria-hidden="true" />
           <Image
             src={ORIGINAL_LOGO_SRC}
             alt="Full Life AG Church Logo"
-            width={200}
-            height={200}
+            width={190}
+            height={190}
             priority
             className="flag-preloader-original-logo"
           />
         </div>
 
-        {/* Count Percentage (0 to 100%) */}
+        {/* Bold Countdown with Proper Typography Font */}
         <div className="flag-preloader-counter-wrap" aria-live="polite">
           <span className="flag-preloader-counter-num">{progress}</span>
           <span className="flag-preloader-counter-pct">%</span>
         </div>
 
-        {/* Progress Bar */}
+        {/* Minimal Progress Bar */}
         <div
           className="flag-preloader-bar-track"
           role="progressbar"
