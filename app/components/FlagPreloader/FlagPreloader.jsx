@@ -3,22 +3,23 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import './FlagPreloader.css';
+import { getMediaUrl } from '@/lib/media';
 import { CLOUDINARY_LIBRARY } from '@/lib/cloudinaryLibrary';
 
-const PRELOADER_MOBILE_URL = CLOUDINARY_LIBRARY.preloader.videoMobile;
-const PRELOADER_2K_URL = CLOUDINARY_LIBRARY.preloader.video2k;
-const PRELOADER_4K_URL = CLOUDINARY_LIBRARY.preloader.video4k;
-const PRELOADER_RAW_URL = CLOUDINARY_LIBRARY.preloader.videoRaw;
-const PRELOADER_POSTER_URL = CLOUDINARY_LIBRARY.preloader.poster;
-
-const EXIT_ANIMATION_DURATION = 0.25;
+const PRELOADER_AUDIO_URL = CLOUDINARY_LIBRARY.preloader.videoRaw;
+const LOGO_SRC = getMediaUrl('/images/flag-logo.png');
 
 export default function FlagPreloader({ onComplete }) {
   const [preloaderState, setPreloaderState] = useState('INITIALIZING');
   const [isMuted, setIsMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+
   const overlayRef = useRef(null);
-  const videoRef = useRef(null);
+  const audioRef = useRef(null);
+  const logoStageRef = useRef(null);
   const isFinishedRef = useRef(false);
+  const timelineRef = useRef(null);
 
   const unlockBodyScroll = useCallback(() => {
     if (typeof document !== 'undefined') {
@@ -35,6 +36,10 @@ export default function FlagPreloader({ onComplete }) {
     isFinishedRef.current = true;
     setPreloaderState('EXITING');
 
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+
     if (typeof window !== 'undefined') {
       try {
         sessionStorage.setItem('hasSeenPreloader', 'true');
@@ -43,19 +48,19 @@ export default function FlagPreloader({ onComplete }) {
       window.dispatchEvent(new Event('preloader-nav-ready'));
     }
 
-    const overlay = overlayRef.current;
-    const video = videoRef.current;
-    if (video) {
+    const audio = audioRef.current;
+    if (audio) {
       try {
-        video.pause();
+        audio.pause();
       } catch (_) {}
     }
 
+    const overlay = overlayRef.current;
     if (overlay && typeof window !== 'undefined' && gsap) {
       gsap.to(overlay, {
         opacity: 0,
-        scale: 0.98,
-        duration: EXIT_ANIMATION_DURATION,
+        scale: 1.05,
+        duration: 0.45,
         ease: 'power2.out',
         onComplete: () => {
           setPreloaderState('REMOVED');
@@ -87,15 +92,16 @@ export default function FlagPreloader({ onComplete }) {
 
   const toggleAudio = useCallback((e) => {
     e?.stopPropagation?.();
-    const video = videoRef.current;
-    if (!video) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    if (video.muted) {
-      video.muted = false;
-      video.volume = 1.0;
+    if (audio.muted) {
+      audio.muted = false;
+      audio.volume = 1.0;
+      audio.play().catch(() => {});
       setIsMuted(false);
     } else {
-      video.muted = true;
+      audio.muted = true;
       setIsMuted(true);
     }
   }, []);
@@ -106,7 +112,6 @@ export default function FlagPreloader({ onComplete }) {
     const hasSeenPreloader = sessionStorage.getItem('hasSeenPreloader');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // If already seen or user prefers reduced motion, skip immediately
     if (hasSeenPreloader || prefersReducedMotion) {
       completeImmediately();
       return;
@@ -118,7 +123,7 @@ export default function FlagPreloader({ onComplete }) {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // Keyboard listener: Escape triggers skip, M toggles audio
+    // Keyboard shortcuts: Escape to skip, M to toggle sound
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isFinishedRef.current) {
         triggerExitAnimation();
@@ -128,33 +133,52 @@ export default function FlagPreloader({ onComplete }) {
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // Maximum safety timeout: 15s (video duration is ~10s)
-    const maxSafetyMs = 15000;
+    // Audio setup (muted by default for browser autoplay compliance)
+    const audioEl = audioRef.current;
+    if (audioEl) {
+      audioEl.muted = true;
+      audioEl.volume = 0;
+      audioEl.setAttribute('muted', '');
+      audioEl.play().catch(() => {});
+    }
+
+    // GSAP liquid color fill animation
+    const progressObj = { value: 0 };
+    const fillTimeline = gsap.timeline({
+      onComplete: () => {
+        setIsComplete(true);
+        // Hold for 400ms to let user see 100% complete logo with light sweep
+        gsap.delayedCall(0.5, () => {
+          if (!isFinishedRef.current) {
+            triggerExitAnimation();
+          }
+        });
+      },
+    });
+
+    timelineRef.current = fillTimeline;
+
+    // Smooth filling from 0 to 100% over 2.6 seconds
+    fillTimeline.to(progressObj, {
+      value: 100,
+      duration: 2.6,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        setProgress(Math.round(progressObj.value));
+      },
+    });
+
+    // Fallback safety timeout (6s)
     const safetyTimer = setTimeout(() => {
       if (!isFinishedRef.current) {
         triggerExitAnimation();
       }
-    }, maxSafetyMs);
-
-    const videoEl = videoRef.current;
-    if (videoEl) {
-      videoEl.muted = true;
-      videoEl.volume = 0;
-      videoEl.setAttribute('muted', '');
-      videoEl.setAttribute('playsinline', '');
-      videoEl.setAttribute('webkit-playsinline', '');
-
-      const playPromise = videoEl.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // If browser restricts autoplay, user can still use controls
-        });
-      }
-    }
+    }, 6000);
 
     return () => {
       clearTimeout(safetyTimer);
       window.removeEventListener('keydown', handleKeyDown);
+      fillTimeline.kill();
       unlockBodyScroll();
     };
   }, [completeImmediately, toggleAudio, triggerExitAnimation, unlockBodyScroll]);
@@ -166,11 +190,25 @@ export default function FlagPreloader({ onComplete }) {
   return (
     <div
       ref={overlayRef}
-      className={`flag-cinematic-preloader ${preloaderState === 'EXITING' ? 'is-exiting' : ''}`}
+      className={`flag-logo-preloader-root ${preloaderState === 'EXITING' ? 'is-exiting' : ''}`}
       aria-hidden={preloaderState === 'EXITING'}
       role="region"
       aria-label="Site introduction"
     >
+      {/* Background Ambient Orbs */}
+      <div className="flag-preloader-glow-orb flag-glow-orb-gold" aria-hidden="true" />
+      <div className="flag-preloader-glow-orb flag-glow-orb-blue" aria-hidden="true" />
+
+      {/* Background Audio Element */}
+      <audio
+        ref={audioRef}
+        src={PRELOADER_AUDIO_URL}
+        preload="auto"
+        muted={isMuted}
+        loop
+        playsInline
+      />
+
       {/* Top Controls: Audio On/Off with Frequency Visualizer + Skip Button */}
       <div className="flag-preloader-controls">
         <button
@@ -180,7 +218,7 @@ export default function FlagPreloader({ onComplete }) {
           aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
           title={isMuted ? 'Sound off' : 'Sound on'}
         >
-          {/* 4 Frequency Indicator Bars centered in circle */}
+          {/* 4 Frequency Indicator Bars */}
           <span className="flag-preloader-freq-symbol" aria-hidden="true">
             <span className="flag-preloader-freq-bar" />
             <span className="flag-preloader-freq-bar" />
@@ -196,7 +234,7 @@ export default function FlagPreloader({ onComplete }) {
             e.stopPropagation();
             triggerExitAnimation();
           }}
-          aria-label="Skip introduction video"
+          aria-label="Skip preloader"
           title="Skip intro"
         >
           <span>Skip</span>
@@ -218,30 +256,85 @@ export default function FlagPreloader({ onComplete }) {
         </button>
       </div>
 
-      <div className="flag-video-container">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted={isMuted}
-          playsInline
-          webkit-playsinline="true"
-          preload="auto"
-          poster={PRELOADER_POSTER_URL}
-          disablePictureInPicture
-          controls={false}
-          controlsList="nodownload nofullscreen noremoteplayback"
-          onEnded={triggerExitAnimation}
-          onError={triggerExitAnimation}
-          aria-hidden="true"
-          className="flag-cinematic-video"
+      {/* Center Logo Stage */}
+      <div className="flag-logo-stage-wrapper">
+        <div
+          ref={logoStageRef}
+          className={`flag-logo-stage ${isComplete ? 'is-complete' : ''}`}
         >
-          {/* Universal high performance responsive streams */}
-          <source src={PRELOADER_4K_URL} type="video/mp4" media="(min-width: 1921px)" />
-          <source src={PRELOADER_2K_URL} type="video/mp4" media="(min-width: 769px)" />
-          <source src={PRELOADER_MOBILE_URL} type="video/mp4" media="(max-width: 768px)" />
-          {/* Direct Raw Stream Fallback */}
-          <source src={PRELOADER_RAW_URL} type="video/mp4" />
-        </video>
+          {/* Layer 1: Base Ghost Silhouette (Unfilled background shape) */}
+          <img
+            src={LOGO_SRC}
+            alt="Full Life AG Church Logo Silhouette"
+            className="flag-logo-ghost"
+            width={340}
+            height={340}
+          />
+
+          {/* Layer 2: Color Fill Reservoir (Rises from bottom 0% to top 100%) */}
+          <div
+            className="flag-fill-reservoir"
+            style={{ height: `${progress}%` }}
+            aria-hidden="true"
+          >
+            <div className="flag-fill-content">
+              <img
+                src={LOGO_SRC}
+                alt="Full Life AG Church Logo Color Fill"
+                className="flag-logo-color"
+                width={340}
+                height={340}
+              />
+            </div>
+
+            {/* Rising Meniscus Glow Beam with Surface Waves */}
+            <div className="flag-fill-meniscus-beam" />
+            <div className="flag-wave-container">
+              <svg className="flag-wave-svg wave-back" viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path
+                  d="M0,20 C150,45 350,-10 500,20 C650,50 850,-10 1000,20 C1100,35 1150,10 1200,20 L1200,60 L0,60 Z"
+                  fill="rgba(217, 163, 26, 0.4)"
+                />
+              </svg>
+              <svg className="flag-wave-svg wave-front" viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path
+                  d="M0,15 C200,-15 400,35 600,15 C800,-15 1000,35 1200,15 L1200,60 L0,60 Z"
+                  fill="rgba(25, 118, 210, 0.4)"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {/* Layer 3: Diagonal Light Sweep Flash on 100% completion */}
+          <div className="flag-logo-sweep-container" aria-hidden="true">
+            <div className="flag-logo-light-sweep" />
+          </div>
+        </div>
+
+        {/* Progress Counter, Loading Bar & Church Brand Typography */}
+        <div className="flag-preloader-meta">
+          <div className="flag-preloader-percent" aria-live="polite">
+            <span>{progress}</span>
+            <span className="flag-preloader-percent-symbol">%</span>
+          </div>
+
+          <div
+            className="flag-preloader-track"
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Loading Full Life AG Church"
+          >
+            <div
+              className="flag-preloader-bar-fill"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <h2 className="flag-preloader-brand-title">Full Life AG Church</h2>
+          <span className="flag-preloader-brand-sub">Presence &bull; Power &bull; Purpose</span>
+        </div>
       </div>
     </div>
   );
