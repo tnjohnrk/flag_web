@@ -172,8 +172,8 @@ export default function FlagPreloader({ onComplete }) {
           <Image
             src={ORIGINAL_LOGO_SRC}
             alt="Full Life AG Church Logo"
-            width={200}
-            height={200}
+            width={280}
+            height={280}
             priority
             className="flag-preloader-original-logo"
           />
