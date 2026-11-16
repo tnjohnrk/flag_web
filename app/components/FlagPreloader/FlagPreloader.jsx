@@ -7,7 +7,7 @@ import { getMediaUrl } from '@/lib/media';
 import { CLOUDINARY_LIBRARY } from '@/lib/cloudinaryLibrary';
 
 const PRELOADER_AUDIO_URL = CLOUDINARY_LIBRARY.preloader.videoRaw;
-const LOGO_SRC = getMediaUrl('/images/flag-logo.png');
+const EMBLEM_SRC = getMediaUrl('/images/flag-logo-emblem.png');
 
 export default function FlagPreloader({ onComplete }) {
   const [preloaderState, setPreloaderState] = useState('INITIALIZING');
@@ -17,7 +17,6 @@ export default function FlagPreloader({ onComplete }) {
 
   const overlayRef = useRef(null);
   const audioRef = useRef(null);
-  const logoStageRef = useRef(null);
   const isFinishedRef = useRef(false);
   const timelineRef = useRef(null);
 
@@ -59,7 +58,7 @@ export default function FlagPreloader({ onComplete }) {
     if (overlay && typeof window !== 'undefined' && gsap) {
       gsap.to(overlay, {
         opacity: 0,
-        scale: 1.05,
+        scale: 1.06,
         duration: 0.45,
         ease: 'power2.out',
         onComplete: () => {
@@ -133,7 +132,7 @@ export default function FlagPreloader({ onComplete }) {
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // Audio setup (muted by default for browser autoplay compliance)
+    // Audio setup (muted by default for browser compliance)
     const audioEl = audioRef.current;
     if (audioEl) {
       audioEl.muted = true;
@@ -142,13 +141,13 @@ export default function FlagPreloader({ onComplete }) {
       audioEl.play().catch(() => {});
     }
 
-    // GSAP liquid color fill animation
+    // Smooth 3D progress timeline (2.4s duration)
     const progressObj = { value: 0 };
     const fillTimeline = gsap.timeline({
       onComplete: () => {
         setIsComplete(true);
-        // Hold for 400ms to let user see 100% complete logo with light sweep
-        gsap.delayedCall(0.5, () => {
+        // Hold for 450ms to let user see 100% complete logo with 3D specular shine
+        gsap.delayedCall(0.55, () => {
           if (!isFinishedRef.current) {
             triggerExitAnimation();
           }
@@ -158,10 +157,9 @@ export default function FlagPreloader({ onComplete }) {
 
     timelineRef.current = fillTimeline;
 
-    // Smooth filling from 0 to 100% over 2.6 seconds
     fillTimeline.to(progressObj, {
       value: 100,
-      duration: 2.6,
+      duration: 2.4,
       ease: 'power2.inOut',
       onUpdate: () => {
         setProgress(Math.round(progressObj.value));
@@ -187,6 +185,22 @@ export default function FlagPreloader({ onComplete }) {
     return null;
   }
 
+  // Soft organic feathered color fill mask (no scan line)
+  const isFinished = progress >= 100;
+  const maskStyle = isFinished
+    ? { WebkitMaskImage: 'none', maskImage: 'none' }
+    : {
+        WebkitMaskImage: `linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) ${Math.max(0, progress - 10)}%, rgba(0,0,0,0) ${Math.min(100, progress + 10)}%, rgba(0,0,0,0) 100%)`,
+        maskImage: `linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) ${Math.max(0, progress - 10)}%, rgba(0,0,0,0) ${Math.min(100, progress + 10)}%, rgba(0,0,0,0) 100%)`,
+      };
+
+  // Subtle 3D dynamic tilt based on progress
+  const rotX = Math.round(5 * (1 - progress / 100));
+  const rotY = Math.round(-6 * (1 - progress / 100));
+  const dynamic3dStyle = {
+    transform: `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${0.96 + (progress / 100) * 0.08})`,
+  };
+
   return (
     <div
       ref={overlayRef}
@@ -195,11 +209,10 @@ export default function FlagPreloader({ onComplete }) {
       role="region"
       aria-label="Site introduction"
     >
-      {/* Background Ambient Orbs */}
-      <div className="flag-preloader-glow-orb flag-glow-orb-gold" aria-hidden="true" />
-      <div className="flag-preloader-glow-orb flag-glow-orb-blue" aria-hidden="true" />
+      {/* Ambient 3D Depth Glow */}
+      <div className="flag-preloader-ambient-glow" aria-hidden="true" />
 
-      {/* Background Audio Element */}
+      {/* Background Audio */}
       <audio
         ref={audioRef}
         src={PRELOADER_AUDIO_URL}
@@ -209,7 +222,7 @@ export default function FlagPreloader({ onComplete }) {
         playsInline
       />
 
-      {/* Top Controls: Audio On/Off with Frequency Visualizer + Skip Button */}
+      {/* Top Controls: Audio On/Off with Equalizer Frequency Bars + Skip Button */}
       <div className="flag-preloader-controls">
         <button
           type="button"
@@ -218,7 +231,6 @@ export default function FlagPreloader({ onComplete }) {
           aria-label={isMuted ? 'Sound off. Click to turn sound on' : 'Sound on. Click to mute sound'}
           title={isMuted ? 'Sound off' : 'Sound on'}
         >
-          {/* 4 Frequency Indicator Bars */}
           <span className="flag-preloader-freq-symbol" aria-hidden="true">
             <span className="flag-preloader-freq-bar" />
             <span className="flag-preloader-freq-bar" />
@@ -256,62 +268,44 @@ export default function FlagPreloader({ onComplete }) {
         </button>
       </div>
 
-      {/* Center Logo Stage */}
+      {/* Center 3D Stage */}
       <div className="flag-logo-stage-wrapper">
-        <div
-          ref={logoStageRef}
-          className={`flag-logo-stage ${isComplete ? 'is-complete' : ''}`}
-        >
-          {/* Layer 1: Base Ghost Silhouette (Unfilled background shape) */}
-          <img
-            src={LOGO_SRC}
-            alt="Full Life AG Church Logo Silhouette"
-            className="flag-logo-ghost"
-            width={340}
-            height={340}
-          />
-
-          {/* Layer 2: Color Fill Reservoir (Rises from bottom 0% to top 100%) */}
+        <div className="flag-logo-3d-stage">
           <div
-            className="flag-fill-reservoir"
-            style={{ height: `${progress}%` }}
-            aria-hidden="true"
+            className={`flag-logo-3d-card ${isComplete ? 'is-complete' : ''}`}
+            style={dynamic3dStyle}
           >
-            <div className="flag-fill-content">
+            {/* Layer 1: Ghost Silhouette Base (Pure emblem, no white disc) */}
+            <img
+              src={EMBLEM_SRC}
+              alt="FLAG Church Emblem Base"
+              className="flag-logo-ghost-emblem"
+              width={300}
+              height={300}
+              priority="true"
+            />
+
+            {/* Layer 2: Organic Feathered Color Fill Layer (Smooth color bloom, no hard scan) */}
+            <div
+              className="flag-logo-fill-layer"
+              style={maskStyle}
+              aria-hidden="true"
+            >
               <img
-                src={LOGO_SRC}
-                alt="Full Life AG Church Logo Color Fill"
-                className="flag-logo-color"
-                width={340}
-                height={340}
+                src={EMBLEM_SRC}
+                alt="FLAG Church Emblem Color Fill"
+                className="flag-logo-color-emblem"
+                width={300}
+                height={300}
               />
             </div>
 
-            {/* Rising Meniscus Glow Beam with Surface Waves */}
-            <div className="flag-fill-meniscus-beam" />
-            <div className="flag-wave-container">
-              <svg className="flag-wave-svg wave-back" viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path
-                  d="M0,20 C150,45 350,-10 500,20 C650,50 850,-10 1000,20 C1100,35 1150,10 1200,20 L1200,60 L0,60 Z"
-                  fill="rgba(217, 163, 26, 0.4)"
-                />
-              </svg>
-              <svg className="flag-wave-svg wave-front" viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path
-                  d="M0,15 C200,-15 400,35 600,15 C800,-15 1000,35 1200,15 L1200,60 L0,60 Z"
-                  fill="rgba(25, 118, 210, 0.4)"
-                />
-              </svg>
-            </div>
-          </div>
-
-          {/* Layer 3: Diagonal Light Sweep Flash on 100% completion */}
-          <div className="flag-logo-sweep-container" aria-hidden="true">
-            <div className="flag-logo-light-sweep" />
+            {/* Layer 3: 3D Gloss Specular Sheen (sweeps across on 100% completion) */}
+            <div className="flag-logo-specular" aria-hidden="true" />
           </div>
         </div>
 
-        {/* Progress Counter, Loading Bar & Church Brand Typography */}
+        {/* Single Unified Signature Gold Typography (#D9A31A) */}
         <div className="flag-preloader-meta">
           <div className="flag-preloader-percent" aria-live="polite">
             <span>{progress}</span>
